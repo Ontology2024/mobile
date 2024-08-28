@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Text, View, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-import { colors } from "../constants/colors";
+import { colors } from "@/constants/colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -37,7 +37,7 @@ export default function Index() {
             메인 화면에서{"\n"}볼 수 있는 <Text style={Style.highlightText}>안전 구역</Text>
           </Text>
           <View style={{ alignItems: "center" }}>
-            <Image source={require("../assets/images/onboarding1.png")} style={Style.image} />
+            <Image source={require("@/assets/images/onboarding1.png")} style={Style.image} />
           </View>
         </View>
         <View style={Style.info}>
@@ -45,7 +45,7 @@ export default function Index() {
             메인 화면에서{"\n"}볼 수 있는 <Text style={Style.highlightText}>안전 구역</Text>
           </Text>
           <View style={{ alignItems: "center" }}>
-            <Image source={require("../assets/images/onboarding2.png")} style={Style.image} />
+            <Image source={require("@/assets/images/onboarding2.png")} style={Style.image} />
           </View>
         </View>
       </ScrollView>

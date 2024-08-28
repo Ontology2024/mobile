@@ -8,13 +8,13 @@ export default function Login() {
   const router = useRouter();
 
   const navigateToHome = () => {
-    router.push("/home");
+    router.push("../main");
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.loginLogoBox}>
-        <Image source={require("../assets/images/logo.png")} style={styles.logo} />
+        <Image source={require("@/assets/images/logo.png")} style={styles.logo} />
         <Text style={styles.safekey}>Safekey</Text>
         <Text style={styles.logoText}>오늘의 안전을 여는 열쇠</Text>
       </View>
@@ -23,11 +23,11 @@ export default function Login() {
           <Text style={styles.signupText}>가입하기</Text>
         </TouchableOpacity>
         <View style={styles.otherSignupBox}>
-          <Image source={require("../assets/images/appleLogo.png")} style={styles.signupLogo} />
+          <Image source={require("@/assets/images/appleLogo.png")} style={styles.signupLogo} />
           <Text style={styles.otherSignupText}>애플 아이디로 로그인</Text>
         </View>
         <View style={styles.otherSignupBox}>
-          <Image source={require("../assets/images/googleLogo.png")} style={styles.signupLogo} />
+          <Image source={require("@/assets/images/googleLogo.png")} style={styles.signupLogo} />
           <Text style={styles.otherSignupText}>구글로 로그인</Text>
         </View>
       </View>
