@@ -1,11 +1,17 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Image, ScrollView, Dimensions } from "react-native";
+import { Text, View, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 import { colors } from "../constants/colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export default function Index() {
   const [currentPage, setCurrentPage] = useState(0);
+  const router = useRouter();
+
+  const navigateToLogin = () => {
+    router.push("/login");
+  };
 
   const handleScroll = (event) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
@@ -43,9 +49,9 @@ export default function Index() {
           </View>
         </View>
       </ScrollView>
-      <View style={Style.footer}>
+      <TouchableOpacity style={Style.footer} activeOpacity={0.8} onPress={navigateToLogin}>
         <Text style={Style.startText}>시작하기</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -54,7 +60,7 @@ const Style = StyleSheet.create({
   text: {
     fontSize: 23,
     fontWeight: "600",
-    lineHeight: 40,
+    lineHeight: 30,
     textAlign: "center",
   },
   highlightText: {
