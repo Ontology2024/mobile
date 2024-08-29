@@ -38,9 +38,9 @@ export default function Panel() {
             <Text style={styles.scrapText}>{scrapName}</Text>
           </View>
         ))}
-        <View style={styles.plusBox}>
+        <TouchableOpacity activeOpacity={0.8} style={styles.plusBox}>
           <Image source={plusImg} style={styles.scrapImg} />
-        </View>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.navbox}>
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
   scrapBox: {
     flexDirection: "row",
     justifyContent: "flex-start",
+    alignItems: "center",
     gap: 5,
   },
   scrapinfo: {
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     borderColor: "#C5CCD7",
     borderRadius: 10,
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    height: 25,
   },
   scrapImg: {
     width: 9,
@@ -130,11 +131,13 @@ const styles = StyleSheet.create({
   },
   plusBox: {
     backgroundColor: "#F4F6F9",
-    paddingHorizontal: 6,
-    paddingVertical: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
+    width: 25,
+    height: 25,
   },
   navbox: {
     backgroundColor: "#F4F6F9",
