@@ -78,7 +78,7 @@ const Style = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: 100,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: colors.purple,
     shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.3,
     shadowRadius: 6,

@@ -1,7 +1,4 @@
-import { useEffect, useState } from "react";
 import { Stack } from "expo-router";
-import * as Font from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
@@ -9,6 +6,8 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="main" options={{ headerShown: false, animation: "none" }} />
+        <Stack.Screen name="origin" options={{ headerShown: false, animation: "slide_from_bottom", presentation: "modal" }} />
+        <Stack.Screen name="destination" options={{ headerShown: false, animation: "slide_from_bottom", presentation: "modal" }} />
       </Stack>
     </GestureHandlerRootView>
   );

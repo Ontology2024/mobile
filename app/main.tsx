@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Animated, TouchableWithoutFeedback, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Animated, TouchableWithoutFeedback } from "react-native";
 import SkeletonPlaceholder from "@/components/skeletons";
 import { colors } from "@/constants/colors";
 import { useNavigation } from "@react-navigation/native";
+import BottomSheet from "react-native-simple-bottom-sheet";
+import Panel from "@/components/Panel";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -46,7 +48,7 @@ export default function Home() {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 500,
+        duration: 300,
         useNativeDriver: true,
       }),
     ]).start();
@@ -85,6 +87,14 @@ export default function Home() {
           ))}
         </View>
       </View>
+
+      {/* 패널 스와이프 - https://github.com/StefanoMartella/react-native-simple-bottom-sheet?tab=readme-ov-file#installation*/}
+      <View style={styles.panelBox}>
+        <BottomSheet isOpen={false} animationDuration={200}>
+          <Panel />
+        </BottomSheet>
+      </View>
+
       <View style={styles.footer}>
         <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1}>
           <Text style={styles.safecall}>AI 안심전화</Text>
@@ -191,18 +201,17 @@ const styles = StyleSheet.create({
   },
   footer: {
     width: "100%",
-    height: 150,
+    height: 100,
     backgroundColor: "white",
-    alignItems: "center",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    shadowColor: "#959595",
-    shadowOffset: { width: 0, height: 15 },
-    shadowOpacity: 0.6,
-    shadowRadius: 15,
     flexDirection: "row",
     paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 40,
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
   },
   footerBox1: {
     paddingVertical: 13,
@@ -233,14 +242,15 @@ const styles = StyleSheet.create({
   },
   closeBox: {
     padding: 13,
+    paddingVertical: 13.5,
     marginLeft: 10,
     backgroundColor: "white",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    bottom: -52,
-    right: 6.5,
+    bottom: -63.8,
+    right: 5.6,
   },
   menu: {
     width: 20,
@@ -277,5 +287,10 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: "center",
     alignItems: "center",
+  },
+  panelBox: {
+    width: "100%",
+    position: "absolute",
+    bottom: 100,
   },
 });
