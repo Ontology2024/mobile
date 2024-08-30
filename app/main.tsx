@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Animated, TouchableWithoutFeedback } from "react-native";
 import SkeletonPlaceholder from "@/components/skeletons";
 import { colors } from "@/constants/colors";
@@ -6,6 +6,8 @@ import { useNavigation } from "@react-navigation/native";
 import BottomSheet from "react-native-simple-bottom-sheet";
 import Panel from "@/components/Panel";
 import * as Location from "expo-location";
+// local storage - https://react-native-async-storage.github.io/async-storage/docs/install
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -14,9 +16,41 @@ const menuImg = require("@/assets/images/menu.png");
 const closeImg = require("@/assets/images/close.png");
 
 const coninkeyN = 330;
+const mapOptionsKey = "map_opt";
 
 export default function Home() {
   const navigation = useNavigation();
+  const [dest, setDest] = useState("");
+  const [selectedItems, setSelectedItems] = useState({
+    안전시설: true,
+    범죄: true,
+    안전도: true,
+    코인키: true,
+  });
+
+  const loadStoredData = async () => {
+    try {
+      const storedItems = await AsyncStorage.getItem(mapOptionsKey);
+      if (storedItems) {
+        setSelectedItems(JSON.parse(storedItems));
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSelect = async (item) => {
+    const updatedItems = {
+      ...selectedItems,
+      [item]: !selectedItems[item],
+    };
+    setSelectedItems(updatedItems);
+    try {
+      await AsyncStorage.setItem(mapOptionsKey, JSON.stringify(updatedItems));
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const [city, setCity] = useState("");
   const [ok, setOk] = useState(true);
@@ -35,33 +69,7 @@ export default function Home() {
   };
 
   const [modalVisible, setModalVisible] = useState(false);
-  const fadeAnim = useState(new Animated.Value(0))[0];
-  const [loading, setLoading] = useState(true);
-  const [selectedItems, setSelectedItems] = useState({
-    안전시설: true,
-    범죄: true,
-    안전도: true,
-    코인키: true,
-  });
-
-  const handleSelect = (item) => {
-    setSelectedItems((prev) => ({
-      ...prev,
-      [item]: !prev[item],
-    }));
-  };
-
-  useEffect(() => {
-    //메인화면에서 필요한 데이터 가져오는 부분
-    setTimeout(() => {
-      setLoading(false);
-      getCurrentLocation();
-    }, 500);
-  }, []);
-
-  if (loading) {
-    return <SkeletonPlaceholder />;
-  }
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const openModal = () => {
     setModalVisible(true);
@@ -85,6 +93,29 @@ export default function Home() {
       setModalVisible(false);
     });
   };
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const initialize = async () => {
+      setLoading(true);
+      await getCurrentLocation();
+      try {
+        const savedDest = await AsyncStorage.getItem("dest");
+        if (savedDest) {
+          setDest(savedDest);
+        }
+      } catch (error) {
+        console.error("Error fetching destination:", error);
+      }
+      setLoading(false);
+    };
+    const unsubscribe = navigation.addListener("focus", initialize);
+    return unsubscribe;
+  }, [navigation]);
+
+  if (loading) {
+    return <SkeletonPlaceholder />;
+  }
 
   return (
     <View style={styles.container}>
@@ -111,7 +142,7 @@ export default function Home() {
       {/* 패널 스와이프 - https://github.com/StefanoMartella/react-native-simple-bottom-sheet?tab=readme-ov-file#installation*/}
       <View style={styles.panelBox}>
         <BottomSheet isOpen={false} animationDuration={200}>
-          <Panel city={city} />
+          <Panel city={city} dest={dest} />
         </BottomSheet>
       </View>
 

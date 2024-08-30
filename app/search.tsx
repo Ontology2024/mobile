@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const leftarrowImg = require("@/assets/images/leftarrow.png");
 const currentlocationImg = require("@/assets/images/currentlocation.png");
@@ -10,16 +11,61 @@ const destinationImg = require("@/assets/images/destination.png");
 const closeImg = require("@/assets/images/close.png");
 
 const scrapList = ["나의집", "회사", "친구집"];
-const currentSearchList = [
-  { name: "세븐일레븐 용인송담대점", scrap: false },
-  { name: "회사", scrap: false },
-  { name: "친구집", scrap: true },
-  { name: "경기도 용인시 서그내로 423-1", scrap: true },
-  { name: "CU 용인송담대점", scrap: false },
-];
 
 export default function search() {
   const navigation = useNavigation();
+  const [text, setText] = useState("");
+  const onChangeText = (payload) => setText(payload);
+  const [currentSearchList, setCurrentSearchList] = useState([
+    { name: "세븐일레븐 용인송담대점", scrap: false },
+    { name: "회사", scrap: false },
+    { name: "친구집", scrap: true },
+    { name: "경기도 용인시 서그내로 423-1", scrap: true },
+    { name: "CU 용인송담대점", scrap: false },
+  ]);
+
+  useEffect(() => {
+    const loadSearchList = async () => {
+      try {
+        const storedList = await AsyncStorage.getItem("currentSearchList");
+        if (storedList) {
+          setCurrentSearchList(JSON.parse(storedList));
+        }
+      } catch (e) {
+        console.error(e.value);
+      }
+    };
+
+    loadSearchList();
+  }, []);
+
+  const updateSearchList = async (newList) => {
+    try {
+      setCurrentSearchList(newList);
+      await AsyncStorage.setItem("currentSearchList", JSON.stringify(newList));
+    } catch (e) {
+      console.error(e.value);
+    }
+  };
+
+  const addSearchList = async (search) => {
+    try {
+      const newList = currentSearchList;
+      if (search) {
+        newList.push({ name: search, scrap: false });
+      }
+      updateSearchList(newList);
+      await AsyncStorage.setItem("dest", search);
+      navigation.goBack();
+    } catch (e) {
+      console.log(e.value);
+    }
+  };
+
+  const removeItem = (index) => {
+    const updatedList = currentSearchList.filter((_, idx) => idx !== index);
+    updateSearchList(updatedList);
+  };
 
   return (
     <View style={styles.container}>
@@ -28,14 +74,21 @@ export default function search() {
           <Image source={leftarrowImg} style={styles.arrowimg} />
         </TouchableOpacity>
         <View style={styles.searchbar}>
-          <TextInput style={styles.searchText} placeholder="도착지를 입력해주세요" />
+          <TextInput
+            style={styles.searchText}
+            onSubmitEditing={() => addSearchList(text)}
+            onChangeText={onChangeText}
+            returnKeyType="done"
+            value={text}
+            placeholder="도착지를 입력해주세요"
+          />
           <Image source={currentlocationImg} style={styles.locationimg} />
         </View>
       </View>
 
       <View style={styles.scrapBox}>
-        {scrapList.map((scrapName, index) => (
-          <View style={styles.scrapinfo} key={index}>
+        {scrapList.map((scrapName) => (
+          <View style={styles.scrapinfo} key={scrapName}>
             <Image source={starImg} style={styles.scrapImg} />
             <Text style={styles.scrapText}>{scrapName}</Text>
           </View>
@@ -57,7 +110,7 @@ export default function search() {
               <Image source={value.scrap ? starImg : destinationImg} style={value.scrap ? styles.starImg : styles.destImg} />
               <View style={styles.currentSearchListBox2} key={idx}>
                 <Text style={styles.currentSearchListText}>{value.name}</Text>
-                <TouchableOpacity activeOpacity={0.6}>
+                <TouchableOpacity activeOpacity={0.6} onPress={() => removeItem(idx)}>
                   <Image source={closeImg} style={styles.closeBtn} />
                 </TouchableOpacity>
               </View>

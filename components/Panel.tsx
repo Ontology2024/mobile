@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 const scrapList = ["나의집", "회사", "친구집"];
@@ -13,14 +13,17 @@ const safezoneImg = require("@/assets/images/safezone.png");
 const safe = [{ safeText: "안전해요" }, { safeText: "조금 안전해요" }, { safeText: "조금 위험해요" }, { safeText: "위험해요" }];
 
 const safeN = 1;
-const destination = "";
 
-export default function Panel({ city }) {
+export default function Panel({ city, dest }) {
   const navigation = useNavigation(); // 네비게이션 객체 생성
 
   const handleNavigate = () => {
     navigation.navigate("search");
   };
+
+  useEffect(() => {
+    console.log("Dest updated:", dest);
+  }, [dest]);
 
   return (
     <View>
@@ -48,7 +51,7 @@ export default function Panel({ city }) {
         <View style={styles.navInfo}>
           <Image source={destinationImg} style={styles.destination} />
           <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox} onPress={() => handleNavigate()}>
-            <Text style={destination ? styles.navText : styles.placeholder}>{destination || "목적지를 입력해주세요"}</Text>
+            <Text style={dest ? styles.navText : styles.placeholder}>{dest || "목적지를 입력해주세요"}</Text>
           </TouchableOpacity>
         </View>
       </View>
