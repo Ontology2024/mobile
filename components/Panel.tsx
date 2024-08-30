@@ -13,18 +13,13 @@ const safezoneImg = require("@/assets/images/safezone.png");
 const safe = [{ safeText: "안전해요" }, { safeText: "조금 안전해요" }, { safeText: "조금 위험해요" }, { safeText: "위험해요" }];
 
 const safeN = 1;
-const origin = "";
 const destination = "";
 
-export default function Panel() {
+export default function Panel({ city }) {
   const navigation = useNavigation(); // 네비게이션 객체 생성
 
-  const handleNavigate = (type) => {
-    if (type === "origin") {
-      navigation.navigate("origin");
-    } else if (type === "destination") {
-      navigation.navigate("destination");
-    }
+  const handleNavigate = () => {
+    navigation.navigate("search");
   };
 
   return (
@@ -46,13 +41,13 @@ export default function Panel() {
       <View style={styles.navbox}>
         <View style={styles.navInfo}>
           <Image source={startImg} style={styles.start} />
-          <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox} onPress={() => handleNavigate("origin")}>
-            <Text style={origin ? styles.navText : styles.placeholder}>{origin || "출발지를 입력해주세요"}</Text>
+          <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox} onPress={() => handleNavigate()}>
+            <Text style={city ? styles.navText : styles.placeholder}>{city || "출발지를 입력해주세요"}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.navInfo}>
           <Image source={destinationImg} style={styles.destination} />
-          <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox} onPress={() => handleNavigate("destination")}>
+          <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox} onPress={() => handleNavigate()}>
             <Text style={destination ? styles.navText : styles.placeholder}>{destination || "목적지를 입력해주세요"}</Text>
           </TouchableOpacity>
         </View>

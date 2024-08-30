@@ -5,6 +5,7 @@ import { colors } from "@/constants/colors";
 import { useNavigation } from "@react-navigation/native";
 import BottomSheet from "react-native-simple-bottom-sheet";
 import Panel from "@/components/Panel";
+import * as Location from "expo-location";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -12,8 +13,26 @@ const mykeyImg = require("@/assets/images/mykey.png");
 const menuImg = require("@/assets/images/menu.png");
 const closeImg = require("@/assets/images/close.png");
 
+const coninkeyN = 330;
+
 export default function Home() {
   const navigation = useNavigation();
+
+  const [city, setCity] = useState("");
+  const [ok, setOk] = useState(true);
+  const getCurrentLocation = async () => {
+    const { granted } = await Location.requestForegroundPermissionsAsync();
+    if (!granted) {
+      return setOk(false);
+    }
+    if (ok) {
+      const {
+        coords: { latitude, longitude },
+      } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+      const location = await Location.reverseGeocodeAsync({ latitude, longitude }, { useGoogleMaps: false });
+      setCity(location[0].city);
+    }
+  };
 
   const [modalVisible, setModalVisible] = useState(false);
   const fadeAnim = useState(new Animated.Value(0))[0];
@@ -36,7 +55,8 @@ export default function Home() {
     //메인화면에서 필요한 데이터 가져오는 부분
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+      getCurrentLocation();
+    }, 500);
   }, []);
 
   if (loading) {
@@ -71,7 +91,7 @@ export default function Home() {
       <View style={styles.top}>
         <View style={styles.topBox1}>
           <Image source={require("@/assets/images/coinkey.png")} style={{ width: 12, height: 20 }} />
-          <Text style={styles.keyCount}>350</Text>
+          <Text style={styles.keyCount}>{coninkeyN}</Text>
         </View>
         <View style={styles.topBox2}>
           {Object.keys(selectedItems).map((key) => (
@@ -91,7 +111,7 @@ export default function Home() {
       {/* 패널 스와이프 - https://github.com/StefanoMartella/react-native-simple-bottom-sheet?tab=readme-ov-file#installation*/}
       <View style={styles.panelBox}>
         <BottomSheet isOpen={false} animationDuration={200}>
-          <Panel />
+          <Panel city={city} />
         </BottomSheet>
       </View>
 
