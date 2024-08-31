@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Text, View, StyleSheet, Image, ScrollView, Dimensions } from "react-native";
-import { colors } from "../constants/colors";
+import { COLORS } from "../constants/colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const onboarding1Img = require("../assets/images/onboarding1.png");
+const onboarding2Img = require("../assets/images/onboarding2.png");
 
 export default function Index() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -31,7 +33,7 @@ export default function Index() {
             메인 화면에서{"\n"}볼 수 있는 <Text style={Style.highlightText}>안전 구역</Text>
           </Text>
           <View style={{ alignItems: "center" }}>
-            <Image source={require("../assets/images/onboarding1.png")} style={Style.image} />
+            <Image source={onboarding1Img} style={Style.image} />
           </View>
         </View>
         <View style={Style.info}>
@@ -39,7 +41,7 @@ export default function Index() {
             메인 화면에서{"\n"}볼 수 있는 <Text style={Style.highlightText}>안전 구역</Text>
           </Text>
           <View style={{ alignItems: "center" }}>
-            <Image source={require("../assets/images/onboarding2.png")} style={Style.image} />
+            <Image source={onboarding2Img} style={Style.image} />
           </View>
         </View>
       </ScrollView>
@@ -58,7 +60,7 @@ const Style = StyleSheet.create({
     textAlign: "center",
   },
   highlightText: {
-    color: colors.purple,
+    color: COLORS.PURPLE,
   },
   image: {
     width: 350,
@@ -68,7 +70,7 @@ const Style = StyleSheet.create({
     width: SCREEN_WIDTH,
   },
   footer: {
-    backgroundColor: colors.purple,
+    backgroundColor: COLORS.PURPLE,
     width: SCREEN_WIDTH,
     height: 100,
     alignItems: "center",
@@ -101,6 +103,6 @@ const Style = StyleSheet.create({
     width: 9,
     height: 9,
     borderRadius: 100,
-    backgroundColor: colors.purple,
+    backgroundColor: COLORS.PURPLE,
   },
 });
