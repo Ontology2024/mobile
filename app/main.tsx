@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Animated, TouchableWithoutFeedback } from "react-native";
 import SkeletonPlaceholder from "@/components/skeletons";
 import { COLORS } from "@/constants/colors";
-import { useNavigation } from "@react-navigation/native";
 import BottomSheet from "react-native-simple-bottom-sheet";
 import Panel from "@/components/Panel";
 import * as Location from "expo-location";
 // local storage - https://react-native-async-storage.github.io/async-storage/docs/install
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router, useLocalSearchParams } from "expo-router";
+import { parseAsync } from "@babel/core";
+import { MapSearchParams } from '@/constants/MapSearchParams';
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -19,8 +21,7 @@ const coninkeyN = 330;
 const mapOptionsKey = "map_opt";
 
 export default function Home() {
-  const navigation = useNavigation();
-  const [dest, setDest] = useState("");
+  const { start, dest, setSearchParams } = useContext(MapSearchParams);
   const [selectedItems, setSelectedItems] = useState({
     안전시설: true,
     범죄: true,
@@ -52,19 +53,16 @@ export default function Home() {
     }
   };
 
-  const [city, setCity] = useState("");
-  const [ok, setOk] = useState(true);
   const getCurrentLocation = async () => {
     const { granted } = await Location.requestForegroundPermissionsAsync();
-    if (!granted) {
-      return setOk(false);
-    }
-    if (ok) {
+    if (granted) {
       const {
         coords: { latitude, longitude },
       } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
       const location = await Location.reverseGeocodeAsync({ latitude, longitude }, { useGoogleMaps: false });
-      setCity(location[0].city);
+      if (!start && location[0]) {
+        setSearchParams({ start: location[0].city!, dest });
+      }
     }
   };
 
@@ -94,28 +92,13 @@ export default function Home() {
     });
   };
 
-  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const initialize = async () => {
-      setLoading(true);
       await getCurrentLocation();
-      try {
-        const savedDest = await AsyncStorage.getItem("dest");
-        if (savedDest) {
-          setDest(savedDest);
-        }
-      } catch (error) {
-        console.error("Error fetching destination:", error);
-      }
-      setLoading(false);
+      await loadStoredData();
     };
-    const unsubscribe = navigation.addListener("focus", initialize);
-    return unsubscribe;
-  }, [navigation]);
-
-  if (loading) {
-    return <SkeletonPlaceholder />;
-  }
+    initialize();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -141,8 +124,8 @@ export default function Home() {
 
       {/* 패널 스와이프 - https://github.com/StefanoMartella/react-native-simple-bottom-sheet?tab=readme-ov-file#installation*/}
       <View style={styles.panelBox}>
-        <BottomSheet isOpen={false} animationDuration={200}>
-          <Panel city={city} dest={dest} />
+        <BottomSheet isOpen animationDuration={200}>
+          <Panel start={start} dest={dest} />
         </BottomSheet>
       </View>
 
