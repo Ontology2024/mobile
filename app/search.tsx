@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView 
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MOCK } from "@/constants/mock";
 
 const leftarrowImg = require("@/assets/images/leftarrow.png");
 const currentlocationImg = require("@/assets/images/currentlocation.png");
@@ -16,13 +17,7 @@ export default function search() {
   const navigation = useNavigation();
   const [text, setText] = useState("");
   const onChangeText = (payload) => setText(payload);
-  const [currentSearchList, setCurrentSearchList] = useState([
-    { name: "세븐일레븐 용인송담대점", scrap: false },
-    { name: "회사", scrap: false },
-    { name: "친구집", scrap: true },
-    { name: "경기도 용인시 서그내로 423-1", scrap: true },
-    { name: "CU 용인송담대점", scrap: false },
-  ]);
+  const [currentSearchList, setCurrentSearchList] = useState(MOCK.currSearchList);
 
   useEffect(() => {
     const loadSearchList = async () => {
