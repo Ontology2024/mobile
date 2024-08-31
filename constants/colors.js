@@ -1,3 +1,3 @@
-export const colors = {
-  purple: "#6028FF",
+export const COLORS = {
+  PURPLE: "#6028FF",
 };
