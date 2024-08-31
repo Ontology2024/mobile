@@ -7,8 +7,6 @@ import Panel from "@/components/Panel";
 import * as Location from "expo-location";
 // local storage - https://react-native-async-storage.github.io/async-storage/docs/install
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useLocalSearchParams } from "expo-router";
-import { parseAsync } from "@babel/core";
 import { MapSearchParams } from '@/constants/MapSearchParams';
 
 const marketImg = require("@/assets/images/market.png");

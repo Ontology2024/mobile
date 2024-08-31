@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
 import { Link } from "expo-router";
 
 const scrapList = ["나의집", "회사", "친구집"];
