@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Animated, TouchableWithoutFeedback } from "react-native";
 import SkeletonPlaceholder from "@/components/skeletons";
-import { colors } from "@/constants/colors";
+import { COLORS } from "@/constants/colors";
 import { useNavigation } from "@react-navigation/native";
 import BottomSheet from "react-native-simple-bottom-sheet";
 import Panel from "@/components/Panel";
@@ -201,14 +201,14 @@ const styles = StyleSheet.create({
   },
   topBox1: {
     width: 100,
-    backgroundColor: colors.purple,
+    backgroundColor: COLORS.PURPLE,
     alignItems: "center",
     paddingLeft: 22,
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
     flexDirection: "row",
     gap: 10,
-    shadowColor: colors.purple,
+    shadowColor: COLORS.PURPLE,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 5,

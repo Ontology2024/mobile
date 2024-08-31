@@ -106,9 +106,9 @@ export default function search() {
         </View>
         <ScrollView contentContainerStyle={{ paddingBottom: 250 }}>
           {currentSearchList.map((value, idx) => (
-            <View style={styles.currentSearchListBox}>
+            <View style={styles.currentSearchListBox} key={value.name}>
               <Image source={value.scrap ? starImg : destinationImg} style={value.scrap ? styles.starImg : styles.destImg} />
-              <View style={styles.currentSearchListBox2} key={idx}>
+              <View style={styles.currentSearchListBox2}>
                 <Text style={styles.currentSearchListText}>{value.name}</Text>
                 <TouchableOpacity activeOpacity={0.6} onPress={() => removeItem(idx)}>
                   <Image source={closeImg} style={styles.closeBtn} />

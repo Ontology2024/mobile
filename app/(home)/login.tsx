@@ -1,33 +1,32 @@
-import React from "react";
-import { View, Text, Button, StyleSheet, Image } from "react-native";
-import { useRouter } from "expo-router";
-import { colors } from "@/constants/colors";
+import { View, Text, StyleSheet, Image } from "react-native";
+import { Link } from "expo-router";
+import { COLORS } from "@/constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
+const logoImg = require("@/assets/images/logo.png");
+const appleLogoImg = require("@/assets/images/appleLogo.png");
+const googleLogoImg = require("@/assets/images/googleLogo.png");
+
 export default function Login() {
-  const router = useRouter();
-
-  const navigateToHome = () => {
-    router.push("../main");
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.loginLogoBox}>
-        <Image source={require("@/assets/images/logo.png")} style={styles.logo} />
+        <Image source={logoImg} style={styles.logo} />
         <Text style={styles.safekey}>Safekey</Text>
         <Text style={styles.logoText}>오늘의 안전을 여는 열쇠</Text>
       </View>
       <View style={{ gap: 8 }}>
-        <TouchableOpacity style={styles.signupBox} activeOpacity={0.8} onPress={navigateToHome}>
-          <Text style={styles.signupText}>가입하기</Text>
-        </TouchableOpacity>
+        <Link href="/main" asChild>
+          <TouchableOpacity style={styles.signupBox} activeOpacity={0.8}>
+            <Text style={styles.signupText}>가입하기</Text>
+          </TouchableOpacity>
+        </Link>
         <View style={styles.otherSignupBox}>
-          <Image source={require("@/assets/images/appleLogo.png")} style={styles.signupLogo} />
+          <Image source={appleLogoImg} style={styles.signupLogo} />
           <Text style={styles.otherSignupText}>애플 아이디로 로그인</Text>
         </View>
         <View style={styles.otherSignupBox}>
-          <Image source={require("@/assets/images/googleLogo.png")} style={styles.signupLogo} />
+          <Image source={googleLogoImg} style={styles.signupLogo} />
           <Text style={styles.otherSignupText}>구글로 로그인</Text>
         </View>
       </View>
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   safekey: {
-    color: colors.purple,
+    color: COLORS.PURPLE,
     fontSize: 36,
     textAlign: "center",
     marginBottom: -15,
@@ -65,16 +64,16 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 16,
     fontWeight: "600",
-    color: colors.purple,
+    color: COLORS.PURPLE,
   },
   signupBox: {
-    backgroundColor: colors.purple,
+    backgroundColor: COLORS.PURPLE,
     width: 328,
     height: 46,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
-    shadowColor: colors.purple,
+    shadowColor: COLORS.PURPLE,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 5,

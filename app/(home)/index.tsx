@@ -1,17 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Text, View, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
-import { colors } from "@/constants/colors";
+import { Link } from "expo-router";
+import { COLORS } from "@/constants/colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const onboarding1Img = require("@/assets/images/onboarding1.png");
+const onboarding2Img = require("@/assets/images/onboarding2.png");
 
 export default function Index() {
   const [currentPage, setCurrentPage] = useState(0);
-  const router = useRouter();
-
-  const navigateToLogin = () => {
-    router.push("/login");
-  };
 
   const handleScroll = (event) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
@@ -37,7 +34,7 @@ export default function Index() {
             메인 화면에서{"\n"}볼 수 있는 <Text style={Style.highlightText}>안전 구역</Text>
           </Text>
           <View style={{ alignItems: "center" }}>
-            <Image source={require("@/assets/images/onboarding1.png")} style={Style.image} />
+            <Image source={onboarding1Img} style={Style.image} />
           </View>
         </View>
         <View style={Style.info}>
@@ -45,13 +42,15 @@ export default function Index() {
             메인 화면에서{"\n"}볼 수 있는 <Text style={Style.highlightText}>안전 구역</Text>
           </Text>
           <View style={{ alignItems: "center" }}>
-            <Image source={require("@/assets/images/onboarding2.png")} style={Style.image} />
+            <Image source={onboarding2Img} style={Style.image} />
           </View>
         </View>
       </ScrollView>
-      <TouchableOpacity style={Style.footer} activeOpacity={0.8} onPress={navigateToLogin}>
-        <Text style={Style.startText}>시작하기</Text>
-      </TouchableOpacity>
+      <Link href="/login" asChild>
+        <TouchableOpacity style={Style.footer} activeOpacity={0.8}>
+          <Text style={Style.startText}>시작하기</Text>
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 }
@@ -64,7 +63,7 @@ const Style = StyleSheet.create({
     textAlign: "center",
   },
   highlightText: {
-    color: colors.purple,
+    color: COLORS.PURPLE,
   },
   image: {
     width: 350,
@@ -74,11 +73,11 @@ const Style = StyleSheet.create({
     width: SCREEN_WIDTH,
   },
   footer: {
-    backgroundColor: colors.purple,
+    backgroundColor: COLORS.PURPLE,
     width: SCREEN_WIDTH,
     height: 100,
     alignItems: "center",
-    shadowColor: colors.purple,
+    shadowColor: COLORS.PURPLE,
     shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -107,6 +106,6 @@ const Style = StyleSheet.create({
     width: 9,
     height: 9,
     borderRadius: 100,
-    backgroundColor: colors.purple,
+    backgroundColor: COLORS.PURPLE,
   },
 });
