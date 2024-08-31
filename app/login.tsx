@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import { useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { COLORS } from "@/constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -8,12 +8,6 @@ const appleLogoImg = require("../assets/images/appleLogo.png");
 const googleLogoImg = require("../assets/images/googleLogo.png");
 
 export default function Login() {
-  const router = useRouter();
-
-  const navigateToHome = () => {
-    router.push("/home");
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.loginLogoBox}>
@@ -22,9 +16,11 @@ export default function Login() {
         <Text style={styles.logoText}>오늘의 안전을 여는 열쇠</Text>
       </View>
       <View style={{ gap: 8 }}>
-        <TouchableOpacity style={styles.signupBox} activeOpacity={0.8} onPress={navigateToHome}>
-          <Text style={styles.signupText}>가입하기</Text>
-        </TouchableOpacity>
+        <Link href="/home" asChild>
+          <TouchableOpacity style={styles.signupBox} activeOpacity={0.8}>
+            <Text style={styles.signupText}>가입하기</Text>
+          </TouchableOpacity>
+        </Link>
         <View style={styles.otherSignupBox}>
           <Image source={appleLogoImg} style={styles.signupLogo} />
           <Text style={styles.otherSignupText}>애플 아이디로 로그인</Text>

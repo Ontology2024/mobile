@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Text, View, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { COLORS } from "../constants/colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -9,11 +9,6 @@ const onboarding2Img = require("../assets/images/onboarding2.png");
 
 export default function Index() {
   const [currentPage, setCurrentPage] = useState(0);
-  const router = useRouter();
-
-  const navigateToLogin = () => {
-    router.push("/login");
-  };
 
   const handleScroll = (event) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
@@ -51,9 +46,11 @@ export default function Index() {
           </View>
         </View>
       </ScrollView>
-      <TouchableOpacity style={Style.footer} activeOpacity={0.8} onPress={navigateToLogin}>
-        <Text style={Style.startText}>시작하기</Text>
-      </TouchableOpacity>
+      <Link href="/login" asChild>
+        <TouchableOpacity style={Style.footer} activeOpacity={0.8}>
+          <Text style={Style.startText}>시작하기</Text>
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 }
