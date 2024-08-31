@@ -1,27 +1,24 @@
 import { useEffect, useState } from "react";
 import { Stack } from "expo-router";
-import * as Font from "expo-font";
+import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [loaded, error] = useFonts({
+    "BalooTammudu2-Bold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-Bold.ttf"),
+    "BalooTammudu2-ExtraBold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-ExtraBold.ttf"),
+  });
 
   useEffect(() => {
-    SplashScreen.preventAutoHideAsync();  //스플래시 화면 자동으로 숨겨지는거 방지
-    async function loadFonts() {
-      await Font.loadAsync({
-        "BalooTammudu2-Bold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-Bold.ttf"),
-        "BalooTammudu2-ExtraBold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-ExtraBold.ttf"),
-      });
-      setFontsLoaded(true);
-      SplashScreen.hideAsync(); // 폰트 로드 다 되면 스플래시 화면 숨김
+    if (loaded || error) {
+      SplashScreen.hideAsync();
     }
+  }, [loaded, error]);
 
-    loadFonts();
-  }, []);
-
-  if (!fontsLoaded) {
+  if (!loaded && !error) {
     return null;
   }
 
