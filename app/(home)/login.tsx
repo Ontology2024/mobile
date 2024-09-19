@@ -4,10 +4,10 @@ import { COLORS } from "@/constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useState } from "react";
 
-const logoImg = require("../assets/images/logo.png");
-const kakaoLogoImg = require("../assets/images/kakao.png");
-const eyeOpenImg = require("../assets/images/eye-open.png");
-const eyeCloseImg = require("../assets/images/eye-closed.png");
+const logoImg = require("@/assets/images/logo.png");
+const kakaoLogoImg = require("@/assets/images/kakao.png");
+const eyeOpenImg = require("@/assets/images/eye-open.png");
+const eyeCloseImg = require("@/assets/images/eye-closed.png");
 
 export default function Login() {
   const [email, changeEmail] = useState("");
@@ -58,7 +58,7 @@ export default function Login() {
         </View>
       </View>
       <View style={{ gap: 8, marginTop: 25 }}>
-        <Link href="/home" asChild>
+        <Link href="/main" asChild>
           <TouchableOpacity
             style={ValidChk(email, password) ? styles.loginBox : styles.unLoginBox}
             activeOpacity={0.8}

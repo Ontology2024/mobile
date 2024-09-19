@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Text, View, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
-import { COLORS } from "../constants/colors";
+import { COLORS } from "@/constants/colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const onboarding1Img = require("../assets/images/onboarding1.png");
-const onboarding2Img = require("../assets/images/onboarding2.png");
+const onboarding1Img = require("@/assets/images/onboarding1.png");
+const onboarding2Img = require("@/assets/images/onboarding2.png");
 
 export default function Index() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -77,7 +77,7 @@ const Style = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: 100,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: COLORS.PURPLE,
     shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
