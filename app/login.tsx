@@ -73,9 +73,11 @@ export default function Login() {
         </TouchableOpacity>
       </View>
       <View style={styles.bottomBox}>
-        <TouchableOpacity activeOpacity={0.8}>
-          <Text style={styles.bottomText}>이메일 가입</Text>
-        </TouchableOpacity>
+        <Link href="/signup" asChild>
+          <TouchableOpacity activeOpacity={0.8}>
+            <Text style={styles.bottomText}>이메일 가입</Text>
+          </TouchableOpacity>
+        </Link>
         <Text style={styles.bottomText}>|</Text>
         <TouchableOpacity activeOpacity={0.8}>
           <Text style={styles.bottomText}>이메일 찾기</Text>
