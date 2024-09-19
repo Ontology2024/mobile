@@ -12,6 +12,7 @@ const eyeCloseImg = require("../assets/images/eye-closed.png");
 export default function Login() {
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
+  const [showPw, changeShowPw] = useState(false);
 
   const emailregex = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
   const passwordregex = /^(?=.*[A-Za-z])(?=.*\d).+$/;
@@ -43,7 +44,17 @@ export default function Login() {
         </View>
         <View style={styles.inputContainer}>
           <Text style={styles.inputTitle}>비밀번호</Text>
-          <TextInput onChangeText={(val) => changePassword(val)} style={styles.inputBox} placeholder="비밀번호를 입력해주세요"></TextInput>
+          <View style={styles.inputBox}>
+            <TextInput
+              style={{ width: 260, marginRight: 18 }}
+              onChangeText={(val) => changePassword(val)}
+              secureTextEntry={showPw}
+              placeholder="비밀번호를 입력해주세요"
+            />
+            <TouchableOpacity onPress={() => changeShowPw(!showPw)} activeOpacity={0.8}>
+              <Image source={showPw ? eyeCloseImg : eyeOpenImg} style={styles.eyeImg} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
       <View style={{ gap: 8, marginTop: 25 }}>
@@ -119,11 +130,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   inputBox: {
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 12,
     paddingVertical: 13,
     borderRadius: 12,
     borderColor: "#DADFE5",
     borderWidth: 1,
+  },
+  eyeImg: {
+    width: 22,
+    height: 17,
   },
   loginBox: {
     backgroundColor: COLORS.PURPLE,
