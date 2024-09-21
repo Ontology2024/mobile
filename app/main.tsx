@@ -7,7 +7,8 @@ import Panel from "@/components/Panel";
 import * as Location from "expo-location";
 // local storage - https://react-native-async-storage.github.io/async-storage/docs/install
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { MapSearchParams } from '@/constants/MapSearchParams';
+import { MapSearchParams } from "@/constants/MapSearchParams";
+import { Link } from "expo-router";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -132,6 +133,7 @@ export default function Home() {
           <Text style={styles.safecall}>AI 안심전화</Text>
           <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
         </TouchableOpacity>
+
         <TouchableOpacity activeOpacity={0.8} style={styles.footerBox2} onPress={modalVisible ? closeModal : openModal}>
           <Image source={menuImg} style={styles.menu} />
         </TouchableOpacity>
@@ -176,7 +178,7 @@ const styles = StyleSheet.create({
   top: {
     width: "100%",
     height: 40,
-    marginTop: 60,
+    marginTop: 80,
     flexDirection: "row",
     justifyContent: "space-between",
   },

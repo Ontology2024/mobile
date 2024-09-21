@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TextInput } from "react-native";
+import { View, Text, StyleSheet, Image, TextInput, Pressable, Keyboard } from "react-native";
 import { Link } from "expo-router";
 import { COLORS } from "@/constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -14,19 +14,8 @@ export default function Login() {
   const [password, changePassword] = useState("");
   const [showPw, changeShowPw] = useState(false);
 
-  const emailregex = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
-  const passwordregex = /^(?=.*[A-Za-z])(?=.*\d).+$/;
-
-  const ValidChk = (email, password) => {
-    if (emailregex.test(email) === false || passwordregex.test(password) === false) {
-      return false;
-    } else {
-      return true;
-    }
-  };
-
   return (
-    <View style={styles.container}>
+    <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
       <View style={styles.loginLogoBox}>
         <Image source={logoImg} style={styles.logo} />
         <Text style={styles.safekey}>Safekey</Text>
@@ -40,6 +29,7 @@ export default function Login() {
             style={styles.inputBox}
             autoFocus
             placeholder="예) safekey@gmail.com"
+            keyboardType="email-address"
           ></TextInput>
         </View>
         <View style={styles.inputContainer}>
@@ -50,9 +40,10 @@ export default function Login() {
               onChangeText={(val) => changePassword(val)}
               secureTextEntry={showPw}
               placeholder="비밀번호를 입력해주세요"
+              value={password}
             />
             <TouchableOpacity onPress={() => changeShowPw(!showPw)} activeOpacity={0.8}>
-              <Image source={showPw ? eyeCloseImg : eyeOpenImg} style={styles.eyeImg} />
+              <Image source={showPw ? eyeOpenImg : eyeCloseImg} style={styles.eyeImg} />
             </TouchableOpacity>
           </View>
         </View>
@@ -60,9 +51,9 @@ export default function Login() {
       <View style={{ gap: 8, marginTop: 25 }}>
         <Link href="/main" asChild>
           <TouchableOpacity
-            style={ValidChk(email, password) ? styles.loginBox : styles.unLoginBox}
+            style={email && password ? styles.loginBox : styles.unLoginBox}
             activeOpacity={0.8}
-            disabled={!ValidChk(email, password)}
+            disabled={!(email && password)}
           >
             <Text style={styles.loginText}>로그인</Text>
           </TouchableOpacity>
@@ -87,7 +78,7 @@ export default function Login() {
           <Text style={styles.bottomText}>비밀번호 찾기</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
