@@ -144,18 +144,24 @@ export default function Home() {
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <Animated.View style={[styles.modalContent, { opacity: fadeAnim }]}>
-                <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
-                  <Image source={marketImg} style={{ width: 28, height: 25 }} />
-                </TouchableOpacity>
-                <Text style={styles.modalOption}>상점</Text>
-                <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
-                  <Image source={coinkeyImg} style={{ width: 17, height: 27 }} />
-                </TouchableOpacity>
-                <Text style={styles.modalOption}>코인키</Text>
-                <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
-                  <Image source={mykeyImg} style={{ width: 20, height: 20 }} />
-                </TouchableOpacity>
-                <Text style={styles.modalOption}>마이키</Text>
+                <View style={styles.modalBox}>
+                  <Text style={styles.modalOption}>상점</Text>
+                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
+                    <Image source={marketImg} style={{ width: 28, height: 25 }} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.modalBox}>
+                  <Text style={styles.modalOption}>코인키</Text>
+                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
+                    <Image source={coinkeyImg} style={{ width: 17, height: 27 }} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.modalBox}>
+                  <Text style={styles.modalOption}>마이페이지</Text>
+                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
+                    <Image source={mykeyImg} style={{ width: 20, height: 20 }} />
+                  </TouchableOpacity>
+                </View>
                 <TouchableOpacity activeOpacity={0.8} style={styles.closeBox} onPress={closeModal}>
                   <Image source={closeImg} style={styles.close} />
                 </TouchableOpacity>
@@ -305,17 +311,21 @@ const styles = StyleSheet.create({
     marginRight: 18,
     marginBottom: 105,
   },
+  modalBox: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginBottom: 24,
+  },
   modalOption: {
-    fontSize: 14,
+    fontSize: 17,
     fontWeight: "500",
-    textAlign: "center",
     color: "white",
-    marginBottom: 35,
+    marginRight: 20,
   },
   modalOptionBox: {
     backgroundColor: "rgba(255, 255, 255, 0.08)",
     padding: 12,
-    marginBottom: 10,
     borderRadius: 15,
     width: 60,
     height: 60,

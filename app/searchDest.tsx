@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MOCK } from "@/constants/mock";
-import { MapSearchParams } from '@/constants/MapSearchParams';
+import { MapSearchParams } from "@/constants/MapSearchParams";
 
 const leftarrowImg = require("@/assets/images/leftarrow.png");
 const currentlocationImg = require("@/assets/images/currentlocation.png");
@@ -18,8 +18,8 @@ export default function searchDest() {
   const { start, setSearchParams } = useContext(MapSearchParams);
   const router = useRouter();
   const [text, setText] = useState("");
+  const [currentSearchList, setCurrentSearchList] = useState([]);
   const onChangeText = (payload) => setText(payload);
-  const [currentSearchList, setCurrentSearchList] = useState(MOCK.currSearchList);
 
   useEffect(() => {
     const loadSearchList = async () => {
@@ -48,10 +48,12 @@ export default function searchDest() {
   const addSearchList = async (search) => {
     try {
       if (search) {
-        updateSearchList([...currentSearchList, { name: search, scrap: false }]);
+        const updatedList = currentSearchList.filter((item) => item.name !== search);
+        updatedList.push({ name: search, scrap: false });
+        await updateSearchList(updatedList);
         setText("");
-        setSearchParams({ start, dest: search })
-        router.push("/main")
+        setSearchParams({ start, dest: search });
+        router.push("/main");
       }
     } catch (e) {
       console.log(e);
