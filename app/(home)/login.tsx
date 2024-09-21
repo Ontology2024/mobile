@@ -38,7 +38,7 @@ export default function Login() {
             <TextInput
               style={{ width: 260, marginRight: 18 }}
               onChangeText={(val) => changePassword(val)}
-              secureTextEntry={showPw}
+              secureTextEntry={!showPw}
               placeholder="비밀번호를 입력해주세요"
               value={password}
             />

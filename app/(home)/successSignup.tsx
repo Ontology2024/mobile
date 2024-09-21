@@ -21,8 +21,8 @@ export default function Index() {
 
       <View>
         <ConfettiCannon
-          count={300}
-          origin={{ x: 175, y: 0 }}
+          count={350}
+          origin={{ x: 175, y: -3000 }}
           fallSpeed={3000}
           explosionSpeed={700}
           fadeOut={true}
