@@ -2,7 +2,6 @@ import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView 
 import { useEffect, useState, useContext } from "react";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { MOCK } from "@/constants/mock";
 import { MapSearchParams } from "@/constants/MapSearchParams";
 
 const leftarrowImg = require("@/assets/images/leftarrow.png");
@@ -48,8 +47,14 @@ export default function searchDest() {
   const addSearchList = async (search) => {
     try {
       if (search) {
-        const updatedList = currentSearchList.filter((item) => item.name !== search);
-        updatedList.push({ name: search, scrap: false });
+        const existingItemIndex = currentSearchList.findIndex((item) => item.name === search);
+        let updatedList = [...currentSearchList];
+
+        if (existingItemIndex !== -1) {
+          updatedList.splice(existingItemIndex, 1);
+        }
+
+        updatedList = [{ name: search, scrap: false }, ...updatedList];
         await updateSearchList(updatedList);
         setText("");
         setSearchParams({ start, dest: search });
@@ -104,7 +109,12 @@ export default function searchDest() {
         </View>
         <ScrollView contentContainerStyle={{ paddingBottom: 250 }}>
           {currentSearchList.map((value, idx) => (
-            <View style={styles.currentSearchListBox} key={value.name}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => addSearchList(value.name)}
+              style={styles.currentSearchListBox}
+              key={value.name}
+            >
               <Image source={value.scrap ? starImg : destinationImg} style={value.scrap ? styles.starImg : styles.destImg} />
               <View style={styles.currentSearchListBox2}>
                 <Text style={styles.currentSearchListText}>{value.name}</Text>
@@ -112,7 +122,7 @@ export default function searchDest() {
                   <Image source={closeImg} style={styles.closeBtn} />
                 </TouchableOpacity>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
