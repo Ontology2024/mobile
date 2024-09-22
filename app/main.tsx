@@ -8,7 +8,7 @@ import * as Location from "expo-location";
 // local storage - https://react-native-async-storage.github.io/async-storage/docs/install
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MapSearchParams } from "@/constants/MapSearchParams";
-import { Link } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -20,6 +20,11 @@ const coninkeyN = 330;
 const mapOptionsKey = "map_opt";
 
 export default function Home() {
+  const navigation = useNavigation();
+  const openMyPage = () => {
+    closeModal();
+    navigation.navigate("mypage");
+  };
   const { start, dest, setSearchParams } = useContext(MapSearchParams);
   const [selectedItems, setSelectedItems] = useState({
     안전시설: true,
@@ -158,7 +163,7 @@ export default function Home() {
                 </View>
                 <View style={styles.modalBox}>
                   <Text style={styles.modalOption}>마이페이지</Text>
-                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
+                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7} onPress={openMyPage}>
                     <Image source={mykeyImg} style={{ width: 20, height: 20 }} />
                   </TouchableOpacity>
                 </View>

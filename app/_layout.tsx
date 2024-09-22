@@ -12,7 +12,7 @@ export default function RootLayout() {
     "BalooTammudu2-Bold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-Bold.ttf"),
     "BalooTammudu2-ExtraBold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-ExtraBold.ttf"),
   });
-  const [{ start, dest }, setSearchParams] = useState({ start: '', dest: '' })
+  const [{ start, dest }, setSearchParams] = useState({ start: "", dest: "" });
 
   useEffect(() => {
     if (loaded || error) {
@@ -29,6 +29,8 @@ export default function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="main" options={{ headerShown: false, animation: "none" }} />
+          <Stack.Screen name="mypage" options={{ headerShown: false }} />
+          <Stack.Screen name="editmypage" options={{ headerShown: false }} />
           <Stack.Screen name="searchStart" options={{ headerShown: false }} />
           <Stack.Screen name="searchDest" options={{ headerShown: false }} />
         </Stack>
