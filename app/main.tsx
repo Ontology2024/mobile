@@ -4,22 +4,29 @@ import SkeletonPlaceholder from "@/components/skeletons";
 import { COLORS } from "@/constants/colors";
 import BottomSheet from "react-native-simple-bottom-sheet";
 import Panel from "@/components/Panel";
-import * as Location from "expo-location";
-// local storage - https://react-native-async-storage.github.io/async-storage/docs/install
+import NavHeader from "@/components/nav/NavHeader";
+import RecommendBox from "@/components/nav/RecommendBox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MapSearchParams } from "@/constants/MapSearchParams";
-import { Link } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
+import { navInfo } from "@/constants/NavMock";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
 const mykeyImg = require("@/assets/images/mykey.png");
 const menuImg = require("@/assets/images/menu.png");
 const closeImg = require("@/assets/images/close.png");
+const navarrowImg = require("@/assets/images/navarrow.png");
 
 const coninkeyN = 330;
 const mapOptionsKey = "map_opt";
 
 export default function Home() {
+  const navigation = useNavigation();
+  const openMyPage = () => {
+    closeModal();
+    navigation.navigate("mypage");
+  };
   const { start, dest, setSearchParams } = useContext(MapSearchParams);
   const [selectedItems, setSelectedItems] = useState({
     안전시설: true,
@@ -52,19 +59,6 @@ export default function Home() {
     }
   };
 
-  const getCurrentLocation = async () => {
-    const { granted } = await Location.requestForegroundPermissionsAsync();
-    if (granted) {
-      const {
-        coords: { latitude, longitude },
-      } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
-      const location = await Location.reverseGeocodeAsync({ latitude, longitude }, { useGoogleMaps: false });
-      if (!start && location[0]) {
-        setSearchParams({ start: location[0].city!, dest });
-      }
-    }
-  };
-
   const [modalVisible, setModalVisible] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -93,7 +87,6 @@ export default function Home() {
 
   useEffect(() => {
     const initialize = async () => {
-      await getCurrentLocation();
       await loadStoredData();
     };
     initialize();
@@ -101,61 +94,85 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.top}>
-        <View style={styles.topBox1}>
-          <Image source={require("@/assets/images/coinkey.png")} style={{ width: 12, height: 20 }} />
-          <Text style={styles.keyCount}>{coninkeyN}</Text>
+      {start && dest ? (
+        <NavHeader />
+      ) : (
+        <View style={styles.top}>
+          <View style={styles.topBox1}>
+            <Image source={require("@/assets/images/coinkey.png")} style={{ width: 12, height: 20 }} />
+            <Text style={styles.keyCount}>{coninkeyN}</Text>
+          </View>
+          <View style={styles.topBox2}>
+            {Object.keys(selectedItems).map((key) => (
+              <TouchableOpacity
+                key={key}
+                style={[styles.checkbox, { opacity: selectedItems[key] ? 1 : 0.5 }]}
+                onPress={() => handleSelect(key)}
+                activeOpacity={0.8}
+              >
+                <Image source={require("@/assets/images/check.png")} style={styles.checkImg} />
+                <Text style={styles.checkText}>{key}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-        <View style={styles.topBox2}>
-          {Object.keys(selectedItems).map((key) => (
-            <TouchableOpacity
-              key={key}
-              style={[styles.checkbox, { opacity: selectedItems[key] ? 1 : 0.5 }]}
-              onPress={() => handleSelect(key)}
-              activeOpacity={0.8}
-            >
-              <Image source={require("@/assets/images/check.png")} style={styles.checkImg} />
-              <Text style={styles.checkText}>{key}</Text>
-            </TouchableOpacity>
-          ))}
+      )}
+
+      {start && dest ? (
+        <View style={styles.panelBox}>
+          <RecommendBox navInfo={navInfo} />
         </View>
-      </View>
+      ) : (
+        <View style={styles.panelBox}>
+          <BottomSheet isOpen animationDuration={200}>
+            <Panel start={start} dest={dest} />
+          </BottomSheet>
+        </View>
+      )}
 
-      {/* 패널 스와이프 - https://github.com/StefanoMartella/react-native-simple-bottom-sheet?tab=readme-ov-file#installation*/}
-      <View style={styles.panelBox}>
-        <BottomSheet isOpen animationDuration={200}>
-          <Panel start={start} dest={dest} />
-        </BottomSheet>
-      </View>
+      {start && dest ? (
+        <View style={styles.footer}>
+          <TouchableOpacity activeOpacity={0.9} style={styles.footerBox3}>
+            <Text style={[styles.safecall, { color: "white" }]}>경로 안내 시작</Text>
+            <Image source={navarrowImg} style={styles.navarr} />
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.footer}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1}>
+            <Text style={styles.safecall}>AI 안심전화</Text>
+            <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
+          </TouchableOpacity>
 
-      <View style={styles.footer}>
-        <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1}>
-          <Text style={styles.safecall}>AI 안심전화</Text>
-          <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
-        </TouchableOpacity>
-
-        <TouchableOpacity activeOpacity={0.8} style={styles.footerBox2} onPress={modalVisible ? closeModal : openModal}>
-          <Image source={menuImg} style={styles.menu} />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity activeOpacity={0.8} style={styles.footerBox2} onPress={modalVisible ? closeModal : openModal}>
+            <Image source={menuImg} style={styles.menu} />
+          </TouchableOpacity>
+        </View>
+      )}
 
       <Modal visible={modalVisible} transparent animationType="none">
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <Animated.View style={[styles.modalContent, { opacity: fadeAnim }]}>
-                <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
-                  <Image source={marketImg} style={{ width: 28, height: 25 }} />
-                </TouchableOpacity>
-                <Text style={styles.modalOption}>상점</Text>
-                <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
-                  <Image source={coinkeyImg} style={{ width: 17, height: 27 }} />
-                </TouchableOpacity>
-                <Text style={styles.modalOption}>코인키</Text>
-                <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
-                  <Image source={mykeyImg} style={{ width: 20, height: 20 }} />
-                </TouchableOpacity>
-                <Text style={styles.modalOption}>마이키</Text>
+                <View style={styles.modalBox}>
+                  <Text style={styles.modalOption}>상점</Text>
+                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
+                    <Image source={marketImg} style={{ width: 28, height: 25 }} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.modalBox}>
+                  <Text style={styles.modalOption}>코인키</Text>
+                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
+                    <Image source={coinkeyImg} style={{ width: 17, height: 27 }} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.modalBox}>
+                  <Text style={styles.modalOption}>마이페이지</Text>
+                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7} onPress={openMyPage}>
+                    <Image source={mykeyImg} style={{ width: 20, height: 20 }} />
+                  </TouchableOpacity>
+                </View>
                 <TouchableOpacity activeOpacity={0.8} style={styles.closeBox} onPress={closeModal}>
                   <Image source={closeImg} style={styles.close} />
                 </TouchableOpacity>
@@ -236,12 +253,14 @@ const styles = StyleSheet.create({
   footer: {
     width: "100%",
     height: 100,
+    position: "absolute",
+    bottom: 0,
     backgroundColor: "white",
     flexDirection: "row",
+    justifyContent: "center",
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 40,
-    justifyContent: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
@@ -265,6 +284,11 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
+  navarr: {
+    width: 16,
+    height: 16,
+    marginLeft: 5,
+  },
   footerBox2: {
     padding: 13,
     marginLeft: 10,
@@ -273,6 +297,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+  },
+  footerBox3: {
+    paddingVertical: 13,
+    paddingHorizontal: 110,
+    backgroundColor: COLORS.PURPLE,
+    borderRadius: 10,
+    flexDirection: "row",
+    alignItems: "center",
   },
   closeBox: {
     padding: 13,
@@ -305,17 +337,21 @@ const styles = StyleSheet.create({
     marginRight: 18,
     marginBottom: 105,
   },
+  modalBox: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginBottom: 24,
+  },
   modalOption: {
-    fontSize: 14,
+    fontSize: 17,
     fontWeight: "500",
-    textAlign: "center",
     color: "white",
-    marginBottom: 35,
+    marginRight: 20,
   },
   modalOptionBox: {
     backgroundColor: "rgba(255, 255, 255, 0.08)",
     padding: 12,
-    marginBottom: 10,
     borderRadius: 15,
     width: 60,
     height: 60,

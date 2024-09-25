@@ -24,7 +24,7 @@ export default function Index() {
           count={350}
           origin={{ x: 175, y: -3000 }}
           fallSpeed={3000}
-          explosionSpeed={700}
+          explosionSpeed={300}
           fadeOut={true}
           colors={[COLORS.PURPLE, "#8E66FF", "#9DA6FF", "#FF69B4", "#6028FF"]}
         />
