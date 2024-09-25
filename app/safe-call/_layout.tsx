@@ -1,5 +1,5 @@
 import { Slot } from "expo-router";
-import { View, Text, StyleSheet, TouchableWithoutFeedback, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, Pressable, SafeAreaView } from "react-native";
 import { router } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
@@ -9,11 +9,9 @@ export default function Layout() {
       <View
         style={styles.header}
       >
-        <TouchableWithoutFeedback onPress={() => router.back()}>
-          <View style={[styles.headerSideBlock, { justifyContent: "center", alignItems: "center" }]}>
-            <AntDesign name="left" size={20} color="black"/>
-          </View>
-        </TouchableWithoutFeedback>
+        <Pressable onPress={() => router.back()} style={[styles.headerSideBlock, { justifyContent: "center", alignItems: "center" }]}>
+          <AntDesign name="left" size={20} color="black"/>
+        </Pressable>
         <Text style={styles.title}>AI 안심전화</Text>
         <View style={styles.headerSideBlock} />
       </View>
