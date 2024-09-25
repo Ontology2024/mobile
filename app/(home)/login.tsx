@@ -1,36 +1,84 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TextInput, Pressable, Keyboard } from "react-native";
 import { Link } from "expo-router";
 import { COLORS } from "@/constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useState } from "react";
 
 const logoImg = require("@/assets/images/logo.png");
-const appleLogoImg = require("@/assets/images/appleLogo.png");
-const googleLogoImg = require("@/assets/images/googleLogo.png");
+const kakaoLogoImg = require("@/assets/images/kakao.png");
+const eyeOpenImg = require("@/assets/images/eye-open.png");
+const eyeCloseImg = require("@/assets/images/eye-closed.png");
 
 export default function Login() {
+  const [email, changeEmail] = useState("");
+  const [password, changePassword] = useState("");
+  const [showPw, changeShowPw] = useState(false);
+
   return (
-    <View style={styles.container}>
+    <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
       <View style={styles.loginLogoBox}>
         <Image source={logoImg} style={styles.logo} />
         <Text style={styles.safekey}>Safekey</Text>
         <Text style={styles.logoText}>오늘의 안전을 여는 열쇠</Text>
       </View>
-      <View style={{ gap: 8 }}>
-        <Link href="/main" asChild>
-          <TouchableOpacity style={styles.signupBox} activeOpacity={0.8}>
-            <Text style={styles.signupText}>가입하기</Text>
-          </TouchableOpacity>
-        </Link>
-        <View style={styles.otherSignupBox}>
-          <Image source={appleLogoImg} style={styles.signupLogo} />
-          <Text style={styles.otherSignupText}>애플 아이디로 로그인</Text>
+      <View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputTitle}>이메일 주소</Text>
+          <TextInput
+            onChangeText={(val) => changeEmail(val)}
+            style={styles.inputBox}
+            autoFocus
+            placeholder="예) safekey@gmail.com"
+            keyboardType="email-address"
+          ></TextInput>
         </View>
-        <View style={styles.otherSignupBox}>
-          <Image source={googleLogoImg} style={styles.signupLogo} />
-          <Text style={styles.otherSignupText}>구글로 로그인</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputTitle}>비밀번호</Text>
+          <View style={styles.inputBox}>
+            <TextInput
+              style={{ width: 260, marginRight: 18 }}
+              onChangeText={(val) => changePassword(val)}
+              secureTextEntry={!showPw}
+              placeholder="비밀번호를 입력해주세요"
+              value={password}
+            />
+            <TouchableOpacity onPress={() => changeShowPw(!showPw)} activeOpacity={0.8}>
+              <Image source={showPw ? eyeOpenImg : eyeCloseImg} style={styles.eyeImg} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+      <View style={{ gap: 8, marginTop: 25 }}>
+        <Link href="/main" asChild>
+          <TouchableOpacity
+            style={email && password ? styles.loginBox : styles.unLoginBox}
+            activeOpacity={0.8}
+            disabled={!(email && password)}
+          >
+            <Text style={styles.loginText}>로그인</Text>
+          </TouchableOpacity>
+        </Link>
+        <TouchableOpacity style={styles.kakaoBox} activeOpacity={0.8}>
+          <Image source={kakaoLogoImg} style={styles.kakaoLogo} />
+          <Text style={styles.kakaoText}>카카오로 로그인</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.bottomBox}>
+        <Link href="/signup" asChild>
+          <TouchableOpacity activeOpacity={0.8}>
+            <Text style={styles.bottomText}>이메일 가입</Text>
+          </TouchableOpacity>
+        </Link>
+        <Text style={styles.bottomText}>|</Text>
+        <TouchableOpacity activeOpacity={0.8}>
+          <Text style={styles.bottomText}>이메일 찾기</Text>
+        </TouchableOpacity>
+        <Text style={styles.bottomText}>|</Text>
+        <TouchableOpacity activeOpacity={0.8}>
+          <Text style={styles.bottomText}>비밀번호 찾기</Text>
+        </TouchableOpacity>
+      </View>
+    </Pressable>
   );
 }
 
@@ -45,14 +93,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: 200,
-    height: 200,
-    marginTop: 100,
-    marginBottom: 160,
+    marginTop: -30,
+    marginBottom: 40,
   },
   logo: {
     width: 67.5,
     height: 75,
-    marginBottom: 5,
   },
   safekey: {
     color: COLORS.PURPLE,
@@ -66,26 +112,53 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: COLORS.PURPLE,
   },
-  signupBox: {
+  inputContainer: {
+    width: 328,
+    marginBottom: 20,
+  },
+  inputTitle: {
+    color: "#191454",
+    fontSize: 13,
+    fontWeight: "600",
+    marginBottom: 10,
+  },
+  inputBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 13,
+    borderRadius: 12,
+    borderColor: "#DADFE5",
+    borderWidth: 1,
+  },
+  eyeImg: {
+    width: 22,
+    height: 17,
+  },
+  loginBox: {
     backgroundColor: COLORS.PURPLE,
     width: 328,
     height: 46,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
-    shadowColor: COLORS.PURPLE,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
   },
-  signupText: {
+  unLoginBox: {
+    backgroundColor: "#C5CCD7",
+    width: 328,
+    height: 46,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 12,
+  },
+  loginText: {
     fontSize: 16,
     fontWeight: "600",
     color: "white",
   },
-  otherSignupBox: {
+  kakaoBox: {
     flexDirection: "row",
-    backgroundColor: "white",
+    backgroundColor: "#FEE500",
     borderColor: "#EFF0F6",
     borderWidth: 1,
     width: 328,
@@ -93,18 +166,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
-    shadowColor: "#EFF0F6",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
   },
-  otherSignupText: {
+  kakaoText: {
     fontSize: 15,
     fontWeight: "600",
     marginLeft: 8,
   },
-  signupLogo: {
-    width: 19,
+  kakaoLogo: {
+    width: 21,
     height: 19,
+  },
+  bottomBox: {
+    flexDirection: "row",
+    gap: 20,
+    marginTop: 30,
+  },
+  bottomText: {
+    color: "#b9c0cc",
   },
 });

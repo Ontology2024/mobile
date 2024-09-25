@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { COLORS } from "@/constants/colors";
 
 export default function RootLayout() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -30,6 +31,8 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false, gestureDirection: "vertical" }} />
+        <Stack.Screen name="signup" options={{ headerShown: false }} />
+        <Stack.Screen name="successSignup" options={{ headerShown: false }} />
       </Stack>
     </GestureHandlerRootView>
   );

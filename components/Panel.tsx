@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { Link } from "expo-router";
 
 const scrapList = ["나의집", "회사", "친구집"];
 const starImg = require("@/assets/images/star.png");
@@ -14,17 +13,7 @@ const safe = [{ safeText: "안전해요" }, { safeText: "조금 안전해요" },
 
 const safeN = 1;
 
-export default function Panel({ city, dest }) {
-  const navigation = useNavigation(); // 네비게이션 객체 생성
-
-  const handleNavigate = () => {
-    navigation.navigate("search");
-  };
-
-  useEffect(() => {
-    console.log("Dest updated:", dest);
-  }, [dest]);
-
+export default function Panel({ start, dest }) {
   return (
     <View>
       <Text style={styles.pannelTitle}>안전한 길 찾기</Text>
@@ -44,15 +33,19 @@ export default function Panel({ city, dest }) {
       <View style={styles.navbox}>
         <View style={styles.navInfo}>
           <Image source={startImg} style={styles.start} />
-          <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox} onPress={() => handleNavigate()}>
-            <Text style={city ? styles.navText : styles.placeholder}>{city || "출발지를 입력해주세요"}</Text>
-          </TouchableOpacity>
+          <Link href="/searchStart" asChild>
+            <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox}>
+              <Text style={start ? styles.navText : styles.placeholder}>{start || "출발지를 입력해주세요"}</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
         <View style={styles.navInfo}>
           <Image source={destinationImg} style={styles.destination} />
-          <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox} onPress={() => handleNavigate()}>
-            <Text style={dest ? styles.navText : styles.placeholder}>{dest || "목적지를 입력해주세요"}</Text>
-          </TouchableOpacity>
+          <Link href="/searchDest" asChild>
+            <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox}>
+              <Text style={dest ? styles.navText : styles.placeholder}>{dest || "목적지를 입력해주세요"}</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
       </View>
 
