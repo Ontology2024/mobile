@@ -43,9 +43,5 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     flexShrink: 0,
     flexBasis: 56,
-  },
-  backward: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
   }
 })
