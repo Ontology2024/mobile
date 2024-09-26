@@ -7,11 +7,13 @@ import EvilIcons from "@expo/vector-icons/EvilIcons";
 import Feather from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 
 const eyeOpenImg = require("@/assets/images/eye-open.png");
 const eyeCloseImg = require("@/assets/images/eye-closed.png");
 
 export default function signup() {
+  const navigation = useNavigation();
   const [terms, setTerms] = useState([false, false, false, false]);
   const allTerms = terms[0] && terms[1] && terms[2] && terms[3];
   const allAgree = () => {
@@ -46,6 +48,7 @@ export default function signup() {
   };
 
   const onSubmit = (data) => {
+    navigation.navigate("successSignup");
     console.log(data);
   };
 
@@ -214,7 +217,7 @@ export default function signup() {
 
       <Link href="/successSignup" asChild>
         <TouchableOpacity
-          // onPress={handleSubmit(onSubmit)}  -> form 데이터 받아올수있음
+          onPress={handleSubmit(onSubmit)}
           style={activeSubmit(email, password, passwordConfirm) ? styles.submitBtn : styles.unSubmitBtn}
           activeOpacity={0.8}
           disabled={!activeSubmit(email, password, passwordConfirm)}

@@ -18,7 +18,7 @@ const nickname = "김아람";
 const coinN = 200;
 const canBuyN = 3;
 
-export default function signup() {
+export default function mypage() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -78,13 +78,15 @@ export default function signup() {
         <View style={{ width: "80%", marginBottom: 24, alignItems: "center" }}>
           <Text style={styles.optionTitle}>안전 설정</Text>
           <View style={styles.optionContainer}>
-            <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <AntDesign name="hearto" size={20} color="black" />
-                <Text style={styles.optionText}>자주 가는 장소 설정</Text>
-              </View>
-              <EvilIcons name="chevron-right" size={36} color="black" />
-            </TouchableOpacity>
+            <Link href="scrapplace" asChild>
+              <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <AntDesign name="hearto" size={20} color="black" />
+                  <Text style={styles.optionText}>자주 가는 장소 설정</Text>
+                </View>
+                <EvilIcons name="chevron-right" size={36} color="black" />
+              </TouchableOpacity>
+            </Link>
             <View style={styles.underLine} />
             <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -100,13 +102,15 @@ export default function signup() {
         <View style={{ width: "80%", marginBottom: 24, alignItems: "center" }}>
           <Text style={styles.optionTitle}>기본 설정</Text>
           <View style={styles.optionContainer}>
-            <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Ionicons name="notifications-outline" size={20} color="black" />
-                <Text style={styles.optionText}>알림 설정</Text>
-              </View>
-              <EvilIcons name="chevron-right" size={36} color="black" />
-            </TouchableOpacity>
+            <Link href="editalarm" asChild>
+              <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Ionicons name="notifications-outline" size={20} color="black" />
+                  <Text style={styles.optionText}>알림 설정</Text>
+                </View>
+                <EvilIcons name="chevron-right" size={36} color="black" />
+              </TouchableOpacity>
+            </Link>
             <View style={styles.underLine} />
             <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>

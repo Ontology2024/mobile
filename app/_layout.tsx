@@ -31,6 +31,9 @@ export default function RootLayout() {
           <Stack.Screen name="main" options={{ headerShown: false, animation: "none" }} />
           <Stack.Screen name="mypage" options={{ headerShown: false }} />
           <Stack.Screen name="editmypage" options={{ headerShown: false }} />
+          <Stack.Screen name="scrapplace" options={{ headerShown: false }} />
+          <Stack.Screen name="addplace" options={{ headerShown: false }} />
+          <Stack.Screen name="editalarm" options={{ headerShown: false }} />
           <Stack.Screen name="searchStart" options={{ headerShown: false }} />
           <Stack.Screen name="searchDest" options={{ headerShown: false }} />
         </Stack>

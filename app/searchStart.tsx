@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MapSearchParams } from "@/constants/MapSearchParams";
 import { useRouter } from "expo-router";
+import * as location from "expo-location";
 
 const leftarrowImg = require("@/assets/images/leftarrow.png");
 const currentlocationImg = require("@/assets/images/currentlocation.png");
@@ -17,8 +18,18 @@ export default function searchStart() {
   const { dest, setSearchParams } = useContext(MapSearchParams);
   const router = useRouter();
   const [text, setText] = useState("");
-  const onChangeText = (payload) => setText(payload);
   const [currentSearchList, setCurrentSearchList] = useState([]);
+  const onChangeText = (payload) => setText(payload);
+
+  const getCurrPostion = async () => {
+    const { granted } = await location.requestForegroundPermissionsAsync();
+    if (granted) {
+      const loc = await location.getCurrentPositionAsync({});
+      const info = await location.reverseGeocodeAsync(loc.coords);
+      const { region, city, name } = info[0];
+      setText(`${region} ${city} ${name}`);
+    }
+  };
 
   useEffect(() => {
     const loadSearchList = async () => {
@@ -47,6 +58,7 @@ export default function searchStart() {
   const addSearchList = async (search) => {
     try {
       if (search) {
+        router.push("/main");
         const existingItemIndex = currentSearchList.findIndex((item) => item.name === search);
         let updatedList = [...currentSearchList];
 
@@ -58,7 +70,6 @@ export default function searchStart() {
         await updateSearchList(updatedList);
         setText("");
         setSearchParams({ start: search, dest });
-        router.push("/main");
       }
     } catch (e) {
       console.log(e);
@@ -85,7 +96,9 @@ export default function searchStart() {
             value={text}
             placeholder="출발지를 입력해주세요"
           />
-          <Image source={currentlocationImg} style={styles.locationimg} />
+          <TouchableOpacity activeOpacity={1} onPress={getCurrPostion}>
+            <Image source={currentlocationImg} style={styles.locationimg} />
+          </TouchableOpacity>
         </View>
       </View>
 

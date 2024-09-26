@@ -32,9 +32,11 @@ export default function Panel({ start, dest }) {
             <Text style={styles.scrapText}>{scrapName}</Text>
           </View>
         ))}
-        <TouchableOpacity activeOpacity={0.8} style={styles.plusBox}>
-          <Image source={plusImg} style={styles.scrapImg} />
-        </TouchableOpacity>
+        <Link href="/scrapplace" asChild>
+          <TouchableOpacity activeOpacity={0.8} style={styles.plusBox}>
+            <Image source={plusImg} style={styles.scrapImg} />
+          </TouchableOpacity>
+        </Link>
       </View>
 
       <View style={styles.navbox}>
