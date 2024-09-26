@@ -8,6 +8,7 @@ import Panel from "@/components/Panel";
 import * as Location from "expo-location";
 // local storage - https://react-native-async-storage.github.io/async-storage/docs/install
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -147,7 +148,7 @@ export default function Home() {
       </View>
 
       <View style={styles.footer}>
-        <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1}>
+        <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1} onPress={() => router.navigate("/safe-call")}>
           <Text style={styles.safecall}>AI 안심전화</Text>
           <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
         </TouchableOpacity>
