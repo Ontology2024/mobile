@@ -12,7 +12,7 @@ export default function Index() {
       <View style={{ flexGrow: 1 }} />
       <Image source={chatBubble} style={styles.chatGraphic} />
       <View style={{ flexGrow: 2 }} />
-      <Pressable onPress={() => router.navigate("safe-call/config")} style={styles.startButton}>
+      <Pressable onPress={() => router.navigate("/safe-call/config")} style={styles.startButton}>
         <Text style={styles.startButtonText}>
           좋아, 시작할게.
         </Text>
