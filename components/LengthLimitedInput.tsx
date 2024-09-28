@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   clear: {
     flexShrink: 0,
-    flexBasis: 20,
+    height: 20,
 
     aspectRatio: 1,
   },
