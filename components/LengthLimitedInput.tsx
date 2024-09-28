@@ -18,6 +18,7 @@ function LengthLimitedInput({ maxLength, value, onChangeText, placeholder, style
         maxLength={maxLength}
         style={styles.input}
         placeholderTextColor="#C5CCD7"
+        cursorColor="#6028FF"
       />
       <Text style={styles.count}>{value.length}/{maxLength}</Text>
       {
