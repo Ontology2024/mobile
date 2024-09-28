@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { EvilIcons } from "@expo/vector-icons";
 import { Switch } from "react-native-paper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { COLORS } from "@/constants/colors";
 import DateTimePicker from "react-native-modal-datetime-picker";
 
@@ -11,10 +11,22 @@ const week = ["월", "화", "수", "목", "금", "토", "일"];
 export default function editalarm() {
   const router = useRouter();
   const [weekV, setWeekV] = useState(Array(7).fill(false));
+  const [ck, setCk] = useState(false);
   const [sw, setSw] = useState([false, false, false, false, false]);
   const [isDatePickerVisible, setDatePickerVisibility] = useState("");
   const [startTime, setStartTime] = useState("오전 09:00");
   const [endTime, setEndTime] = useState("오전 09:00");
+
+  useEffect(() => {
+    setCk(weekV.includes(true));
+  }, [weekV]);
+
+  useEffect(() => {
+    if (!ck) {
+      setStartTime("오전 09:00");
+      setEndTime("오전 09:00");
+    }
+  }, [ck]);
 
   const toggle = (idx) => {
     setSw((prev) => prev.map((val, i) => (i === idx ? !val : val)));
@@ -98,14 +110,14 @@ export default function editalarm() {
       <View style={{ width: "85%", alignItems: "center", gap: 8 }}>
         <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <Text style={{ fontSize: 14, fontWeight: "500", color: "#767985" }}>시작 시간</Text>
-          <TouchableOpacity activeOpacity={0.9} style={styles.time} onPress={() => showDatePicker("start")}>
-            <Text style={{ fontSize: 14, fontWeight: "400", color: "#8D94A3" }}>{startTime}</Text>
+          <TouchableOpacity disabled={!ck} activeOpacity={0.9} style={styles.time} onPress={() => showDatePicker("start")}>
+            <Text style={{ fontSize: 14, fontWeight: "400", color: ck ? "#2F323D" : "#8D94A3" }}>{startTime}</Text>
           </TouchableOpacity>
         </View>
         <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <Text style={{ fontSize: 14, fontWeight: "500", color: "#767985" }}>종료 시간</Text>
-          <TouchableOpacity activeOpacity={0.9} style={styles.time} onPress={() => showDatePicker("end")}>
-            <Text style={{ fontSize: 14, fontWeight: "400", color: "#8D94A3" }}>{endTime}</Text>
+          <TouchableOpacity disabled={!ck} activeOpacity={0.9} style={styles.time} onPress={() => showDatePicker("end")}>
+            <Text style={{ fontSize: 14, fontWeight: "400", color: ck ? "#2F323D" : "#8D94A3" }}>{endTime}</Text>
           </TouchableOpacity>
         </View>
       </View>
