@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { View, Text, Image, StyleSheet, Pressable } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import Button from "@/components/Button";
 
 const chatBubble = require("@/assets/images/chat-bubble.png");
