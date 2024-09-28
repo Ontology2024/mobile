@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
+import Button from "@/components/Button";
 
 const chatBubble = require("@/assets/images/chat-bubble.png");
 
@@ -12,11 +13,11 @@ export default function Index() {
       <View style={{ flexGrow: 1 }} />
       <Image source={chatBubble} style={styles.chatGraphic} />
       <View style={{ flexGrow: 2 }} />
-      <Pressable onPress={() => router.navigate("/safe-call/config")} style={styles.startButton}>
+      <Button onPress={() => router.navigate("/safe-call/config")} style={styles.startButton}>
         <Text style={styles.startButtonText}>
           좋아, 시작할게.
         </Text>
-      </Pressable>
+      </Button>
     </View>
   )
 }
@@ -47,13 +48,6 @@ const styles = StyleSheet.create({
   },
   startButton: {
     alignSelf: "stretch",
-
-    backgroundColor: "#6028FF",
-
-    paddingVertical: 14,
-
-    borderRadius: 12,
-    overflow: "hidden", // https://reactnative.dev/docs/view-style-props#borderradius
   },
   startButtonText: {
     fontSize: 16,
