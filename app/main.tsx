@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Animated, TouchableWithoutFeedback } from "react-native";
-import SkeletonPlaceholder from "@/components/skeletons";
 import { COLORS } from "@/constants/colors";
 import BottomSheet from "react-native-simple-bottom-sheet";
 import Panel from "@/components/Panel";
@@ -10,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MapSearchParams } from "@/constants/MapSearchParams";
 import { useNavigation } from "@react-navigation/native";
 import { navInfo } from "@/constants/NavMock";
+import Tmap from "@/components/Tmap";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -117,6 +117,11 @@ export default function Home() {
           </View>
         </View>
       )}
+
+      {/* Tmap 렌더링 부분 */}
+      <View style={{ flex: 1, width: "100%", position: "relative", top: -120, zIndex: -1 }}>
+        <Tmap />
+      </View>
 
       {start && dest ? (
         <View style={styles.panelBox}>
