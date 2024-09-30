@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import WebView from "react-native-webview";
 import { APP_KEY } from "@env"; // .env 파일에서 APP_KEY를 가져옴
@@ -7,6 +7,7 @@ import * as location from "expo-location";
 export default function Tmap() {
   const [currloc, setCurrloc] = useState({ latitude: 37.566481622437934, longitude: 126.98502302169841 });
   const [heading, setHeading] = useState(0);
+  const webviewRef = useRef(null);
 
   useEffect(() => {
     let subscription: location.LocationSubscription | null = null;
@@ -49,6 +50,17 @@ export default function Tmap() {
     return () => headingDeg?.remove();
   }, []);
 
+  // 위치 및 방향이 변경될 때마다 WebView에 마커 업데이트
+  useEffect(() => {
+    if (webviewRef.current) {
+      webviewRef.current.injectJavaScript(`
+        updateMarker(${currloc.latitude}, ${currloc.longitude}, ${heading});
+      `);
+    }
+  }, [currloc, heading]);
+
+  useEffect(() => {}, []);
+
   const htmlContent = `
     <!DOCTYPE html>
     <html>
@@ -59,20 +71,22 @@ export default function Tmap() {
       <script type="text/javascript">
         var map;
         var currentLocationMarker;
-        function initTmap() {
-          map = new Tmapv3.Map("map_div", {
-            center: new Tmapv3.LatLng(${currloc.latitude}, ${currloc.longitude}),
-            width: "55vh",
-            height: "100vh",
-            zoom: 18,
-          });
-          currentLocationMarker = new Tmapv3.Marker({
-            position: new Tmapv3.LatLng(${currloc.latitude}, ${currloc.longitude}),
-            icon: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(\`
-              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 18 40" fill="none">
-                <g clip-path="url(#clip0_1127_936)" transform="rotate(${heading} 10 20)" >
-                  <path d="M0 0H26L14.383 22H11.8936L0 0Z" fill="url(#paint0_linear_1127_936)" fill-opacity="0.35"/>
-                  <path d="M21.5 27C21.5 22.3056 17.6944 18.5 13 18.5C8.30558 18.5 4.5 22.3056 4.5 27C4.5 31.6944 8.30558 35.5 13 35.5C17.6944 35.5 21.5 31.6944 21.5 27Z" fill="white"/>
+        // 지도 및 마커 초기화 (한 번만 실행)
+    function initTmap() {
+      map = new Tmapv3.Map("map_div", {
+        center: new Tmapv3.LatLng(${currloc.latitude}, ${currloc.longitude}),
+        width: "55vh",
+        height: "100vh",
+        zoom: 18,
+      });
+      // 마커 생성
+      currentLocationMarker = new Tmapv3.Marker({
+        position: new Tmapv3.LatLng(${currloc.latitude}, ${currloc.longitude}),
+        icon: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(\`
+          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 18 40" fill="none">
+            <g clip-path="url(#clip0_1127_936)" transform="rotate(${heading} 10 20)" >
+              <path d="M0 0H26L14.383 22H11.8936L0 0Z" fill="url(#paint0_linear_1127_936)" fill-opacity="0.35"/>
+              <path d="M21.5 27C21.5 22.3056 17.6944 18.5 13 18.5C8.30558 18.5 4.5 22.3056 4.5 27C4.5 31.6944 8.30558 35.5 13 35.5C17.6944 35.5 21.5 31.6944 21.5 27Z" fill="white"/>
                   <path d="M21.5 27C21.5 22.3056 17.6944 18.5 13 18.5C8.30558 18.5 4.5 22.3056 4.5 27C4.5 31.6944 8.30558 35.5 13 35.5C17.6944 35.5 21.5 31.6944 21.5 27Z" stroke="#D9D9D9"/>
                   <path d="M21.5 27C21.5 22.3056 17.6944 18.5 13 18.5C8.30558 18.5 4.5 22.3056 4.5 27C4.5 31.6944 8.30558 35.5 13 35.5C17.6944 35.5 21.5 31.6944 21.5 27Z" stroke="black" stroke-opacity="0.2"/>
                   <path d="M21.5 27C21.5 22.3056 17.6944 18.5 13 18.5C8.30558 18.5 4.5 22.3056 4.5 27C4.5 31.6944 8.30558 35.5 13 35.5C17.6944 35.5 21.5 31.6944 21.5 27Z" stroke="#6028FF"/>
@@ -89,18 +103,41 @@ export default function Tmap() {
                     <rect width="26" height="36" fill="white"/>
                   </clipPath>
                 </defs>
-              </svg>
-            \`),
-            iconSize: new Tmapv3.Size(60, 80),
-            map: map,
-          });
-          window.currentLocationMarker = currentLocationMarker;
-        }
+          </svg>
+        \`),
+        iconSize: new Tmapv3.Size(60, 80),
+        anchorPoint: new Tmapv3.Point(30, 40),
+        map: map,
+      });
+
+      // 전역으로 마커 및 맵 저장
+      window.currentLocationMarker = currentLocationMarker;
+      window.map = map;
+}
+      // 마커 위치 및 방향 업데이트 함수
+    function updateMarker(latitude, longitude, heading) {
+      var newPosition = new Tmapv3.LatLng(latitude, longitude);
+      
+      // 마커가 존재할 때만 위치 및 방향 업데이트
+      if (window.currentLocationMarker) {
+        window.currentLocationMarker.setPosition(newPosition);
+        window.currentLocationMarker.getIconElement().style.transform = 'rotate(' + heading + 'deg)';
+      }
+
+      // 맵의 중앙을 새 좌표로 이동
+      if (window.map) {
+        window.map.setCenter(newPosition);
+      }
+    }
+      
         function Move() {
           var lonlat = new Tmapv3.LatLng(${currloc.latitude}, ${currloc.longitude});
           map.setCenter(lonlat);
           map.setZoom(19);
         }
+
+        // 초기화 함수 호출
+    window.onload = initTmap;
       </script>
       <style>
         button {
@@ -136,6 +173,7 @@ export default function Tmap() {
   return (
     <View style={styles.container}>
       <WebView
+        ref={webviewRef}
         originWhitelist={["*"]}
         source={{ html: htmlContent }}
         javaScriptEnabled={true}
