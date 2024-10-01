@@ -20,7 +20,7 @@ export default function Config() {
 
   return (
     <View style={configStyles.page}>
-      <ScrollView contentContainerStyle={configStyles.scrollContent}>
+      <ScrollView contentContainerStyle={configStyles.scrollableContent} style={configStyles.scrollableContainer}>
         <Text style={configStyles.title}>세이프 워드 설정</Text>
         <Text style={configStyles.description}>AI와 전화 도중 세이프 워드를 언급하면</Text>
         <Text style={configStyles.description}>신고를 도와드립니다.</Text>
@@ -93,18 +93,18 @@ export default function Config() {
               }
             </View>
           </View>
-
-          <Button onPress={() => router.navigate("/safe-call/select")} style={configStyles.next}>
-            <Text style={configStyles.buttonText}>다음</Text>
-          </Button>
         </View>
+      </ScrollView>
 
-        <ReciverAddModal visible={reciverRegisterModalVisibility} onRequestClose={reciver => {
+      <Button onPress={() => router.navigate("/safe-call/select")} style={configStyles.next}>
+        <Text style={configStyles.buttonText}>다음</Text>
+      </Button>
+
+      <ReciverAddModal visible={reciverRegisterModalVisibility} onRequestClose={reciver => {
           if (reciver) setSOSRecivers([...sosRecivers, reciver])
 
           setReciverRegisterModalVisibility(false);
         }} />
-    </ScrollView>
     </View>
   )
 }
@@ -113,7 +113,10 @@ const configStyles = StyleSheet.create({
   page: {
     flex: 1,
   },
-  scrollContent: {
+  scrollableContainer: {
+    flex: 1,
+  },
+  scrollableContent: {
     paddingHorizontal: 28,
     paddingVertical: 36,
   },
@@ -220,8 +223,9 @@ const configStyles = StyleSheet.create({
     color: "#A2A2A2",
   },
   next: {
-    marginTop: 31,
-    marginHorizontal: 8,
+    marginTop: 26,
+    marginHorizontal: 36,
+    marginBottom: 36,
 
     alignItems: "center",
   },
