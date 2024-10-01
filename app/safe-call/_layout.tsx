@@ -5,7 +5,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function Layout() {
   return (
-    <SafeAreaView style={{ flexGrow: 1 }}>
+    <SafeAreaView style={{ flexGrow: 1, backgroundColor: "#FFFFFF" }}>
       <View
         style={styles.header}
       >
