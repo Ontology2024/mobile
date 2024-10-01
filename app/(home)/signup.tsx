@@ -8,6 +8,7 @@ import Feather from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import { supabase } from "@/lib/supabase";
 
 const eyeOpenImg = require("@/assets/images/eye-open.png");
 const eyeCloseImg = require("@/assets/images/eye-closed.png");
@@ -47,9 +48,45 @@ export default function signup() {
     } else return false;
   };
 
-  const onSubmit = (data) => {
-    navigation.navigate("successSignup");
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      // 이메일과 비밀번호로 회원가입 요청
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (signUpError) {
+        console.log("회원가입 오류:", signUpError.message);
+        return;
+      }
+      // 회원가입 성공 후 유저 정보 확인
+      const user = signUpData?.user;
+
+      if (!user) {
+        console.log("회원가입 중 오류: 사용자 정보를 가져올 수 없습니다.");
+        return;
+      }
+
+      // 성공 시 추가 데이터 저장
+      const { error: userError } = await supabase
+        .from("users") // users 테이블에 데이터 저장
+        .insert({
+          id: user.id,
+          created_at: user.created_at,
+          email: user.email,
+        });
+
+      if (userError) {
+        console.log("추가 데이터 저장 오류:", userError.message);
+        return;
+      }
+
+      console.log("회원가입 성공!");
+      navigation.navigate("successSignup"); // 성공 시 화면 이동
+    } catch (error) {
+      console.log("회원가입 중 오류 발생:", error.message);
+    }
   };
 
   return (
@@ -81,6 +118,7 @@ export default function signup() {
                 keyboardType="email-address"
                 onChangeText={onChange}
                 value={value}
+                autoCapitalize="none"
               />
             )}
           />

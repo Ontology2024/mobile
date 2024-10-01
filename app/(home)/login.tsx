@@ -1,8 +1,11 @@
-import { View, Text, StyleSheet, Image, TextInput, Pressable, Keyboard } from "react-native";
-import { Link } from "expo-router";
+import { View, Text, StyleSheet, Image, TextInput, Pressable, Keyboard, Alert, Linking } from "react-native";
+import { Link, useNavigation } from "expo-router";
 import { COLORS } from "@/constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { initializeKakaoSDK } from "@react-native-kakao/core";
+import { login, logout, unlink } from "@react-native-kakao/user";
 
 const logoImg = require("@/assets/images/logo.png");
 const kakaoLogoImg = require("@/assets/images/kakao.png");
@@ -10,10 +13,48 @@ const eyeOpenImg = require("@/assets/images/eye-open.png");
 const eyeCloseImg = require("@/assets/images/eye-closed.png");
 
 export default function Login() {
+  const navigation = useNavigation();
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
   const [showPw, changeShowPw] = useState(false);
 
+  const emailLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        console.log("로그인 실패: ", error.message);
+        Alert.alert("로그인 실패", "잘못된 로그인 정보입니다.");
+        return;
+      }
+
+      console.log("로그인 성공:");
+      navigation.navigate("main");
+    } catch (err) {
+      console.log("로그인 실패: ", err.message);
+    }
+  };
+
+  const kakaoLogin = async () => {
+    // const res = await login();
+    // console.log(res);
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "kakao",
+    });
+    if (error) console.log("카카오 로그인 실패: ", error.message);
+    else {
+      console.log("카카오 로그인 성공: ", data);
+      Linking.openURL(data.url);
+      navigation.navigate("main");
+    }
+  };
+
+  useEffect(() => {
+    initializeKakaoSDK("4e6f8969f2b3be8e26a06110cd5a98d3");
+  });
   return (
     <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
       <View style={styles.loginLogoBox}>
@@ -30,6 +71,7 @@ export default function Login() {
             autoFocus
             placeholder="예) safekey@gmail.com"
             keyboardType="email-address"
+            autoCapitalize="none"
           ></TextInput>
         </View>
         <View style={styles.inputContainer}>
@@ -49,16 +91,15 @@ export default function Login() {
         </View>
       </View>
       <View style={{ gap: 8, marginTop: 25 }}>
-        <Link href="/main" asChild>
-          <TouchableOpacity
-            style={email && password ? styles.loginBox : styles.unLoginBox}
-            activeOpacity={0.8}
-            disabled={!(email && password)}
-          >
-            <Text style={styles.loginText}>로그인</Text>
-          </TouchableOpacity>
-        </Link>
-        <TouchableOpacity style={styles.kakaoBox} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={email && password ? styles.loginBox : styles.unLoginBox}
+          activeOpacity={0.8}
+          disabled={!(email && password)}
+          onPress={emailLogin}
+        >
+          <Text style={styles.loginText}>로그인</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.kakaoBox} activeOpacity={0.8} onPress={kakaoLogin}>
           <Image source={kakaoLogoImg} style={styles.kakaoLogo} />
           <Text style={styles.kakaoText}>카카오로 로그인</Text>
         </TouchableOpacity>
