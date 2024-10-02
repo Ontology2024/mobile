@@ -1,26 +1,35 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
+import { useEffect, useState } from "react";
+import * as location from "expo-location";
+import Feather from "@expo/vector-icons/Feather";
 
 const scrapList = ["나의집", "회사", "친구집"];
 const starImg = require("@/assets/images/star.png");
 const plusImg = require("@/assets/images/plus.png");
 const startImg = require("@/assets/images/start.png");
 const destinationImg = require("@/assets/images/destination.png");
-const dangerImg = require("@/assets/images/danger.png");
-const safezoneImg = require("@/assets/images/safezone.png");
 
-const safe = [
-  { safeText: "매우 위험해요" },
-  { safeText: "주의가 필요해요" },
-  { safeText: "비교적 안전해요" },
-  { safeText: "안전해요" },
-  { safeText: "매우 안전해요" },
-];
-const dangerBgColor = ["#FF566A", "#FF9D56", "#FFDA56", "#48DE60", "#4876FF"];
-const dangerCircleColor = ["#dc98a0", "#edc2a3", "#f8e9ba", "#9ee3aa", "#88A6FF"];
-const safeN = 5;
+const safeSentence = ["위험해요", "안전해요"];
+
+const circleColor = { safe: ["#4876FF", "#DFE2FF"], danger: ["#FF566A", "#FFDFDF"] };
+const safeN = 1;
 
 export default function Panel({ start, dest }) {
+  const [curr, setCurr] = useState("");
+  useEffect(() => {
+    const getCurrPostion = async () => {
+      const { granted } = await location.requestForegroundPermissionsAsync();
+      if (granted) {
+        const loc = await location.getCurrentPositionAsync({});
+        const info = await location.reverseGeocodeAsync(loc.coords);
+        const { district } = info[0];
+        setCurr(district);
+      }
+    };
+    getCurrPostion();
+  }, []);
+
   return (
     <View>
       <Text style={styles.pannelTitle}>안전한 길 찾기</Text>
@@ -59,37 +68,25 @@ export default function Panel({ start, dest }) {
       </View>
 
       <View style={styles.footer}>
-        <View style={[styles.safeInfoBox, { backgroundColor: dangerBgColor[safeN - 1] }]}>
-          <View>
-            <Text style={styles.safeText1}>주변안전도</Text>
-            <Text style={styles.safeText2}>{safe[safeN - 1].safeText}</Text>
-          </View>
-          <View style={[styles.circle1, { backgroundColor: dangerCircleColor[safeN - 1] }]}>
-            <View style={styles.circle2}>
-              <Text style={[styles.safeNum, { color: dangerBgColor[safeN - 1] }]}>{safeN}</Text>
-            </View>
-          </View>
+        <View style={styles.smallCircle1} />
+        <View style={[styles.smallCircle2, { backgroundColor: safeN <= 3 ? circleColor["safe"][0] : circleColor["danger"][0] }]} />
+        <View
+          style={[
+            styles.circle,
+            {
+              backgroundColor: safeN <= 3 ? circleColor["safe"][0] : circleColor["danger"][0],
+              borderColor: safeN <= 3 ? circleColor["safe"][1] : circleColor["danger"][1],
+            },
+          ]}
+        >
+          <Text style={{ color: "white", fontSize: 22, fontWeight: "600" }}>{safeN}</Text>
         </View>
-
-        <View style={{ flexDirection: "row", gap: 4 }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View style={styles.dangerCircle}>
-              <Image source={dangerImg} style={{ width: 18, height: 18 }} />
-            </View>
-            <View style={{ marginLeft: 6 }}>
-              <Text style={{ fontSize: 12, color: "#8D94A3", fontWeight: "500" }}>위험정보</Text>
-              <Text style={{ fontSize: 16, color: "#2F323D", fontWeight: "600" }}>2개</Text>
-            </View>
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View style={styles.safezoneCircle}>
-              <Image source={safezoneImg} style={{ width: 18, height: 18 }} />
-            </View>
-            <View style={{ marginLeft: 6 }}>
-              <Text style={{ fontSize: 12, color: "#8D94A3", fontWeight: "500" }}>위험정보</Text>
-              <Text style={{ fontSize: 16, color: "#2F323D", fontWeight: "600" }}>13개</Text>
-            </View>
-          </View>
+        <Text style={{ color: "black", fontSize: 20, fontWeight: "600", marginLeft: 10 }}>
+          {safeN <= 3 ? safeSentence[1] : safeSentence[0]}
+        </Text>
+        <View style={{ flexDirection: "row", gap: 6, alignItems: "center", marginLeft: 6 }}>
+          <Feather name="alert-circle" size={16} color="#8B94A8" />
+          <Text style={{ color: "#8B94A8" }}>{curr}</Text>
         </View>
       </View>
     </View>
@@ -179,81 +176,34 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 20,
+    marginBottom: 15,
+  },
+  circle: {
+    backgroundColor: "#4876FF",
+    borderWidth: 4,
+    borderColor: "#DFE2FF",
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  smallCircle1: {
+    width: 12.5,
+    height: 12.5,
+    backgroundColor: "#8B94A8",
+    borderRadius: 100,
     position: "relative",
-    left: -21,
-    marginTop: 24,
-    marginBottom: 20,
+    top: -15,
   },
-  safeInfoBox: {
-    backgroundColor: "#4775FF",
-    paddingVertical: 6,
-    paddingLeft: 10,
-    borderTopRightRadius: 100,
-    borderBottomRightRadius: 100,
-    flexDirection: "row",
-    gap: 3,
-    alignItems: "center",
-  },
-  safeText1: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "white",
-    marginBottom: 5.6,
-  },
-  safeText2: {
-    fontSize: 16,
-    fontWeight: "700",
-    letterSpacing: -0.1,
-    color: "white",
-    width: 100,
-  },
-  smallSafeText2: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "white",
-  },
-  circle1: {
-    backgroundColor: "black",
-    width: 56,
-    height: 56,
+  smallCircle2: {
+    width: 7.5,
+    height: 7.5,
+    backgroundColor: "#4876FF",
     borderRadius: 100,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 6,
-  },
-  circle2: {
-    backgroundColor: "white",
-    width: 46,
-    height: 46,
-    borderRadius: 100,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  safeNum: {
-    color: "#4775FF",
-    fontSize: 26,
-    fontWeight: "600",
-  },
-  dangerCircle: {
-    width: 40,
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#FFB8C0",
-    padding: 11,
-    borderRadius: 100,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 14,
-  },
-  safezoneCircle: {
-    width: 40,
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#B2C5FF",
-    padding: 11,
-    borderRadius: 100,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 14,
+    position: "absolute",
+    top: -5,
+    left: 15,
   },
 });

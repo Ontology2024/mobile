@@ -10,15 +10,16 @@ import { MapSearchParams } from "@/constants/MapSearchParams";
 import { useNavigation } from "@react-navigation/native";
 import { navInfo } from "@/constants/NavMock";
 import Tmap from "@/components/Tmap";
+import { supabase } from "@/lib/supabase";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
+const purplekeyImg = require("@/assets/images/purplekey.png");
 const mykeyImg = require("@/assets/images/mykey.png");
 const menuImg = require("@/assets/images/menu.png");
 const closeImg = require("@/assets/images/close.png");
 const navarrowImg = require("@/assets/images/navarrow.png");
 
-const coninkeyN = 330;
 const mapOptionsKey = "map_opt";
 
 export default function Home() {
@@ -27,12 +28,12 @@ export default function Home() {
     closeModal();
     navigation.navigate("mypage");
   };
+  const [key, setKey] = useState(0);
   const { start, dest, setSearchParams } = useContext(MapSearchParams);
   const [selectedItems, setSelectedItems] = useState({
     안전시설: true,
     범죄: true,
     안전도: true,
-    코인키: true,
   });
 
   const loadStoredData = async () => {
@@ -92,6 +93,20 @@ export default function Home() {
     initialize();
   }, []);
 
+  useEffect(() => {
+    const load = async () => {
+      const email = await AsyncStorage.getItem("email");
+      let { data: coin, error } = await supabase.from("users").select("coinkey").eq("email", email);
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      setKey(coin[0].coinkey);
+    };
+    load();
+  }, []);
+
   return (
     <View style={styles.container}>
       {start && dest ? (
@@ -99,8 +114,8 @@ export default function Home() {
       ) : (
         <View style={styles.top}>
           <View style={styles.topBox1}>
-            <Image source={require("@/assets/images/coinkey.png")} style={{ width: 12, height: 20 }} />
-            <Text style={styles.keyCount}>{coninkeyN}</Text>
+            <Image source={purplekeyImg} style={{ width: 10, height: 18 }} />
+            <Text style={styles.keyCount}>{key}</Text>
           </View>
           <View style={styles.topBox2}>
             {Object.keys(selectedItems).map((key) => (
@@ -202,36 +217,37 @@ const styles = StyleSheet.create({
     height: 40,
     marginTop: 80,
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: 10,
   },
   topBox1: {
-    width: 100,
-    backgroundColor: COLORS.PURPLE,
+    width: 90,
+    backgroundColor: "white",
     alignItems: "center",
     paddingLeft: 22,
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
     flexDirection: "row",
     gap: 10,
-    shadowColor: COLORS.PURPLE,
+    shadowColor: "rgba(0, 0, 0, 0.15)",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 5,
   },
   keyCount: {
-    color: "white",
+    color: COLORS.PURPLE,
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   topBox2: {
-    width: 280,
+    width: 220,
     backgroundColor: "white",
-    borderTopLeftRadius: 15,
-    borderBottomLeftRadius: 15,
+    borderRadius: 15,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 13,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    gap: 12,
     shadowColor: "rgba(0, 0, 0, 0.15)",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,

@@ -2,10 +2,9 @@ import { View, Text, StyleSheet, Image, TextInput, Pressable, Keyboard, Alert, L
 import { Link, useNavigation } from "expo-router";
 import { COLORS } from "@/constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { initializeKakaoSDK } from "@react-native-kakao/core";
-import { login, logout, unlink } from "@react-native-kakao/user";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const logoImg = require("@/assets/images/logo.png");
 const kakaoLogoImg = require("@/assets/images/kakao.png");
@@ -31,7 +30,8 @@ export default function Login() {
         return;
       }
 
-      console.log("로그인 성공:");
+      console.log("로그인 성공");
+      AsyncStorage.setItem("email", email);
       navigation.navigate("main");
     } catch (err) {
       console.log("로그인 실패: ", err.message);
@@ -39,8 +39,6 @@ export default function Login() {
   };
 
   const kakaoLogin = async () => {
-    // const res = await login();
-    // console.log(res);
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "kakao",
     });
@@ -51,10 +49,6 @@ export default function Login() {
       navigation.navigate("main");
     }
   };
-
-  useEffect(() => {
-    initializeKakaoSDK("4e6f8969f2b3be8e26a06110cd5a98d3");
-  });
   return (
     <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
       <View style={styles.loginLogoBox}>
@@ -70,6 +64,7 @@ export default function Login() {
             style={styles.inputBox}
             autoFocus
             placeholder="예) safekey@gmail.com"
+            placeholderTextColor={"#a2a6ae"}
             keyboardType="email-address"
             autoCapitalize="none"
           ></TextInput>
@@ -82,6 +77,7 @@ export default function Login() {
               onChangeText={(val) => changePassword(val)}
               secureTextEntry={!showPw}
               placeholder="비밀번호를 입력해주세요"
+              placeholderTextColor={"#a2a6ae"}
               value={password}
             />
             <TouchableOpacity onPress={() => changeShowPw(!showPw)} activeOpacity={0.8}>

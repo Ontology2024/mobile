@@ -115,6 +115,7 @@ export default function signup() {
               <TextInput
                 style={styles.inputBox}
                 placeholder="예) safekey@gmail.com"
+                placeholderTextColor={"#a2a6ae"}
                 keyboardType="email-address"
                 onChangeText={onChange}
                 value={value}
@@ -150,6 +151,7 @@ export default function signup() {
                 <TextInput
                   style={{ width: 260, marginRight: 18 }}
                   placeholder="영문과 숫자 포함 8~20자 이내로 입력해주세요"
+                  placeholderTextColor={"#a2a6ae"}
                   secureTextEntry={!showPw}
                   onChangeText={onChange}
                   value={value}
@@ -191,6 +193,7 @@ export default function signup() {
                 <TextInput
                   style={{ width: 260, marginRight: 18 }}
                   placeholder="비밀번호를 다시 입력해주세요"
+                  placeholderTextColor={"#a2a6ae"}
                   secureTextEntry={!showPw2}
                   onChangeText={onChange}
                   value={value}
