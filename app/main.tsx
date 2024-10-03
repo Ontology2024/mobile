@@ -161,7 +161,7 @@ export default function Home() {
       {goToKey ? (
         <Mykey setGoToKey={setGoToKey} coin={key} setKey={setKey} />
       ) : (
-        <TouchableOpacity activeOpacity={1} style={{ flex: 1, width: "100%", position: "relative", top: -120, zIndex: -1 }}>
+        <TouchableOpacity activeOpacity={1} style={{ flex: 1,width:"100%", position: "relative", top: -125, zIndex: -1 }}>
           <Tmap />
         </TouchableOpacity>
       )}

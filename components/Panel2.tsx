@@ -1,14 +1,37 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, Animated } from "react-native";
 import React, { useRef, useState } from "react";
 import Feather from "@expo/vector-icons/Feather";
+import EvilIcons from "@expo/vector-icons/EvilIcons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { ScrollView } from "react-native-gesture-handler";
+import { Divider } from "react-native-paper";
 
+const targetImg = require("@/assets/images/target.png");
 const shiledImg = require("@/assets/images/shield.png");
 const bluediaImg = require("@/assets/images/bluedia.png");
 const reddiaImg = require("@/assets/images/bluedia.png");
+const convenienceImg = require("@/assets/images/convenience.png");
+const policeImg = require("@/assets/images/police.png");
+const hospitalImg = require("@/assets/images/hospital.png");
+const firestationImg = require("@/assets/images/firestation.png");
+
+const convenienceN = 2;
+const convenienceLoc = [
+  { name: "CU 영통학사점", address: "경기도 수원시 영통구 영통로 214", distance: "20" },
+  { name: "GS25 영통학사점", address: "경기도 수원시 영통구 영통로 214", distance: "20" },
+];
+const policeN = 1;
+const policeLoc = [{ name: "영통구방위지구대", address: "경기도 수원시 영통구 영통로 214", distance: "20" }];
+const hospitalN = 3;
+const hospitalLoc = [
+  { name: "영통구보건소", address: "경기도 수원시 영통구 영통로 214", distance: "20" },
+  { name: "영통구보건소", address: "경기도 수원시 영통구 영통로 214", distance: "20" },
+  { name: "영통구보건소", address: "경기도 수원시 영통구 영통로 214", distance: "20" },
+];
+const firestationN = 0;
+const firestationLoc = [];
 
 const safeSentence = ["위험해요", "안전해요"];
-
 const circleColor = { safe: ["#4876FF", "#DFE2FF"], danger: ["#FF566A", "#FFDFDF"] };
 const safeN = 1;
 const danger = 15;
@@ -18,6 +41,11 @@ export default function Panel2({ curr }) {
   const [toggleBtn, setToggleBtn] = useState(true);
   const [showBubble, setShowBubble] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [expand, setExpand] = useState(Array(4).fill(false));
+
+  const expandBtn = (idx) => {
+    setExpand((prev) => [...prev].map((data, i) => (i === idx ? !data : data)));
+  };
 
   const toggleBubble = () => {
     if (showBubble) {
@@ -113,7 +141,7 @@ export default function Panel2({ curr }) {
       )}
 
       {toggleBtn ? (
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: "100%", marginTop: 24 }}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: "100%", marginTop: 24, marginBottom: 24 }}>
           <View style={{ flexDirection: "row", width: "100%", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={{ color: "#232323", fontSize: 16, fontWeight: "600" }}>범죄 발생건수</Text>
             <TouchableOpacity activeOpacity={0.8} onPress={toggleBubble}>
@@ -149,7 +177,7 @@ export default function Panel2({ curr }) {
               </Text>
             </View>
           </View>
-          <View style={{ height: 120 }} />
+          <View style={{ marginTop: 150 }} />
         </ScrollView>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: "100%", marginTop: 24 }}>
@@ -159,6 +187,158 @@ export default function Panel2({ curr }) {
               <Feather name="alert-circle" size={20} color="black" />
             </TouchableOpacity>
           </View>
+
+          {/* 편의점 */}
+          <View style={styles.safebox}>
+            <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+              <Image source={convenienceImg} style={{ width: 30, height: 30 }} />
+              <Text style={{ color: "#1C1C22", fontSize: 16, fontWeight: "600" }}>편의점</Text>
+              <Text style={{ color: "#575C71", fontSize: 14, fontWeight: "400" }}>{convenienceN}곳</Text>
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: "center", marginRight: 8 }}>
+              <Image source={targetImg} style={{ width: 24, height: 24 }} />
+              <TouchableOpacity activeOpacity={0.9} onPress={() => expandBtn(0)}>
+                <EvilIcons name={expand[0] ? "chevron-up" : "chevron-down"} size={50} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          {expand[0] && convenienceN !== 0 && (
+            <View style={styles.moreinfobox}>
+              {convenienceLoc.map((data, idx) => (
+                <View style={{ width: "90%", gap: 6.5 }} key={idx}>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <Text style={{ color: "#1C1C22", fontSize: 14, fontWeight: "600" }}>{data.name}</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Text style={{ color: "#4876FF", fontSize: 14, fontWeight: "600" }}>{data.distance}m</Text>
+                      <View style={{ flexDirection: "row", backgroundColor: "#F3F6FF", paddingHorizontal: 6, paddingVertical: 4 }}>
+                        <Text style={{ fontSize: 12, fontWeight: "600", color: "#4876FF" }}>길찾기</Text>
+                        <MaterialCommunityIcons name="arrow-up-right" size={12} color="#4876FF" />
+                      </View>
+                    </View>
+                  </View>
+                  <Text style={{ color: "#8B94A8", fontSize: 12, fontWeight: "500" }}>{data.address}</Text>
+                  <Divider />
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* 경찰서 */}
+          <View style={styles.safebox}>
+            <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+              <Image source={policeImg} style={{ width: 30, height: 30 }} />
+              <Text style={{ color: "#1C1C22", fontSize: 16, fontWeight: "600" }}>경찰서</Text>
+              <Text style={{ color: "#575C71", fontSize: 14, fontWeight: "400" }}>{policeN}곳</Text>
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: "center", marginRight: 8 }}>
+              <Image source={targetImg} style={{ width: 24, height: 24 }} />
+              <TouchableOpacity activeOpacity={0.9} onPress={() => expandBtn(1)}>
+                <EvilIcons name={expand[1] ? "chevron-up" : "chevron-down"} size={50} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          {expand[1] && policeN !== 0 && (
+            <View style={styles.moreinfobox}>
+              {policeLoc.map((data, idx) => (
+                <View style={{ width: "90%", gap: 6.5 }} key={idx}>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <Text style={{ color: "#1C1C22", fontSize: 14, fontWeight: "600" }}>{data.name}</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Text style={{ color: "#4876FF", fontSize: 14, fontWeight: "600" }}>{data.distance}m</Text>
+                      <View style={{ flexDirection: "row", backgroundColor: "#F3F6FF", paddingHorizontal: 6, paddingVertical: 4 }}>
+                        <Text style={{ fontSize: 12, fontWeight: "600", color: "#4876FF" }}>길찾기</Text>
+                        <MaterialCommunityIcons name="arrow-up-right" size={12} color="#4876FF" />
+                      </View>
+                    </View>
+                  </View>
+                  <Text style={{ color: "#8B94A8", fontSize: 12, fontWeight: "500" }}>{data.address}</Text>
+                  <Divider />
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* 병원 */}
+          <View style={styles.safebox}>
+            <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+              <Image source={hospitalImg} style={{ width: 30, height: 30 }} />
+              <Text style={{ color: "#1C1C22", fontSize: 16, fontWeight: "600" }}>병원</Text>
+              <Text style={{ color: "#575C71", fontSize: 14, fontWeight: "400" }}>{hospitalN}곳</Text>
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: "center", marginRight: 8 }}>
+              <Image source={targetImg} style={{ width: 24, height: 24 }} />
+              <TouchableOpacity activeOpacity={0.9} onPress={() => expandBtn(2)}>
+                <EvilIcons name={expand[2] ? "chevron-up" : "chevron-down"} size={50} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          {expand[2] && hospitalN !== 0 && (
+            <View style={styles.moreinfobox}>
+              {hospitalLoc.map((data, idx) => (
+                <View style={{ width: "90%", gap: 6.5 }} key={idx}>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <Text style={{ color: "#1C1C22", fontSize: 14, fontWeight: "600" }}>{data.name}</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Text style={{ color: "#4876FF", fontSize: 14, fontWeight: "600" }}>{data.distance}m</Text>
+                      <View style={{ flexDirection: "row", backgroundColor: "#F3F6FF", paddingHorizontal: 6, paddingVertical: 4 }}>
+                        <Text style={{ fontSize: 12, fontWeight: "600", color: "#4876FF" }}>길찾기</Text>
+                        <MaterialCommunityIcons name="arrow-up-right" size={12} color="#4876FF" />
+                      </View>
+                    </View>
+                  </View>
+                  <Text style={{ color: "#8B94A8", fontSize: 12, fontWeight: "500" }}>{data.address}</Text>
+                  <Divider />
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* 소방서 */}
+          <View style={styles.safebox}>
+            <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+              <Image source={firestationImg} style={{ width: 30, height: 30 }} />
+              <Text style={{ color: "#1C1C22", fontSize: 16, fontWeight: "600" }}>소방서</Text>
+              <Text style={{ color: "#575C71", fontSize: 14, fontWeight: "400" }}>{firestationN}곳</Text>
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: "center", marginRight: 8 }}>
+              <Image source={targetImg} style={{ width: 24, height: 24 }} />
+              <TouchableOpacity activeOpacity={0.9} onPress={() => expandBtn(3)}>
+                <EvilIcons name={expand[3] ? "chevron-up" : "chevron-down"} size={50} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          {expand[3] && firestationN !== 0 && (
+            <View style={styles.moreinfobox}>
+              {firestationLoc.map((data, idx) => (
+                <View style={{ width: "90%", gap: 6.5 }} key={idx}>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <Text style={{ color: "#1C1C22", fontSize: 14, fontWeight: "600" }}>{data.name}</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Text style={{ color: "#4876FF", fontSize: 14, fontWeight: "600" }}>{data.distance}m</Text>
+                      <View style={{ flexDirection: "row", backgroundColor: "#F3F6FF", paddingHorizontal: 6, paddingVertical: 4 }}>
+                        <Text style={{ fontSize: 12, fontWeight: "600", color: "#4876FF" }}>길찾기</Text>
+                        <MaterialCommunityIcons name="arrow-up-right" size={12} color="#4876FF" />
+                      </View>
+                    </View>
+                  </View>
+                  <Text style={{ color: "#8B94A8", fontSize: 12, fontWeight: "500" }}>{data.address}</Text>
+                  <Divider />
+                </View>
+              ))}
+            </View>
+          )}
+          <View style={[styles.crimeinfobox, { marginTop: 24 }]}>
+            <View style={{ width: "100%", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", gap: 5 }}>
+              <Image source={bluediaImg} style={{ width: 11, height: 14 }} />
+              <Text style={[styles.infotitle, { color: "#4876FF" }]}>치안 유지 · 긴급 의료/화재 대응 가능</Text>
+            </View>
+            <Text style={styles.infodetail}>
+              이 구역은 경찰서, 병원, 소방서와 같은 주요 안전시설이 고르게 분포되어 있습니다. 경찰서의 위치 덕분에 치안이 비교적 잘 유지되고
+              있으며, 병원과 소방서가 있어 긴급 의료 서비스나 화재 대응이 빠르게 이루어질 수 있습니다. 또한, 편의점이 다수 위치해 있어
+              언제든지 접근 가능한 안전한 장소를 제공하며, 야간에도 밝고 안전한 환경이 유지됩니다.
+            </Text>
+          </View>
+          <View style={{ marginBottom: 150 }} />
         </ScrollView>
       )}
     </View>
@@ -268,5 +448,28 @@ const styles = StyleSheet.create({
     borderBottomColor: "transparent",
     borderLeftColor: "white",
     zIndex: 1,
+  },
+  safebox: {
+    width: "100%",
+    paddingVertical: 10,
+    paddingLeft: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E9EBF4",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 16,
+  },
+  moreinfobox: {
+    backgroundColor: "#F6F9FC",
+    width: "110%",
+    padding: 16,
+    gap: 12,
+    marginTop: -7,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E9EBF4",
   },
 });
