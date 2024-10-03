@@ -12,6 +12,7 @@ export default function Tmap() {
   const startlocRef = useRef({ startlat: null, startlon: null });
   const destlocRef = useRef({ destlat: null, destlon: null });
 
+  // 출발지 위도, 경도 가져오기
   useEffect(() => {
     const startPOIs = async () => {
       try {
@@ -38,6 +39,7 @@ export default function Tmap() {
     if (start) startPOIs();
   }, [start]);
 
+  // 목적지 위도,경도값 받아오기
   useEffect(() => {
     const destPOIs = async () => {
       try {
@@ -65,14 +67,13 @@ export default function Tmap() {
     if (dest) destPOIs();
   }, [dest]);
 
+  // 현재 위치 실시간 업데이트
   useEffect(() => {
     if (!initalized) return;
-
     let subscription: location.LocationSubscription | null = null;
 
     (async () => {
       const { granted } = await location.requestForegroundPermissionsAsync();
-
       if (granted) {
         subscription = await location.watchPositionAsync(
           {
@@ -90,18 +91,16 @@ export default function Tmap() {
     return () => subscription?.remove();
   }, [initalized]);
 
+  // 방향 실시간 업데이트
   useEffect(() => {
     if (!initalized) return;
-
     let subscription: location.LocationSubscription | null = null;
 
     (async () => {
       const { granted } = await location.requestForegroundPermissionsAsync();
-
       if (granted) {
         subscription = await location.watchHeadingAsync((newHeading) => {
           const heading = newHeading.trueHeading || newHeading.magHeading;
-
           if (webviewRef.current) {
             webviewRef.current.injectJavaScript(`updateMarkerHeading(${heading});`);
           }
@@ -112,14 +111,37 @@ export default function Tmap() {
     return () => subscription?.remove();
   }, [initalized]);
 
+  // 경로 가져오기
   useEffect(() => {
     if (startlocRef.current.startlat && destlocRef.current.destlat) {
-      if (webviewRef.current) {
-        // Tmap 경로 탐색 API 호출
-        webviewRef.current.injectJavaScript(`
+      let resultData = [];
+      fetch("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          appKey: "dpmSPcl4sB5hZ0p4GSfUI5hp2RO8ph5MQHBXFt68",
+        },
+        body: JSON.stringify({
+          startX: startlocRef.current.startlon,
+          startY: startlocRef.current.startlat,
+          endX: destlocRef.current.destlon,
+          endY: destlocRef.current.destlat,
+          startName: "시작점",
+          endName: "도착점",
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          resultData = data.features;
+        })
+        .catch((error) => console.error("Error drawing route:", error));
+    }
+
+    if (webviewRef.current) {
+      webviewRef.current.injectJavaScript(`
           drawLine(${startlocRef.current.startlat}, ${startlocRef.current.startlon}, ${destlocRef.current.destlat}, ${destlocRef.current.destlon});
         `);
-      }
     }
   }, [startlocRef.current.startlat, destlocRef.current.destlat]);
 
@@ -254,47 +276,25 @@ const TMAP_VIEW = `
           map: map,
         });
 
-        fetch('https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'appKey': 'dpmSPcl4sB5hZ0p4GSfUI5hp2RO8ph5MQHBXFt68',
-          },
-          body: JSON.stringify({
-            startX: startlon,
-            startY: startlat,
-            endX: destlon,
-            endY: destlat,
-            startName: "시작점",
-            endName: "도착점",
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          var resultData = data.features;
-          var drawInfoArr = [];
+        var drawInfoArr = [];
 
-          resultData.forEach(item => {
-            var geometry = item.geometry;
-            if (geometry.type === "LineString") {
-              geometry.coordinates.forEach(coord => {
-                var latlng = new Tmapv3.LatLng(coord[1], coord[0]);
-                drawInfoArr.push(latlng);
-              });
-            }
-          });
+        resultData.forEach(item => {
+          var geometry = item.geometry;
+          if (geometry.type === "LineString") {
+            geometry.coordinates.forEach(coord => {
+              var latlng = new Tmapv3.LatLng(coord[1], coord[0]);
+              drawInfoArr.push(latlng);
+            });
+          }
+        });
 
-          var polyline = new Tmapv3.Polyline({
-            path: drawInfoArr,
-            strokeColor: "#FF0000",
-            strokeWeight: 6,
-            map: map
-          });
-          resultdrawArr.push(polyline_);
-        })
-        .catch(error => console.error('Error drawing route:', error));
+        var polyline = new Tmapv3.Polyline({
+          path: drawInfoArr,
+          strokeColor: "#FF0000",
+          strokeWeight: 6,
+          map: map
+        });
+        resultdrawArr.push(polyline_);
       }
     </script>
     <style>

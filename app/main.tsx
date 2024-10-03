@@ -11,6 +11,8 @@ import { useNavigation } from "@react-navigation/native";
 import { navInfo } from "@/constants/NavMock";
 import Tmap from "@/components/Tmap";
 import { supabase } from "@/lib/supabase";
+import Mykey from "@/components/Mykey";
+import * as location from "expo-location";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -24,6 +26,12 @@ const mapOptionsKey = "map_opt";
 
 export default function Home() {
   const navigation = useNavigation();
+  const [goToKey, setGoToKey] = useState(false);
+  const [clickinfo, setClickinfo] = useState(false);
+  const goToMykey = () => {
+    closeModal();
+    setGoToKey(true);
+  };
   const openMyPage = () => {
     closeModal();
     navigation.navigate("mypage");
@@ -107,48 +115,72 @@ export default function Home() {
     load();
   }, []);
 
+  const [curr, setCurr] = useState("");
+  useEffect(() => {
+    const getCurrPostion = async () => {
+      const { granted } = await location.requestForegroundPermissionsAsync();
+      if (granted) {
+        const loc = await location.getCurrentPositionAsync({});
+        const info = await location.reverseGeocodeAsync(loc.coords);
+        const { district } = info[0];
+        setCurr(district);
+      }
+    };
+    getCurrPostion();
+  }, []);
+
   return (
     <View style={styles.container}>
-      {start && dest ? (
-        <NavHeader />
-      ) : (
-        <View style={styles.top}>
-          <View style={styles.topBox1}>
-            <Image source={purplekeyImg} style={{ width: 10, height: 18 }} />
-            <Text style={styles.keyCount}>{key}</Text>
+      {!goToKey &&
+        (start && dest ? (
+          <NavHeader />
+        ) : (
+          <View style={styles.top}>
+            <View style={styles.topBox1}>
+              <Image source={purplekeyImg} style={{ width: 10, height: 18 }} />
+              <Text style={styles.keyCount}>{key}</Text>
+            </View>
+            <View style={styles.topBox2}>
+              {Object.keys(selectedItems).map((key) => (
+                <TouchableOpacity
+                  key={key}
+                  style={[styles.checkbox, { opacity: selectedItems[key] ? 1 : 0.5 }]}
+                  onPress={() => handleSelect(key)}
+                  activeOpacity={0.8}
+                >
+                  <Image source={require("@/assets/images/check.png")} style={styles.checkImg} />
+                  <Text style={styles.checkText}>{key}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
-          <View style={styles.topBox2}>
-            {Object.keys(selectedItems).map((key) => (
-              <TouchableOpacity
-                key={key}
-                style={[styles.checkbox, { opacity: selectedItems[key] ? 1 : 0.5 }]}
-                onPress={() => handleSelect(key)}
-                activeOpacity={0.8}
-              >
-                <Image source={require("@/assets/images/check.png")} style={styles.checkImg} />
-                <Text style={styles.checkText}>{key}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      )}
+        ))}
 
       {/* Tmap 렌더링 부분 */}
-      <View style={{ flex: 1, width: "100%", position: "relative", top: -120, zIndex: -1 }}>
-        <Tmap />
-      </View>
-
-      {start && dest ? (
-        <View style={styles.panelBox}>
-          <RecommendBox navInfo={navInfo} />
-        </View>
+      {goToKey ? (
+        <Mykey setGoToKey={setGoToKey} coin={key} />
       ) : (
-        <View style={styles.panelBox}>
-          <BottomSheet isOpen animationDuration={200}>
-            <Panel start={start} dest={dest} />
-          </BottomSheet>
-        </View>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => setClickinfo(!clickinfo)}
+          style={{ flex: 1, width: "100%", position: "relative", top: -120, zIndex: -1 }}
+        >
+          <Tmap />
+        </TouchableOpacity>
       )}
+
+      {!goToKey &&
+        (start && dest ? (
+          <View style={styles.panelBox}>
+            <RecommendBox navInfo={navInfo} />
+          </View>
+        ) : (
+          <View style={styles.panelBox}>
+            <BottomSheet isOpen animationDuration={200} sliderMaxHeight={650}>
+              <Panel start={start} dest={dest} curr={curr} clickinfo={clickinfo} />
+            </BottomSheet>
+          </View>
+        ))}
 
       {start && dest ? (
         <View style={styles.footer}>
@@ -159,7 +191,7 @@ export default function Home() {
         </View>
       ) : (
         <View style={styles.footer}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1} onPress={() => setClickinfo(!clickinfo)}>
             <Text style={styles.safecall}>AI 안심전화</Text>
             <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
           </TouchableOpacity>
@@ -169,7 +201,6 @@ export default function Home() {
           </TouchableOpacity>
         </View>
       )}
-
       <Modal visible={modalVisible} transparent animationType="none">
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.modalOverlay}>
@@ -183,7 +214,7 @@ export default function Home() {
                 </View>
                 <View style={styles.modalBox}>
                   <Text style={styles.modalOption}>코인키</Text>
-                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
+                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7} onPress={goToMykey}>
                     <Image source={coinkeyImg} style={{ width: 17, height: 27 }} />
                   </TouchableOpacity>
                 </View>

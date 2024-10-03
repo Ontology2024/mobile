@@ -1,8 +1,7 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
-import { useEffect, useState } from "react";
-import * as location from "expo-location";
 import Feather from "@expo/vector-icons/Feather";
+import Panel2 from "./Panel2";
 
 const scrapList = ["나의집", "회사", "친구집"];
 const starImg = require("@/assets/images/star.png");
@@ -15,22 +14,10 @@ const safeSentence = ["위험해요", "안전해요"];
 const circleColor = { safe: ["#4876FF", "#DFE2FF"], danger: ["#FF566A", "#FFDFDF"] };
 const safeN = 1;
 
-export default function Panel({ start, dest }) {
-  const [curr, setCurr] = useState("");
-  useEffect(() => {
-    const getCurrPostion = async () => {
-      const { granted } = await location.requestForegroundPermissionsAsync();
-      if (granted) {
-        const loc = await location.getCurrentPositionAsync({});
-        const info = await location.reverseGeocodeAsync(loc.coords);
-        const { district } = info[0];
-        setCurr(district);
-      }
-    };
-    getCurrPostion();
-  }, []);
-
-  return (
+export default function Panel({ start, dest, curr, clickinfo }) {
+  return clickinfo ? (
+    <Panel2 curr={curr} />
+  ) : (
     <View>
       <Text style={styles.pannelTitle}>안전한 길 찾기</Text>
 
