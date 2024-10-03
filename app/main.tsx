@@ -7,6 +7,7 @@ import Panel from "@/components/Panel";
 import NavHeader from "@/components/nav/NavHeader";
 import RecommendBox from "@/components/nav/RecommendBox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 import { MapSearchParams } from "@/constants/MapSearchParams";
 import { useNavigation } from "@react-navigation/native";
 import { navInfo } from "@/constants/NavMock";
@@ -144,11 +145,15 @@ export default function Home() {
             <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.8} style={styles.footerBox2} onPress={modalVisible ? closeModal : openModal}>
-            <Image source={menuImg} style={styles.menu} />
-          </TouchableOpacity>
-        </View>
-      )}
+      <View style={styles.footer}>
+        <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1} onPress={() => router.navigate("/safe-call")}>
+          <Text style={styles.safecall}>AI 안심전화</Text>
+          <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
+        </TouchableOpacity>
+        <TouchableOpacity activeOpacity={0.8} style={styles.footerBox2} onPress={modalVisible ? closeModal : openModal}>
+          <Image source={menuImg} style={styles.menu} />
+        </TouchableOpacity>
+      </View>
 
       <Modal visible={modalVisible} transparent animationType="none">
         <TouchableWithoutFeedback onPress={closeModal}>
