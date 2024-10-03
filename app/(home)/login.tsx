@@ -38,6 +38,17 @@ export default function Login() {
     }
   };
 
+  const kakaoLogin = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "kakao",
+    });
+    if (error) console.log("카카오 로그인 실패: ", error.message);
+    else {
+      console.log("카카오 로그인 성공: ", data);
+      Linking.openURL(data.url);
+      navigation.navigate("main");
+    }
+  };
   return (
     <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
       <View style={styles.loginLogoBox}>
@@ -84,7 +95,7 @@ export default function Login() {
         >
           <Text style={styles.loginText}>로그인</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.kakaoBox} activeOpacity={0.8}>
+        <TouchableOpacity style={styles.kakaoBox} activeOpacity={0.8} onPress={kakaoLogin}>
           <Image source={kakaoLogoImg} style={styles.kakaoLogo} />
           <Text style={styles.kakaoText}>카카오로 로그인</Text>
         </TouchableOpacity>
