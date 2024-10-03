@@ -1,13 +1,12 @@
-import Button from "@/components/Button";
 import Switch from "@/components/Switch";
+import { AIConfigs, AI } from "@/constants/AIConfigs";
 import { COLORS } from "@/constants/colors";
 import Slider from "@react-native-community/slider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useReducer, useState } from "react";
+import { useContext, useState } from "react";
 import {
   View,
-  ImageSourcePropType,
   Text,
   useWindowDimensions,
   StyleProp,
@@ -21,69 +20,9 @@ import Carousel from "react-native-reanimated-carousel";
 
 const purpleCircle = require("@/assets/images/purpleCircle.png");
 
-interface AI {
-  name: string;
-  character: ImageSourcePropType;
-  profile: string;
-  bio: string;
-  keywords: string[];
-  friendly: number;
-  energetic: number;
-  tone: number;
-  honorific: boolean;
-  bgColors: string[];
-  outline: string;
-}
-
-const DEFAULT_AI_CONFIG: AI[] = [
-  {
-    name: "한지우",
-    character: require("@/assets/images/jiwoo.png"),
-    profile: "10대 (여)",
-    bio: "저랑 같이 걸으면\n어둠도 눈치 보고 물러날걸요!",
-    keywords: ["재치있는", "활발한", "친근한"],
-    friendly: 6,
-    energetic: 6,
-    tone: 5,
-    honorific: false,
-    bgColors: ["#FFF4F8", "#FFF", "#FFF"],
-    outline: "#FFB2CB",
-  },
-  {
-    name: "안재우",
-    character: require("@/assets/images/sejoon.png"),
-    profile: "30대 (남)",
-    bio: "뉴스: 인공지능이 곧 코미디언도 대체할 수 있을 거래요!",
-    keywords: ["똑똑한", "지식전달", "차분한"],
-    friendly: 2,
-    energetic: 2,
-    tone: 2,
-    honorific: false,
-    bgColors: ["#F0F7FF", "#FFF", "#FFF"],
-    outline: "#7495FF",
-  },
-  {
-    name: "김한수",
-    character: require("@/assets/images/hansoo.png"),
-    profile: "50대 (남)",
-    bio: "생활꿀팁 전문가\n인생경력자입니다~",
-    keywords: ["유용한", "신기한", "친근한"],
-    friendly: 2,
-    energetic: 2,
-    tone: 2,
-    honorific: false,
-    bgColors: ["#ECFFF9", "#FFF", "#FFF"],
-    outline: "#42E277",
-  },
-];
-
 /* TODO add button to go to safe-call/config */
 export default function Select() {
-  const [configs, setConfigs] = useReducer(
-    (configs: AI[], update: Partial<AI> & { name: string }): AI[] =>
-      configs.map(({ name, ...rest }) => ({ name, ...rest, ...(name === update.name && update) })),
-    DEFAULT_AI_CONFIG
-  );
+  const { configs, setConfigs } = useContext(AIConfigs)
   const [currentIndex, setIndex] = useState(0);
   const [isFrontCard, setIsFrontCard] = useState(true);
   const { width } = useWindowDimensions();
@@ -117,7 +56,7 @@ export default function Select() {
       />
       <Pagination current={currentIndex} length={configs.length} style={selectStyles.pagination} />
 
-      <TouchableOpacity activeOpacity={0.9} style={selectStyles.call} onPress={() => router.navigate("/safe-call/call")}>
+      <TouchableOpacity activeOpacity={0.9} style={selectStyles.call} onPress={() => router.navigate(`/safe-call/call?callee=${configs[currentIndex].name}`)}>
         <Text style={selectStyles.callText}>{configs[currentIndex].name}와 전화하기</Text>
         <Image source={callIcon} style={selectStyles.callIcon} />
       </TouchableOpacity>
@@ -264,6 +203,7 @@ function AICard({ callee, onChange, showFront, flip, style }: AICardProps) {
               </View>
               <View>
                 <Slider
+                  value={callee.friendly}
                   onValueChange={(friendly) => onChange({ friendly })}
                   step={1}
                   minimumValue={0}
@@ -297,6 +237,7 @@ function AICard({ callee, onChange, showFront, flip, style }: AICardProps) {
               </View>
               <View>
                 <Slider
+                  value={callee.energetic}
                   onValueChange={(energetic) => onChange({ energetic })}
                   step={1}
                   minimumValue={0}
@@ -330,6 +271,7 @@ function AICard({ callee, onChange, showFront, flip, style }: AICardProps) {
               </View>
               <View>
                 <Slider
+                  value={callee.tone}
                   onValueChange={(tone) => onChange({ tone })}
                   step={1}
                   minimumValue={0}
@@ -391,8 +333,8 @@ const aiCardStyle = StyleSheet.create({
   },
   characterFront: {
     flexShrink: 0,
-    width: 206,
-    height: 206,
+    width: 256,
+    height: 256,
     aspectRatio: 1,
     marginTop: 29,
   },
@@ -406,7 +348,7 @@ const aiCardStyle = StyleSheet.create({
   },
   titleFront: {
     fontWeight: "600",
-    fontSize: 18,
+    fontSize: 24,
     color: "#232323",
   },
   titleBack: {
@@ -420,7 +362,7 @@ const aiCardStyle = StyleSheet.create({
     flex: 1,
 
     alignItems: "center",
-    gap: 10,
+    gap: 18,
 
     backgroundColor: "#FFFFFF",
 
@@ -439,7 +381,7 @@ const aiCardStyle = StyleSheet.create({
   bio: {
     textAlign: "center",
     fontWeight: "600",
-    fontSize: 16,
+    fontSize: 20,
     color: "#575C71",
 
     marginHorizontal: 3.5,
@@ -451,14 +393,15 @@ const aiCardStyle = StyleSheet.create({
   hashtag: {
     flex: 1,
 
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: "500",
     color: "#8B94A8",
     textAlign: "center",
 
-    paddingVertical: 2,
+    paddingVertical: 4,
     paddingHorizontal: 6,
     borderRadius: 6,
+    overflow: "hidden",
 
     backgroundColor: "#F8F9FE",
   },
