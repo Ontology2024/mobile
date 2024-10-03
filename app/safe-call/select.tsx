@@ -3,6 +3,7 @@ import Switch from "@/components/Switch";
 import { COLORS } from "@/constants/colors";
 import Slider from "@react-native-community/slider";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import { useReducer, useState } from "react";
 import {
   View,
@@ -116,7 +117,7 @@ export default function Select() {
       />
       <Pagination current={currentIndex} length={configs.length} style={selectStyles.pagination} />
 
-      <TouchableOpacity activeOpacity={0.9} style={selectStyles.call}>
+      <TouchableOpacity activeOpacity={0.9} style={selectStyles.call} onPress={() => router.navigate("/safe-call/call")}>
         <Text style={selectStyles.callText}>{configs[currentIndex].name}와 전화하기</Text>
         <Image source={callIcon} style={selectStyles.callIcon} />
       </TouchableOpacity>
