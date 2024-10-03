@@ -1,9 +1,15 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useEffect, useState, useRef, useContext, Image } from "react";
 import { View, StyleSheet } from "react-native";
 import WebView from "react-native-webview";
 import { APP_KEY } from "@/env"; // env.ts 파일에서 APP_KEY를 가져옴
 import * as location from "expo-location";
 import { MapSearchParams } from "@/constants/MapSearchParams";
+import { safeFacility } from "@/constants/safeFacility";
+
+const policeImg = require("@/assets/images/policeWidget.png");
+const convenienceImg = require("@/assets/images/ConvenienceWidget.png");
+const hospitalImg = require("@/assets/images/hospitalWidget.png");
+const firestationImg = require("@/assets/images/firestationWidget.png");
 
 async function getPOI(place: string): Promise<[lat: number, lon: number]> {
   try {
@@ -47,6 +53,16 @@ export default function Tmap() {
   const webviewRef = useRef<WebView>(null);
   const [initalized, setInitalized] = useState(false);
   const { start, dest } = useContext(MapSearchParams);
+
+  useEffect(() => {
+    const marking = async () => {
+      // safeFacility 배열의 각 요소에 대해 마커를 표시
+      safeFacility.forEach(({ lat, lon }) => {
+        webviewRef.current?.injectJavaScript(`safeFact(${lat}, ${lon})`);
+      });
+    };
+    marking();
+  }, []);
 
   // 현재 위치 실시간 업데이트
   useEffect(() => {
@@ -101,6 +117,20 @@ export default function Tmap() {
     (async () => {
       try {
         const [[startLat, startLon], [destLat, destLon]] = await Promise.all([getPOI(start), getPOI(dest)]);
+        // 경로 찾기 API
+        const pass = await fetch("http://127.0.0.1:5000/find_path", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            start: [startLat, startLon],
+            end: [destLat, destLon],
+          }),
+        }).catch(() => console.log("error"));
+        const passJson = await pass.text();
+        console.log(passJson);
+
         const response = await fetch("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1", {
           method: "POST",
           headers: {
@@ -322,6 +352,16 @@ const TMAP_VIEW = `
         new Tmapv3.Marker({
           position: new Tmapv3.LatLng(lat, lon),
           color: "#000000",
+          opacity: 1,
+          iconSize: new Tmapv3.Size(12, 30),
+          map: map,
+        });
+      }
+
+      function safeFact(lat, lon) {
+        new Tmapv3.Marker({
+          position: new Tmapv3.LatLng(lat, lon),
+          color: "#4053ff",
           opacity: 1,
           iconSize: new Tmapv3.Size(12, 30),
           map: map,

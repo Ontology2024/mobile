@@ -117,11 +117,31 @@ export default function Home() {
   }, []);
 
   const [curr, setCurr] = useState("");
+  const [safeNum, setSafeNum] = useState(0);
   useEffect(() => {
     const getCurrPostion = async () => {
       const { granted } = await location.requestForegroundPermissionsAsync();
       if (granted) {
         const loc = await location.getCurrentPositionAsync({});
+
+        // 안전 확인 API(안전도 확인)
+        const response = await fetch("http://127.0.0.1:5000/is_safe", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            latitude: loc.coords.latitude,
+            longitude: loc.coords.longitude,
+          }),
+        }).catch((error) => console.log("error:", error));
+
+        if (response && response.ok) {
+          const data = await response.json();
+          console.log(data);
+          setSafeNum(data.safety_level);
+        }
+
         const info = await location.reverseGeocodeAsync(loc.coords);
         const { district } = info[0];
         setCurr(district);
@@ -161,7 +181,7 @@ export default function Home() {
       {goToKey ? (
         <Mykey setGoToKey={setGoToKey} coin={key} setKey={setKey} />
       ) : (
-        <TouchableOpacity activeOpacity={1} style={{ flex: 1,width:"100%", position: "relative", top: -125, zIndex: -1 }}>
+        <TouchableOpacity activeOpacity={1} style={{ flex: 1, width: "100%", position: "relative", top: -125, zIndex: -1 }}>
           <Tmap />
         </TouchableOpacity>
       )}
@@ -174,7 +194,7 @@ export default function Home() {
         ) : (
           <View style={styles.panelBox}>
             <BottomSheet isOpen animationDuration={200} sliderMaxHeight={650}>
-              <Panel start={start} dest={dest} curr={curr} clickinfo={clickinfo} />
+              <Panel start={start} dest={dest} curr={curr} clickinfo={clickinfo} safeNum={safeNum} />
             </BottomSheet>
           </View>
         ))}
