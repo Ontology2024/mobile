@@ -4,12 +4,13 @@ interface SwitchProps {
   isOn: boolean
   onToggle: (isOn: boolean) => void
   style?: StyleProp<ViewStyle>
+  handleStyle?: StyleProp<ViewStyle>
 }
 
-export default function Switch({ isOn, onToggle, style }: SwitchProps) {
+export default function Switch({ isOn, onToggle, style, handleStyle }: SwitchProps) {
   return (
     <Pressable onPress={() => onToggle(!isOn)} style={[styles.base, ...isOn ? [styles.on] : [], style]}>
-      <View style={styles.handle} />
+      <View style={[styles.handle, handleStyle]} />
     </Pressable>
   )
 }

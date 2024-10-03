@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
   startButtonText: {
+    fontWeight: "600",
     fontSize: 16,
     color: "#FFFFFF",
     textAlign: "center",

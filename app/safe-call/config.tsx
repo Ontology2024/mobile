@@ -230,6 +230,7 @@ const configStyles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
+    fontWeight: "600",
     color: "#FFFFFF",
   }
 })
