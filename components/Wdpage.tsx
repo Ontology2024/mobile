@@ -6,7 +6,6 @@ import Feather from "@expo/vector-icons/Feather";
 import { COLORS } from "@/constants/colors";
 import { List, Divider } from "react-native-paper";
 import BottomSheet from "react-native-simple-bottom-sheet";
-import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Wdpage({ point, setGoToKey, setKey }) {
