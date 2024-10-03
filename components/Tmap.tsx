@@ -169,6 +169,8 @@ export default function Tmap() {
                 registerArea(${JSON.stringify(points)}); 
               `)
             }
+
+            webviewRef.current.injectJavaScript(`drawVisibleAreas();`)
           }
         }}
       />
@@ -264,9 +266,8 @@ const TMAP_VIEW = `
       
       function Move() {
         var lonlat = new Tmapv3.LatLng(currentLat, currentLong);
-        //map.setCenter(lonlat);
-        //map.setZoom(19);
-        drawVisibleAreas();
+        map.setCenter(lonlat);
+        map.setZoom(19);
       }
 
       function drawPoint(lat, lon) {
@@ -351,9 +352,7 @@ const TMAP_VIEW = `
         }
       }
 
-      //map.on("DragEnd", function() {
-      //  drawVisibleAreas();
-		  //});
+      setInterval(drawVisibleAreas, 3000)
     </script>
     <style>
       button {
