@@ -11,6 +11,8 @@ const convenienceImg = require("@/assets/images/ConvenienceWidget.png");
 const hospitalImg = require("@/assets/images/hospitalWidget.png");
 const firestationImg = require("@/assets/images/firestationWidget.png");
 
+import data from "@/assets/data/danger_zone.json";
+
 async function getPOI(place: string): Promise<[lat: number, lon: number]> {
   try {
     const response = await fetch(
@@ -53,16 +55,6 @@ export default function Tmap() {
   const webviewRef = useRef<WebView>(null);
   const [initalized, setInitalized] = useState(false);
   const { start, dest } = useContext(MapSearchParams);
-
-  useEffect(() => {
-    const marking = async () => {
-      // safeFacility 배열의 각 요소에 대해 마커를 표시
-      safeFacility.forEach(({ lat, lon }) => {
-        webviewRef.current?.injectJavaScript(`safeFact(${lat}, ${lon})`);
-      });
-    };
-    marking();
-  }, []);
 
   // 현재 위치 실시간 업데이트
   useEffect(() => {
@@ -223,6 +215,16 @@ export default function Tmap() {
         }}
         onMessage={() => {
           setInitalized(true);
+
+          if (webviewRef.current) {
+            for (const points of data) {
+              webviewRef.current.injectJavaScript(`
+                registerArea(${JSON.stringify(points)}); 
+              `);
+            }
+
+            webviewRef.current.injectJavaScript(`drawVisibleAreas();`);
+          }
         }}
       />
     </View>
@@ -321,7 +323,7 @@ const TMAP_VIEW = `
         map.setZoom(19);
       }
 
-      function drawPoint(lat, lon) { //@TODO use circle api
+      function drawPoint(lat, lon) {
         new Tmapv3.Circle({
           center: new Tmapv3.LatLng(lat, lon),
           radius: 6,
@@ -358,15 +360,52 @@ const TMAP_VIEW = `
         });
       }
 
-      function safeFact(lat, lon) {
-        new Tmapv3.Marker({
-          position: new Tmapv3.LatLng(lat, lon),
-          color: "#4053ff",
-          opacity: 1,
-          iconSize: new Tmapv3.Size(12, 30),
-          map: map,
-        });
+      var areas = []
+
+      function registerArea(path) {
+        for (var i = 0; i < path.length; i++) {
+          path[i] = new Tmapv3.LatLng(path[i][0], path[i][1]);
+        }
+
+        areas.push({ polygon: null, paths: path });
       }
+
+      var lastCall = undefined;
+      function drawVisibleAreas() {
+        if(lastCall && Date.now() - lastCall < 2000) return;
+        else lastCall = Date.now();
+
+        var bound = map.getBounds();
+
+        outer: for (var i = 0; i < areas.length; i++) {
+          var polygon = areas[i].polygon;
+          var paths = areas[i].paths;
+
+          for (var j = 0; j < paths.length; j++) {
+            if (bound.contains(paths[j])) {
+              if (polygon === null) {
+                areas[i].polygon = new Tmapv3.Polygon({
+                  paths: paths,
+                  fillColor: "#FFA1A6",
+                  fillOpacity: 0.15,
+                  strokeColor: "#FFA1A6",
+                  strokeWeight: 1,
+                  strokeOpacity: 1,
+                  map: map
+                })
+              }
+              continue outer;
+            }
+          }
+          
+          if (polygon) {
+            polygon.setMap(null);
+            areas[i].polygon = null;
+          }
+        }
+      }
+
+      setInterval(drawVisibleAreas, 3000)
     </script>
     <style>
       button {

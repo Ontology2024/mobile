@@ -9,11 +9,13 @@ import { Divider } from "react-native-paper";
 const targetImg = require("@/assets/images/target.png");
 const shiledImg = require("@/assets/images/shield.png");
 const bluediaImg = require("@/assets/images/bluedia.png");
-const reddiaImg = require("@/assets/images/bluedia.png");
+const reddiaImg = require("@/assets/images/reddia.png");
 const convenienceImg = require("@/assets/images/convenience.png");
 const policeImg = require("@/assets/images/police.png");
 const hospitalImg = require("@/assets/images/hospital.png");
 const firestationImg = require("@/assets/images/firestation.png");
+const genderFightImg = require("@/assets/images/genderFight.png");
+const theftImg = require("@/assets/images/theft.png");
 
 const convenienceN = 2;
 const convenienceLoc = [
@@ -34,7 +36,7 @@ const firestationLoc = [];
 const safeSentence = ["위험해요", "안전해요"];
 const circleColor = { safe: ["#4876FF", "#DFE2FF"], danger: ["#FF566A", "#FFDFDF"] };
 const danger = 15;
-const safe = 20;
+const safe = true;
 
 export default function Panel2({ curr, safeNum }) {
   const [toggleBtn, setToggleBtn] = useState(true);
@@ -96,14 +98,14 @@ export default function Panel2({ curr, safeNum }) {
           style={[styles.toggle, { borderBottomColor: toggleBtn ? "black" : "#E9EBF4" }]}
           onPress={() => setToggleBtn(true)}
         >
-          <Text>위험정보({danger})</Text>
+          <Text>위험정보</Text>
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.8}
           style={[styles.toggle, { borderBottomColor: toggleBtn ? "#E9EBF4" : "black" }]}
           onPress={() => setToggleBtn(false)}
         >
-          <Text>안전시설({safe})</Text>
+          <Text>안전시설</Text>
         </TouchableOpacity>
       </View>
 
@@ -147,15 +149,71 @@ export default function Panel2({ curr, safeNum }) {
               <Feather name="alert-circle" size={20} color="black" />
             </TouchableOpacity>
           </View>
-          <View style={{ marginTop: 16 }}>
-            <View style={styles.crimeBox}>
+
+          <View
+            style={{
+              height: "30%",
+              marginTop: 16,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}
+          >
+            {/* 안전할떄 */}
+            {/* <View style={styles.crimeBox}>
               <Image source={shiledImg} style={{ width: 30, height: 30 }} />
               <Text style={{ color: "#1C1C22", fontSize: 16, fontWeight: "600" }}>0건</Text>
               <Text style={{ color: "#8B94A8", fontSize: 12, fontWeight: "500" }}>최근 1년 간 발생한 범죄가 없습니다</Text>
+            </View> */}
+
+            {/* 위험할때 */}
+            <View
+              style={{
+                width: "40%",
+                height: "100%",
+                backgroundColor: "#FF566A",
+                borderRadius: 15,
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <Image source={theftImg} style={{ width: 30, height: 30 }} />
+              <Text style={{ fontSize: 16, fontWeight: "600", color: "white" }}>절도</Text>
+              <Text style={{ fontSize: 14, fontWeight: "400", color: "white" }}>8건</Text>
+            </View>
+            <View
+              style={{
+                width: "30%",
+                height: "100%",
+                backgroundColor: "#FF7888",
+                borderRadius: 15,
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <Image source={genderFightImg} style={{ width: 30, height: 30 }} />
+              <Text style={{ fontSize: 16, fontWeight: "600", color: "white" }}>성폭력</Text>
+              <Text style={{ fontSize: 14, fontWeight: "400", color: "white" }}>4건</Text>
+            </View>
+            <View style={{ width: "20%", height: "100%", justifyContent: "space-between" }}>
+              <View style={{ height: "55%", backgroundColor: "#FFBEC5", borderRadius: 15, justifyContent: "center", alignItems: "center" }}>
+                <Text style={{ color: "#1C1C22", fontSize: 14, fontWeight: "600" }}>
+                  폭력<Text style={{ fontSize: 12, fontWeight: "400" }}> 2건</Text>
+                </Text>
+              </View>
+              <View style={{ height: "40%", backgroundColor: "#FFE9EC", borderRadius: 15, justifyContent: "center", alignItems: "center" }}>
+                <Text style={{ color: "#1C1C22", fontSize: 14, fontWeight: "600" }}>
+                  강도<Text style={{ fontSize: 12, fontWeight: "400" }}> 1건</Text>
+                </Text>
+              </View>
             </View>
           </View>
+
           <View style={{ gap: 16 }}>
-            <View style={styles.crimeinfobox}>
+            {/* 안전할떄 */}
+            {/* <View style={styles.crimeinfobox}>
               <View style={{ width: "100%", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", gap: 5 }}>
                 <Image source={bluediaImg} style={{ width: 11, height: 14 }} />
                 <Text style={[styles.infotitle, { color: "#4876FF" }]}>매우 안전</Text>
@@ -173,9 +231,32 @@ export default function Panel2({ curr, safeNum }) {
               <Text style={styles.infodetail}>
                 이 구역에서는 최근 특정 기간 동안 범죄가 발생하지 않았습니다. 안전한 지역으로 평가되며, 안심하고 생활할 수 있는 환경을
                 제공합니다.
+              </Text>
+            </View> */}
+
+            {/* 위험할떄 */}
+            <View style={styles.crimeinfobox}>
+              <View style={{ width: "100%", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", gap: 5 }}>
+                <Image source={reddiaImg} style={{ width: 11, height: 14 }} />
+                <Text style={[styles.infotitle, { color: "#FF566A" }]}>절도주의 · 소지품 주의</Text>
+              </View>
+              <Text style={styles.infodetail}>
+                절도 사건 비중이 높고, 인근 다른 구역에 비해 절도 사건이 30% 더 많이 발생하니 주의가 필요합니다. 혼잡한 지역이나 어두운
+                골목에서의 소지품 관리를 강화하세요.
+              </Text>
+            </View>
+            <View style={styles.crimeinfobox}>
+              <View style={{ width: "100%", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", gap: 5 }}>
+                <Image source={reddiaImg} style={{ width: 11, height: 14 }} />
+                <Text style={[styles.infotitle, { color: "#FF566A" }]}>성폭력 주의 · 안전시설 파악</Text>
+              </View>
+              <Text style={styles.infodetail}>
+                성폭력 사건이 빈번하게 발생하는 지역입니다. 여성 이용자분들은 특히 야간 이동 시 주의를 기울이시고, 주변의 안전 시설을 미리
+                파악해 두세요.
               </Text>
             </View>
           </View>
+
           <View style={{ marginTop: 150 }} />
         </ScrollView>
       ) : (

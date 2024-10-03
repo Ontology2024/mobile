@@ -212,12 +212,12 @@ export default function Home() {
             <Text style={styles.safecall}>AI 안심전화</Text>
             <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
           </TouchableOpacity>
-
           <TouchableOpacity activeOpacity={0.8} style={styles.footerBox2} onPress={modalVisible ? closeModal : openModal}>
             <Image source={menuImg} style={styles.menu} />
           </TouchableOpacity>
         </View>
       )}
+
       <Modal visible={modalVisible} transparent animationType="none">
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.modalOverlay}>
