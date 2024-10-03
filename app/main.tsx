@@ -110,6 +110,7 @@ export default function Home() {
         return;
       }
 
+      await AsyncStorage.setItem("coinkey", coin[0].coinkey.toString());
       setKey(coin[0].coinkey);
     };
     load();
@@ -158,13 +159,9 @@ export default function Home() {
 
       {/* Tmap 렌더링 부분 */}
       {goToKey ? (
-        <Mykey setGoToKey={setGoToKey} coin={key} />
+        <Mykey setGoToKey={setGoToKey} coin={key} setKey={setKey} />
       ) : (
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => setClickinfo(!clickinfo)}
-          style={{ flex: 1, width: "100%", position: "relative", top: -120, zIndex: -1 }}
-        >
+        <TouchableOpacity activeOpacity={1} style={{ flex: 1, width: "100%", position: "relative", top: -120, zIndex: -1 }}>
           <Tmap />
         </TouchableOpacity>
       )}
@@ -254,7 +251,8 @@ const styles = StyleSheet.create({
     width: 90,
     backgroundColor: "white",
     alignItems: "center",
-    paddingLeft: 22,
+    paddingLeft: 16,
+    paddingRight: 10,
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
     flexDirection: "row",

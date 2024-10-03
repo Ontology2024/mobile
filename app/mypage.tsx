@@ -7,6 +7,8 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { ScrollView } from "react-native-gesture-handler";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PinkCharacter = require("@/assets/images/character_pink.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -15,10 +17,19 @@ const collectMsgImg = require("@/assets/images/collectMsg.png");
 const contactImg = require("@/assets/images/contact.png");
 
 const nickname = "김아람";
-const coinN = 200;
 const canBuyN = 3;
 
 export default function mypage() {
+  const [coinN, setCoinN] = useState(0);
+
+  useEffect(() => {
+    const loadCoin = async () => {
+      const c = await AsyncStorage.getItem("coinkey");
+      setCoinN(c);
+    };
+    loadCoin();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
