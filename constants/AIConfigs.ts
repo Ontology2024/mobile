@@ -31,7 +31,7 @@ export const DEFAULT_AI_CONFIG: AI[] = [
   },
   {
     name: "안재우",
-    character: require("@/assets/images/sejoon.png"),
+    character: require("@/assets/images/jaewoo.png"),
     profile: "30대 (남)",
     bio: "뉴스: 인공지능이 곧 코미디언도 대체할 수 있을 거래요!",
     keywords: ["똑똑한", "지식전달", "차분한"],
