@@ -20,8 +20,9 @@ export default function Index() {
     <View
       style={{
         flex: 1,
-        marginTop: 120,
         alignItems: "center",
+        backgroundColor: "#fff",
+        paddingTop: 120,
       }}
     >
       <View style={Style.indicatorContainer}>
@@ -91,7 +92,7 @@ const Style = StyleSheet.create({
   indicatorContainer: {
     flexDirection: "row",
     position: "absolute",
-    top: -30,
+    top: 95,
     alignSelf: "center",
     alignItems: "center",
   },

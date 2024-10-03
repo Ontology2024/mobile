@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Animated, TouchableWithoutFeedback } from "react-native";
-import SkeletonPlaceholder from "@/components/skeletons";
 import { COLORS } from "@/constants/colors";
 import BottomSheet from "react-native-simple-bottom-sheet";
 import Panel from "@/components/Panel";
@@ -11,29 +10,39 @@ import { router } from "expo-router";
 import { MapSearchParams } from "@/constants/MapSearchParams";
 import { useNavigation } from "@react-navigation/native";
 import { navInfo } from "@/constants/NavMock";
+import Tmap from "@/components/Tmap";
+import { supabase } from "@/lib/supabase";
+import Mykey from "@/components/Mykey";
+import * as location from "expo-location";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
+const purplekeyImg = require("@/assets/images/purplekey.png");
 const mykeyImg = require("@/assets/images/mykey.png");
 const menuImg = require("@/assets/images/menu.png");
 const closeImg = require("@/assets/images/close.png");
 const navarrowImg = require("@/assets/images/navarrow.png");
 
-const coninkeyN = 330;
 const mapOptionsKey = "map_opt";
 
 export default function Home() {
   const navigation = useNavigation();
+  const [goToKey, setGoToKey] = useState(false);
+  const [clickinfo, setClickinfo] = useState(false);
+  const goToMykey = () => {
+    closeModal();
+    setGoToKey(true);
+  };
   const openMyPage = () => {
     closeModal();
     navigation.navigate("mypage");
   };
+  const [key, setKey] = useState(0);
   const { start, dest, setSearchParams } = useContext(MapSearchParams);
   const [selectedItems, setSelectedItems] = useState({
     안전시설: true,
     범죄: true,
     안전도: true,
-    코인키: true,
   });
 
   const loadStoredData = async () => {
@@ -93,43 +102,83 @@ export default function Home() {
     initialize();
   }, []);
 
+  useEffect(() => {
+    const load = async () => {
+      const email = await AsyncStorage.getItem("email");
+      let { data: coin, error } = await supabase.from("users").select("coinkey").eq("email", email);
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      await AsyncStorage.setItem("coinkey", coin[0].coinkey.toString());
+      setKey(coin[0].coinkey);
+    };
+    load();
+  }, []);
+
+  const [curr, setCurr] = useState("");
+  useEffect(() => {
+    const getCurrPostion = async () => {
+      const { granted } = await location.requestForegroundPermissionsAsync();
+      if (granted) {
+        const loc = await location.getCurrentPositionAsync({});
+        const info = await location.reverseGeocodeAsync(loc.coords);
+        const { district } = info[0];
+        setCurr(district);
+      }
+    };
+    getCurrPostion();
+  }, []);
+
   return (
     <View style={styles.container}>
-      {start && dest ? (
-        <NavHeader />
+      {!goToKey &&
+        (start && dest ? (
+          <NavHeader />
+        ) : (
+          <View style={styles.top}>
+            <View style={styles.topBox1}>
+              <Image source={purplekeyImg} style={{ width: 10, height: 18 }} />
+              <Text style={styles.keyCount}>{key}</Text>
+            </View>
+            <View style={styles.topBox2}>
+              {Object.keys(selectedItems).map((key) => (
+                <TouchableOpacity
+                  key={key}
+                  style={[styles.checkbox, { opacity: selectedItems[key] ? 1 : 0.5 }]}
+                  onPress={() => handleSelect(key)}
+                  activeOpacity={0.8}
+                >
+                  <Image source={require("@/assets/images/check.png")} style={styles.checkImg} />
+                  <Text style={styles.checkText}>{key}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        ))}
+
+      {/* Tmap 렌더링 부분 */}
+      {goToKey ? (
+        <Mykey setGoToKey={setGoToKey} coin={key} setKey={setKey} />
       ) : (
-        <View style={styles.top}>
-          <View style={styles.topBox1}>
-            <Image source={require("@/assets/images/coinkey.png")} style={{ width: 12, height: 20 }} />
-            <Text style={styles.keyCount}>{coninkeyN}</Text>
-          </View>
-          <View style={styles.topBox2}>
-            {Object.keys(selectedItems).map((key) => (
-              <TouchableOpacity
-                key={key}
-                style={[styles.checkbox, { opacity: selectedItems[key] ? 1 : 0.5 }]}
-                onPress={() => handleSelect(key)}
-                activeOpacity={0.8}
-              >
-                <Image source={require("@/assets/images/check.png")} style={styles.checkImg} />
-                <Text style={styles.checkText}>{key}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        <TouchableOpacity activeOpacity={1} style={{ flex: 1, width: "100%", position: "relative", top: -120, zIndex: -1 }}>
+          <Tmap />
+        </TouchableOpacity>
       )}
 
-      {start && dest ? (
-        <View style={styles.panelBox}>
-          <RecommendBox navInfo={navInfo} />
-        </View>
-      ) : (
-        <View style={styles.panelBox}>
-          <BottomSheet isOpen animationDuration={200}>
-            <Panel start={start} dest={dest} />
-          </BottomSheet>
-        </View>
-      )}
+      {!goToKey &&
+        (start && dest ? (
+          <View style={styles.panelBox}>
+            <RecommendBox navInfo={navInfo} />
+          </View>
+        ) : (
+          <View style={styles.panelBox}>
+            <BottomSheet isOpen animationDuration={200} sliderMaxHeight={650}>
+              <Panel start={start} dest={dest} curr={curr} clickinfo={clickinfo} />
+            </BottomSheet>
+          </View>
+        ))}
 
       {start && dest ? (
         <View style={styles.footer}>
@@ -140,10 +189,11 @@ export default function Home() {
         </View>
       ) : (
         <View style={styles.footer}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1}>
+          <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1} onPress={() => setClickinfo(!clickinfo)}>
             <Text style={styles.safecall}>AI 안심전화</Text>
             <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
           </TouchableOpacity>
+
 
       <View style={styles.footer}>
         <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1} onPress={() => router.navigate("/safe-call")}>
@@ -168,7 +218,7 @@ export default function Home() {
                 </View>
                 <View style={styles.modalBox}>
                   <Text style={styles.modalOption}>코인키</Text>
-                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
+                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7} onPress={goToMykey}>
                     <Image source={coinkeyImg} style={{ width: 17, height: 27 }} />
                   </TouchableOpacity>
                 </View>
@@ -202,36 +252,38 @@ const styles = StyleSheet.create({
     height: 40,
     marginTop: 80,
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: 10,
   },
   topBox1: {
-    width: 100,
-    backgroundColor: COLORS.PURPLE,
+    width: 90,
+    backgroundColor: "white",
     alignItems: "center",
-    paddingLeft: 22,
+    paddingLeft: 16,
+    paddingRight: 10,
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
     flexDirection: "row",
     gap: 10,
-    shadowColor: COLORS.PURPLE,
+    shadowColor: "rgba(0, 0, 0, 0.15)",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 5,
   },
   keyCount: {
-    color: "white",
+    color: COLORS.PURPLE,
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   topBox2: {
-    width: 280,
+    width: 220,
     backgroundColor: "white",
-    borderTopLeftRadius: 15,
-    borderBottomLeftRadius: 15,
+    borderRadius: 15,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 13,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    gap: 12,
     shadowColor: "rgba(0, 0, 0, 0.15)",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,

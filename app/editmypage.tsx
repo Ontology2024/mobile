@@ -13,7 +13,7 @@ const _birth = "2001-12-30";
 const _number = "010-1234-5678";
 const _social = "kimaram@naver.com";
 
-export default function signup() {
+export default function editmypage() {
   const [nickname, changeNickname] = useState(_nickname);
   const [birth, changeBirth] = useState(_birth);
   const [number, changeNumber] = useState(_number);

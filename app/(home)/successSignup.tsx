@@ -22,9 +22,8 @@ export default function Index() {
       <View>
         <ConfettiCannon
           count={350}
-          origin={{ x: 175, y: -3000 }}
+          origin={{ x: 170, y: 0 }}
           fallSpeed={3000}
-          explosionSpeed={300}
           fadeOut={true}
           colors={[COLORS.PURPLE, "#8E66FF", "#9DA6FF", "#FF69B4", "#6028FF"]}
         />

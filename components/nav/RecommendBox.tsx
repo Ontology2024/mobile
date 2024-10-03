@@ -17,7 +17,7 @@ export default function RecommendBox({ navInfo }) {
 
   return (
     <View style={styles.container}>
-      <Image source={dangerBarImg} style={{ width: 48, height: 128, marginBottom: 10 }} />
+      <Image source={dangerBarImg} style={{ width: 48, height: 118, marginBottom: 10 }} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           {navInfo.map((data, idx) => (

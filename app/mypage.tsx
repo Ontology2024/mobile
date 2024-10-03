@@ -7,6 +7,8 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { ScrollView } from "react-native-gesture-handler";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PinkCharacter = require("@/assets/images/character_pink.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -15,10 +17,19 @@ const collectMsgImg = require("@/assets/images/collectMsg.png");
 const contactImg = require("@/assets/images/contact.png");
 
 const nickname = "김아람";
-const coinN = 200;
 const canBuyN = 3;
 
-export default function signup() {
+export default function mypage() {
+  const [coinN, setCoinN] = useState(0);
+
+  useEffect(() => {
+    const loadCoin = async () => {
+      const c = await AsyncStorage.getItem("coinkey");
+      setCoinN(c);
+    };
+    loadCoin();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -78,13 +89,15 @@ export default function signup() {
         <View style={{ width: "80%", marginBottom: 24, alignItems: "center" }}>
           <Text style={styles.optionTitle}>안전 설정</Text>
           <View style={styles.optionContainer}>
-            <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <AntDesign name="hearto" size={20} color="black" />
-                <Text style={styles.optionText}>자주 가는 장소 설정</Text>
-              </View>
-              <EvilIcons name="chevron-right" size={36} color="black" />
-            </TouchableOpacity>
+            <Link href="scrapplace" asChild>
+              <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <AntDesign name="hearto" size={20} color="black" />
+                  <Text style={styles.optionText}>자주 가는 장소 설정</Text>
+                </View>
+                <EvilIcons name="chevron-right" size={36} color="black" />
+              </TouchableOpacity>
+            </Link>
             <View style={styles.underLine} />
             <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -100,13 +113,15 @@ export default function signup() {
         <View style={{ width: "80%", marginBottom: 24, alignItems: "center" }}>
           <Text style={styles.optionTitle}>기본 설정</Text>
           <View style={styles.optionContainer}>
-            <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Ionicons name="notifications-outline" size={20} color="black" />
-                <Text style={styles.optionText}>알림 설정</Text>
-              </View>
-              <EvilIcons name="chevron-right" size={36} color="black" />
-            </TouchableOpacity>
+            <Link href="editalarm" asChild>
+              <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Ionicons name="notifications-outline" size={20} color="black" />
+                  <Text style={styles.optionText}>알림 설정</Text>
+                </View>
+                <EvilIcons name="chevron-right" size={36} color="black" />
+              </TouchableOpacity>
+            </Link>
             <View style={styles.underLine} />
             <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
