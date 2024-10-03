@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { Link } from "expo-router";
 
 const scrapList = ["나의집", "회사", "친구집"];
 const starImg = require("@/assets/images/star.png");
@@ -10,21 +9,18 @@ const destinationImg = require("@/assets/images/destination.png");
 const dangerImg = require("@/assets/images/danger.png");
 const safezoneImg = require("@/assets/images/safezone.png");
 
-const safe = [{ safeText: "안전해요" }, { safeText: "조금 안전해요" }, { safeText: "조금 위험해요" }, { safeText: "위험해요" }];
+const safe = [
+  { safeText: "매우 위험해요" },
+  { safeText: "주의가 필요해요" },
+  { safeText: "비교적 안전해요" },
+  { safeText: "안전해요" },
+  { safeText: "매우 안전해요" },
+];
+const dangerBgColor = ["#FF566A", "#FF9D56", "#FFDA56", "#48DE60", "#4876FF"];
+const dangerCircleColor = ["#dc98a0", "#edc2a3", "#f8e9ba", "#9ee3aa", "#88A6FF"];
+const safeN = 5;
 
-const safeN = 1;
-
-export default function Panel({ city, dest }) {
-  const navigation = useNavigation(); // 네비게이션 객체 생성
-
-  const handleNavigate = () => {
-    navigation.navigate("search");
-  };
-
-  useEffect(() => {
-    console.log("Dest updated:", dest);
-  }, [dest]);
-
+export default function Panel({ start, dest }) {
   return (
     <View>
       <Text style={styles.pannelTitle}>안전한 길 찾기</Text>
@@ -44,27 +40,31 @@ export default function Panel({ city, dest }) {
       <View style={styles.navbox}>
         <View style={styles.navInfo}>
           <Image source={startImg} style={styles.start} />
-          <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox} onPress={() => handleNavigate()}>
-            <Text style={city ? styles.navText : styles.placeholder}>{city || "출발지를 입력해주세요"}</Text>
-          </TouchableOpacity>
+          <Link href="/searchStart" asChild>
+            <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox}>
+              <Text style={start ? styles.navText : styles.placeholder}>{start || "출발지를 입력해주세요"}</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
         <View style={styles.navInfo}>
           <Image source={destinationImg} style={styles.destination} />
-          <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox} onPress={() => handleNavigate()}>
-            <Text style={dest ? styles.navText : styles.placeholder}>{dest || "목적지를 입력해주세요"}</Text>
-          </TouchableOpacity>
+          <Link href="/searchDest" asChild>
+            <TouchableOpacity activeOpacity={0.8} style={styles.navTextBox}>
+              <Text style={dest ? styles.navText : styles.placeholder}>{dest || "목적지를 입력해주세요"}</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
       </View>
 
       <View style={styles.footer}>
-        <View style={styles.safeInfoBox}>
+        <View style={[styles.safeInfoBox, { backgroundColor: dangerBgColor[safeN - 1] }]}>
           <View>
             <Text style={styles.safeText1}>주변안전도</Text>
-            <Text style={safeN === 1 || safeN === 4 ? styles.safeText2 : styles.smallSafeText2}>{safe[safeN - 1].safeText}</Text>
+            <Text style={styles.safeText2}>{safe[safeN - 1].safeText}</Text>
           </View>
-          <View style={styles.circle1}>
+          <View style={[styles.circle1, { backgroundColor: dangerCircleColor[safeN - 1] }]}>
             <View style={styles.circle2}>
-              <Text style={styles.safeNum}>{safeN}</Text>
+              <Text style={[styles.safeNum, { color: dangerBgColor[safeN - 1] }]}>{safeN}</Text>
             </View>
           </View>
         </View>
@@ -185,23 +185,25 @@ const styles = StyleSheet.create({
   safeInfoBox: {
     backgroundColor: "#4775FF",
     paddingVertical: 6,
-    paddingLeft: 20,
+    paddingLeft: 10,
     borderTopRightRadius: 100,
     borderBottomRightRadius: 100,
     flexDirection: "row",
-    gap: 12,
+    gap: 3,
     alignItems: "center",
   },
   safeText1: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#C5CCD7",
+    color: "white",
     marginBottom: 5.6,
   },
   safeText2: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "700",
+    letterSpacing: -0.1,
     color: "white",
+    width: 100,
   },
   smallSafeText2: {
     fontSize: 15,
@@ -209,7 +211,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   circle1: {
-    backgroundColor: "#6C92F7",
+    backgroundColor: "black",
     width: 56,
     height: 56,
     borderRadius: 100,

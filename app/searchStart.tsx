@@ -1,23 +1,24 @@
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { MOCK } from "@/constants/mock";
+import { MapSearchParams } from "@/constants/MapSearchParams";
+import { useRouter } from "expo-router";
 
 const leftarrowImg = require("@/assets/images/leftarrow.png");
 const currentlocationImg = require("@/assets/images/currentlocation.png");
 const starImg = require("@/assets/images/star.png");
 const plusImg = require("@/assets/images/plus.png");
-const destinationImg = require("@/assets/images/destination.png");
+const destinationImg = require("@/assets/images/lightDestination.png");
 const closeImg = require("@/assets/images/close.png");
 
 const scrapList = ["나의집", "회사", "친구집"];
 
-export default function search() {
-  const navigation = useNavigation();
+export default function searchStart() {
+  const { dest, setSearchParams } = useContext(MapSearchParams);
+  const router = useRouter();
   const [text, setText] = useState("");
   const onChangeText = (payload) => setText(payload);
-  const [currentSearchList, setCurrentSearchList] = useState(MOCK.currSearchList);
+  const [currentSearchList, setCurrentSearchList] = useState([]);
 
   useEffect(() => {
     const loadSearchList = async () => {
@@ -39,33 +40,40 @@ export default function search() {
       setCurrentSearchList(newList);
       await AsyncStorage.setItem("currentSearchList", JSON.stringify(newList));
     } catch (e) {
-      console.error(e.value);
+      console.error(e);
     }
   };
 
   const addSearchList = async (search) => {
     try {
-      const newList = currentSearchList;
       if (search) {
-        newList.push({ name: search, scrap: false });
+        const existingItemIndex = currentSearchList.findIndex((item) => item.name === search);
+        let updatedList = [...currentSearchList];
+
+        if (existingItemIndex !== -1) {
+          updatedList.splice(existingItemIndex, 1);
+        }
+
+        updatedList = [{ name: search, scrap: false }, ...updatedList];
+        await updateSearchList(updatedList);
+        setText("");
+        setSearchParams({ start: search, dest });
+        router.push("/main");
       }
-      updateSearchList(newList);
-      await AsyncStorage.setItem("dest", search);
-      navigation.goBack();
     } catch (e) {
-      console.log(e.value);
+      console.log(e);
     }
   };
 
-  const removeItem = (index) => {
-    const updatedList = currentSearchList.filter((_, idx) => idx !== index);
+  const removeItem = (name) => {
+    const updatedList = currentSearchList.filter((n) => n.name !== name);
     updateSearchList(updatedList);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.goBack()}>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => router.back()}>
           <Image source={leftarrowImg} style={styles.arrowimg} />
         </TouchableOpacity>
         <View style={styles.searchbar}>
@@ -75,7 +83,7 @@ export default function search() {
             onChangeText={onChangeText}
             returnKeyType="done"
             value={text}
-            placeholder="도착지를 입력해주세요"
+            placeholder="출발지를 입력해주세요"
           />
           <Image source={currentlocationImg} style={styles.locationimg} />
         </View>
@@ -101,15 +109,20 @@ export default function search() {
         </View>
         <ScrollView contentContainerStyle={{ paddingBottom: 250 }}>
           {currentSearchList.map((value, idx) => (
-            <View style={styles.currentSearchListBox} key={value.name}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => addSearchList(value.name)}
+              style={styles.currentSearchListBox}
+              key={value.name}
+            >
               <Image source={value.scrap ? starImg : destinationImg} style={value.scrap ? styles.starImg : styles.destImg} />
               <View style={styles.currentSearchListBox2}>
                 <Text style={styles.currentSearchListText}>{value.name}</Text>
-                <TouchableOpacity activeOpacity={0.6} onPress={() => removeItem(idx)}>
+                <TouchableOpacity activeOpacity={0.6} onPress={() => removeItem(value.name)}>
                   <Image source={closeImg} style={styles.closeBtn} />
                 </TouchableOpacity>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
