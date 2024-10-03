@@ -266,12 +266,15 @@ const TMAP_VIEW = `
       
       function Move() {
         var lonlat = new Tmapv3.LatLng(currentLat, currentLong);
-        map.setCenter(lonlat);
+        clearNavi();
+        //map.setCenter(lonlat);
         map.setZoom(19);
       }
 
+      var naviItems = [];
+
       function drawPoint(lat, lon) {
-        new Tmapv3.Circle({
+        naviItems.push(new Tmapv3.Circle({
           center: new Tmapv3.LatLng(lat, lon),
           radius: 6,
           fillColor: "#FFFFFF",
@@ -280,7 +283,7 @@ const TMAP_VIEW = `
           strokeWeight: 3,
           strokeOpacity: 1,
           map: map,
-        });
+        }));
       }
 
       function drawLine(path) {
@@ -288,23 +291,30 @@ const TMAP_VIEW = `
           path[i] = new Tmapv3.LatLng(path[i][1], path[i][0]);
         }
 
-        new Tmapv3.Polyline({
+        naviItems.push(new Tmapv3.Polyline({
           path: path,
           strokeColor: "#4775FF",
 			    strokeWeight: 15,
           strokeOpacity: 1,
 			    map: map
-        });
+        }));
       }
 
       function drawDestMarker(lat, lon) {
-        new Tmapv3.Marker({
+        naviItems.push(new Tmapv3.Marker({
           position: new Tmapv3.LatLng(lat, lon),
           color: "#000000",
           opacity: 1,
           iconSize: new Tmapv3.Size(12, 30),
           map: map,
-        });
+        }));
+      }
+
+      function clearNavi() {
+        for (var i =0; i< naviItems.length; i++)
+          naviItems[i].setMap(null);
+
+        naviItems = [];
       }
 
       var areas = []
