@@ -266,8 +266,7 @@ const TMAP_VIEW = `
       
       function Move() {
         var lonlat = new Tmapv3.LatLng(currentLat, currentLong);
-        clearNavi();
-        //map.setCenter(lonlat);
+        map.setCenter(lonlat);
         map.setZoom(19);
       }
 
