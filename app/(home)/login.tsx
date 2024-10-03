@@ -67,6 +67,7 @@ export default function Login() {
             placeholderTextColor={"#a2a6ae"}
             keyboardType="email-address"
             autoCapitalize="none"
+            value={email}
           ></TextInput>
         </View>
         <View style={styles.inputContainer}>
