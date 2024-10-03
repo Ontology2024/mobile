@@ -13,49 +13,17 @@
       "backgroundColor": "#11192e"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.juhwan0228.safekey"
+      "supportsTablet": true
     },
     "web": {
       "bundler": "metro",
       "output": "static"
     },
     "plugins": [
-      "expo-router",
-      "expo-build-properties",
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "extraMavenRepos": [
-              "https://devrepo.kakao.com/nexus/content/groups/public/"
-            ],
-            "newArchEnabled": true
-          },
-          "ios": {
-            "newArchEnabled": true
-          }
-        }
-      ],
-      [
-        "@react-native-kakao/core",
-        {
-          "nativeAppKey": "4e6f8969f2b3be8e26a06110cd5a98d3",
-          "android": {
-            "authCodeHandlerActivity": true
-          },
-          "ios": {
-            "handleKakaoOpenUrl": true
-          }
-        }
-      ]
+      "expo-router"
     ],
-    "package": "com.kakao.safekey",
     "experiments": {
       "typedRoutes": true
-    },
-    "android": {
-      "package": "com.juhwan0228.safekey"
     }
   }
 }

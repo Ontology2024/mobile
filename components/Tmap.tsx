@@ -5,67 +5,38 @@ import { APP_KEY } from "@/env"; // env.ts 파일에서 APP_KEY를 가져옴
 import * as location from "expo-location";
 import { MapSearchParams } from "@/constants/MapSearchParams";
 
+async function getPOI(place: string): Promise<[lat: number, lon: number]> {
+  try {
+    const response = await fetch("https://apis.openapi.sk.com/tmap/pois?" + new URLSearchParams({
+      version: "1",
+      searchKeyword: place,
+      searchType: "all",
+      page: "1",
+      count: "1",
+      resCoordType: "WGS84GEO",
+      multiPoint: "N",
+      searchtypCd: "A",
+      reqCoordType: "WGS84GEO",
+      poiGroupYn: "N"
+    }), {
+      headers: {
+        Accept: "application/json",
+        appKey: APP_KEY,
+      },
+    });
+    const { searchPoiInfo: { pois: { poi: [ { noorLat, noorLon } ] } } } = await response.json();;
+
+    return [noorLat, noorLon];
+  } catch (error) {
+    console.error("Error fetching POIs:", error);
+    throw error;
+  }
+}
+
 export default function Tmap() {
   const webviewRef = useRef<WebView>(null);
   const [initalized, setInitalized] = useState(false);
   const { start, dest } = useContext(MapSearchParams);
-  const startlocRef = useRef({ startlat: null, startlon: null });
-  const destlocRef = useRef({ destlat: null, destlon: null });
-
-  // 출발지 위도, 경도 가져오기
-  useEffect(() => {
-    const startPOIs = async () => {
-      try {
-        const response = await fetch(
-          `https://apis.openapi.sk.com/tmap/pois?version=1&searchKeyword=${start}&searchType=all&page=1&count=1&resCoordType=WGS84GEO&multiPoint=N&searchtypCd=A&reqCoordType=WGS84GEO&poiGroupYn=N`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              appKey: APP_KEY,
-            },
-          }
-        );
-
-        const data = await response.json();
-        const loc = data.searchPoiInfo.pois.poi[0];
-
-        startlocRef.current = { startlat: loc.noorLat, startlon: loc.noorLon };
-        console.log("start: ", startlocRef.current);
-      } catch (error) {
-        console.error("Error fetching POIs:", error);
-      }
-    };
-    if (start) startPOIs();
-  }, [start]);
-
-  // 목적지 위도,경도값 받아오기
-  useEffect(() => {
-    const destPOIs = async () => {
-      try {
-        const response = await fetch(
-          `https://apis.openapi.sk.com/tmap/pois?version=1&searchKeyword=${dest}&searchType=all&page=1&count=20&resCoordType=WGS84GEO&multiPoint=N&searchtypCd=A&reqCoordType=WGS84GEO&poiGroupYn=N`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              appKey: APP_KEY,
-            },
-          }
-        );
-
-        const data = await response.json();
-        const loc = data.searchPoiInfo.pois.poi[0];
-
-        destlocRef.current = { destlat: loc.noorLat, destlon: loc.noorLon };
-        console.log("dest: ", destlocRef.current);
-      } catch (error) {
-        console.error("Error fetching POIs:", error);
-      }
-    };
-
-    if (dest) destPOIs();
-  }, [dest]);
 
   // 현재 위치 실시간 업데이트
   useEffect(() => {
@@ -111,39 +82,57 @@ export default function Tmap() {
     return () => subscription?.remove();
   }, [initalized]);
 
-  // 경로 가져오기
   useEffect(() => {
-    if (startlocRef.current.startlat && destlocRef.current.destlat) {
-      let resultData = [];
-      fetch("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          appKey: "dpmSPcl4sB5hZ0p4GSfUI5hp2RO8ph5MQHBXFt68",
-        },
-        body: JSON.stringify({
-          startX: startlocRef.current.startlon,
-          startY: startlocRef.current.startlat,
-          endX: destlocRef.current.destlon,
-          endY: destlocRef.current.destlat,
-          startName: "시작점",
-          endName: "도착점",
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          resultData = data.features;
-        })
-        .catch((error) => console.error("Error drawing route:", error));
-    }
+    if (!initalized || !start || !dest) return;
 
-    if (webviewRef.current) {
-      webviewRef.current.injectJavaScript(`
-          drawLine(${startlocRef.current.startlat}, ${startlocRef.current.startlon}, ${destlocRef.current.destlat}, ${destlocRef.current.destlon});
-        `);
-    }
-  }, [startlocRef.current.startlat, destlocRef.current.destlat]);
+    const controller = new AbortController();
+    let isCancelled = false;
+
+    (async () => {
+      try {
+        const [[startLat, startLon], [destLat, destLon]] = await Promise.all([ getPOI(start), getPOI(dest) ]);
+        const response = await fetch("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            appKey: APP_KEY,
+          },
+          body: JSON.stringify({
+            startX: startLon,
+            startY: startLat,
+            endX: destLon,
+            endY: destLat,
+            startName: "출발지",
+            endName: "목적지",
+          }),
+          signal: controller.signal
+        });
+        const { features } = await response.json();
+
+        if (!isCancelled && webviewRef.current) {
+          webviewRef.current.injectJavaScript(`
+            drawLine(${JSON.stringify(features.filter(({ geometry: { type } }) => type === "LineString").map(({ geometry: { coordinates: [lat, lon] } }) => [lat, lon]).flat(1).slice(0, -1))});
+            map.setCenter(new Tmapv3.LatLng(${startLat}, ${startLon}));
+            map.setZoom(25);
+          `);
+
+          const points: [lat: number, lon: number ][] = features.filter(({ geometry: { type } }) => type === "Point").map(({ geometry: { coordinates: [lat, lon] } }) => [ lon, lat ]);
+          
+          webviewRef.current.injectJavaScript(`
+            drawLine(${JSON.stringify([points[points.length - 2].slice().reverse(), points[points.length - 1].slice().reverse()])});
+            drawDestMarker(${points[points.length - 1][0]}, ${points[points.length - 1][1]});
+          `)
+
+          points.slice(0, -1).forEach(([ lat, lon ]) => webviewRef.current!.injectJavaScript(`drawPoint(${lat}, ${lon});`));
+        }
+      } catch (error) {
+        console.error("Error drawing route:", error)
+      }
+    })()
+
+    return () => { isCancelled = true; controller.abort(); };
+  }, [initalized, start, dest]);
 
   return (
     <View style={styles.container}>
@@ -167,9 +156,9 @@ export default function Tmap() {
             } = await location.getCurrentPositionAsync();
 
             webviewRef.current.injectJavaScript(`init(${latitude}, ${longitude}, ${heading ?? 0});`);
-            setInitalized(true);
           }
         }}
+        onMessage={() => { setInitalized(true); }}
       />
     </View>
   );
@@ -188,6 +177,9 @@ const TMAP_VIEW = `
 
       var currentLat = 37.566481622437934;
       var currentLong = 126.98502302169841;
+
+      var marker_s;
+      var marker_e;
 
       // 지도 및 마커 초기화 (한 번만 실행)
       function init(lat, long, heading) {
@@ -229,6 +221,9 @@ const TMAP_VIEW = `
           anchorPoint: new Tmapv3.Point(30, 40),
           map,
         });
+        map.on("ConfigLoad", function() {
+			    window.ReactNativeWebView.postMessage("init");
+		    });
       }
 
       // 마커 위치 및 방향 업데이트 함수
@@ -260,41 +255,42 @@ const TMAP_VIEW = `
         map.setCenter(lonlat);
         map.setZoom(19);
       }
-      
-      function drawLine(startlat, startlon, destlat, destlon) {
-        // 출발 마커
-        marker_s = new Tmapv3.Marker({
-          position: new Tmapv3.LatLng(startlat, startlon),
-          iconSize: new Tmapv3.Size(24, 38),
+
+      function drawPoint(lat, lon) { //@TODO use circle api
+        new Tmapv3.Circle({
+          center: new Tmapv3.LatLng(lat, lon),
+          radius: 6,
+          fillColor: "#FFFFFF",
+          fillOpacity: 1,
+          strokeColor: "#4775FF",
+          strokeWeight: 3,
+          strokeOpacity: 1,
           map: map,
         });
+      }
 
-        // 도착 마커
-        marker_e = new Tmapv3.Marker({
-          position: new Tmapv3.LatLng(destlat, destlon),
-          iconSize: new Tmapv3.Size(24, 38),
+      function drawLine(path) {
+        for (var i = 0; i < path.length; i++) {
+          path[i] = new Tmapv3.LatLng(path[i][1], path[i][0]);
+        }
+
+        new Tmapv3.Polyline({
+          path: path,
+          strokeColor: "#4775FF",
+			    strokeWeight: 15,
+          strokeOpacity: 1,
+			    map: map
+        });
+      }
+
+      function drawDestMarker(lat, lon) {
+        new Tmapv3.Marker({
+          position: new Tmapv3.LatLng(lat, lon),
+          color: "#000000",
+          opacity: 1,
+          iconSize: new Tmapv3.Size(12, 30),
           map: map,
         });
-
-        var drawInfoArr = [];
-
-        resultData.forEach(item => {
-          var geometry = item.geometry;
-          if (geometry.type === "LineString") {
-            geometry.coordinates.forEach(coord => {
-              var latlng = new Tmapv3.LatLng(coord[1], coord[0]);
-              drawInfoArr.push(latlng);
-            });
-          }
-        });
-
-        var polyline = new Tmapv3.Polyline({
-          path: drawInfoArr,
-          strokeColor: "#FF0000",
-          strokeWeight: 6,
-          map: map
-        });
-        resultdrawArr.push(polyline_);
       }
     </script>
     <style>
