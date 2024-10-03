@@ -236,6 +236,7 @@ export default function Home() {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+      </View>)}
     </View>
   );
 }
