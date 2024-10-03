@@ -188,13 +188,7 @@ export default function Home() {
           </TouchableOpacity>
         </View>
       ) : (
-        <View style={styles.footer}>
-          <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1} onPress={() => setClickinfo(!clickinfo)}>
-            <Text style={styles.safecall}>AI 안심전화</Text>
-            <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
-          </TouchableOpacity>
-
-
+        <>
       <View style={styles.footer}>
         <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1} onPress={() => router.navigate("/safe-call")}>
           <Text style={styles.safecall}>AI 안심전화</Text>
@@ -236,7 +230,7 @@ export default function Home() {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-      </View>)}
+      </>)}
     </View>
   );
 }
