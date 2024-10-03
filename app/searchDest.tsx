@@ -58,7 +58,7 @@ export default function searchDest() {
   const addSearchList = async (search) => {
     try {
       if (search) {
-        router.push("/main");
+        router.navigate("/main");
         const existingItemIndex = currentSearchList.findIndex((item) => item.name === search);
         let updatedList = [...currentSearchList];
 
