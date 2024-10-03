@@ -5,6 +5,8 @@ import { APP_KEY } from "@/env"; // env.ts 파일에서 APP_KEY를 가져옴
 import * as location from "expo-location";
 import { MapSearchParams } from "@/constants/MapSearchParams";
 
+import data from "@/assets/data/danger_zone.json";
+
 async function getPOI(place: string): Promise<[lat: number, lon: number]> {
   try {
     const response = await fetch("https://apis.openapi.sk.com/tmap/pois?" + new URLSearchParams({
@@ -158,7 +160,17 @@ export default function Tmap() {
             webviewRef.current.injectJavaScript(`init(${latitude}, ${longitude}, ${heading ?? 0});`);
           }
         }}
-        onMessage={() => { setInitalized(true); }}
+        onMessage={() => { 
+          setInitalized(true);
+
+          if (webviewRef.current) {
+            for (const points of data) {
+              webviewRef.current.injectJavaScript(`
+                registerArea(${JSON.stringify(points)}); 
+              `)
+            }
+          }
+        }}
       />
     </View>
   );
@@ -252,11 +264,12 @@ const TMAP_VIEW = `
       
       function Move() {
         var lonlat = new Tmapv3.LatLng(currentLat, currentLong);
-        map.setCenter(lonlat);
-        map.setZoom(19);
+        //map.setCenter(lonlat);
+        //map.setZoom(19);
+        drawVisibleAreas();
       }
 
-      function drawPoint(lat, lon) { //@TODO use circle api
+      function drawPoint(lat, lon) {
         new Tmapv3.Circle({
           center: new Tmapv3.LatLng(lat, lon),
           radius: 6,
@@ -292,6 +305,55 @@ const TMAP_VIEW = `
           map: map,
         });
       }
+
+      var areas = []
+
+      function registerArea(path) {
+        for (var i = 0; i < path.length; i++) {
+          path[i] = new Tmapv3.LatLng(path[i][0], path[i][1]);
+        }
+
+        areas.push({ polygon: null, paths: path });
+      }
+
+      var lastCall = undefined;
+      function drawVisibleAreas() {
+        if(lastCall && Date.now() - lastCall < 2000) return;
+        else lastCall = Date.now();
+
+        var bound = map.getBounds();
+
+        outer: for (var i = 0; i < areas.length; i++) {
+          var polygon = areas[i].polygon;
+          var paths = areas[i].paths;
+
+          for (var j = 0; j < paths.length; j++) {
+            if (bound.contains(paths[j])) {
+              if (polygon === null) {
+                areas[i].polygon = new Tmapv3.Polygon({
+                  paths: paths,
+                  fillColor: "#FFA1A6",
+                  fillOpacity: 0.15,
+                  strokeColor: "#FFA1A6",
+                  strokeWeight: 1,
+                  strokeOpacity: 1,
+                  map: map
+                })
+              }
+              continue outer;
+            }
+          }
+          
+          if (polygon) {
+            polygon.setMap(null);
+            areas[i].polygon = null;
+          }
+        }
+      }
+
+      //map.on("DragEnd", function() {
+      //  drawVisibleAreas();
+		  //});
     </script>
     <style>
       button {
