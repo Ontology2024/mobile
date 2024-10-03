@@ -1,20 +1,37 @@
 import Button from "@/components/Button";
 import Switch from "@/components/Switch";
+import { COLORS } from "@/constants/colors";
 import Slider from "@react-native-community/slider";
+import { LinearGradient } from "expo-linear-gradient";
 import { useReducer, useState } from "react";
-import { View, ImageSourcePropType, Text, useWindowDimensions, StyleProp, ViewStyle, StyleSheet, Image, Pressable } from "react-native";
+import {
+  View,
+  ImageSourcePropType,
+  Text,
+  useWindowDimensions,
+  StyleProp,
+  ViewStyle,
+  StyleSheet,
+  Image,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 
+const purpleCircle = require("@/assets/images/purpleCircle.png");
+
 interface AI {
-  name: string
-  character: ImageSourcePropType
-  profile: string
-  bio: string
-  keywords: string[]
-  friendly: number
-  energetic: number
-  tone: number
-  honorific: boolean
+  name: string;
+  character: ImageSourcePropType;
+  profile: string;
+  bio: string;
+  keywords: string[];
+  friendly: number;
+  energetic: number;
+  tone: number;
+  honorific: boolean;
+  bgColors: string[];
+  outline: string;
 }
 
 const DEFAULT_AI_CONFIG: AI[] = [
@@ -27,7 +44,9 @@ const DEFAULT_AI_CONFIG: AI[] = [
     friendly: 6,
     energetic: 6,
     tone: 5,
-    honorific: false
+    honorific: false,
+    bgColors: ["#FFF4F8", "#FFF", "#FFF"],
+    outline: "#FFB2CB",
   },
   {
     name: "안재우",
@@ -38,7 +57,9 @@ const DEFAULT_AI_CONFIG: AI[] = [
     friendly: 2,
     energetic: 2,
     tone: 2,
-    honorific: false
+    honorific: false,
+    bgColors: ["#F0F7FF", "#FFF", "#FFF"],
+    outline: "#7495FF",
   },
   {
     name: "김한수",
@@ -49,15 +70,17 @@ const DEFAULT_AI_CONFIG: AI[] = [
     friendly: 2,
     energetic: 2,
     tone: 2,
-    honorific: false
-  }
-]
+    honorific: false,
+    bgColors: ["#ECFFF9", "#FFF", "#FFF"],
+    outline: "#42E277",
+  },
+];
 
 /* TODO add button to go to safe-call/config */
 export default function Select() {
   const [configs, setConfigs] = useReducer(
     (configs: AI[], update: Partial<AI> & { name: string }): AI[] =>
-       configs.map(({ name, ...rest }) => ({ name, ...rest, ...name === update.name && update })),
+      configs.map(({ name, ...rest }) => ({ name, ...rest, ...(name === update.name && update) })),
     DEFAULT_AI_CONFIG
   );
   const [currentIndex, setIndex] = useState(0);
@@ -66,35 +89,39 @@ export default function Select() {
 
   return (
     <View style={selectStyles.page}>
-      <Text style={selectStyles.title}>전화를 할 AI를 선택하세요!</Text>
-
-      { isFrontCard && <Text style={selectStyles.hint}>AI를 커스텀하려면 카드를 터치하세요!</Text>}
+      <View style={{ alignItems: "center", gap: 50, marginBottom: -40, zIndex: 1 }}>
+        <Text style={selectStyles.title}>전화를 할 AI를 선택하세요!</Text>
+        <Text style={selectStyles.hint}>{!isFrontCard ? "" : "AI를 커스텀하려면 카드를 터치하세요!"}</Text>
+      </View>
       <Carousel
         style={{ backgroundColor: "#FFFFFF" }}
         data={configs}
-        renderItem={({ item: callee, index }) => 
-          <AICard 
+        renderItem={({ item: callee, index }) => (
+          <AICard
             key={callee.name}
             callee={callee}
-            onChange={update => setConfigs({ name: callee.name, ...update })}
+            onChange={(update) => setConfigs({ name: callee.name, ...update })}
             showFront={currentIndex !== index || isFrontCard}
             flip={() => setIsFrontCard(!isFrontCard)}
           />
-        }
+        )}
         loop
         mode="parallax"
         width={width}
         height={540}
-        onSnapToItem={index => { setIndex(index); setIsFrontCard(true) }}
+        onSnapToItem={(index) => {
+          setIndex(index);
+          setIsFrontCard(true);
+        }}
       />
       <Pagination current={currentIndex} length={configs.length} style={selectStyles.pagination} />
 
-      <Button onPress={() => {/* @TODO */}} style={selectStyles.call}>
+      <TouchableOpacity activeOpacity={0.9} style={selectStyles.call}>
         <Text style={selectStyles.callText}>{configs[currentIndex].name}와 전화하기</Text>
         <Image source={callIcon} style={selectStyles.callIcon} />
-      </Button>
+      </TouchableOpacity>
     </View>
-  )
+  );
 }
 
 const selectStyles = StyleSheet.create({
@@ -102,7 +129,7 @@ const selectStyles = StyleSheet.create({
     flex: 1,
 
     alignItems: "center",
-    
+
     paddingTop: 40,
     paddingBottom: 23,
   },
@@ -114,8 +141,10 @@ const selectStyles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 12,
     color: "#8B94A8",
+    position: "relative",
   },
   pagination: {
+    height: 100,
     gap: 4,
   },
   call: {
@@ -123,6 +152,8 @@ const selectStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
+    backgroundColor: COLORS.PURPLE,
+    borderRadius: 10,
 
     width: "90%",
 
@@ -131,7 +162,7 @@ const selectStyles = StyleSheet.create({
   callText: {
     fontWeight: "600",
     fontSize: 16,
-    color: "#FFFFFF"
+    color: "#FFFFFF",
   },
   callIcon: {
     flexShrink: 0,
@@ -139,24 +170,24 @@ const selectStyles = StyleSheet.create({
     height: 20,
     aspectRatio: 1,
   },
-})
+});
 
 const callIcon = require("@/assets/images/call.png");
 
 interface PaginationProps {
-  current: number
-  length: number
-  style?: StyleProp<ViewStyle>
+  current: number;
+  length: number;
+  style?: StyleProp<ViewStyle>;
 }
 
 function Pagination({ current, length, style }: PaginationProps) {
   return (
     <View style={[paginationStyles.container, style]}>
-      {
-        Array.from({ length }, (_, i) => <View key={i} style={i === current ? paginationStyles.active : paginationStyles.inactive} />)
-      }
+      {Array.from({ length }, (_, i) => (
+        <View key={i} style={i === current ? paginationStyles.active : paginationStyles.inactive} />
+      ))}
     </View>
-  )
+  );
 }
 
 const paginationStyles = StyleSheet.create({
@@ -178,92 +209,196 @@ const paginationStyles = StyleSheet.create({
     flexShrink: 0,
     width: 5,
     height: 5,
-    
+
     borderRadius: 2.5,
 
     backgroundColor: "#C6C6C6",
-  }
-})
+  },
+});
 
 interface AICardProps {
-  callee: AI
-  onChange: (update: Partial<AI>) => void
-  showFront: boolean
-  flip: () => void
-  style?: StyleProp<ViewStyle>
+  callee: AI;
+  onChange: (update: Partial<AI>) => void;
+  showFront: boolean;
+  flip: () => void;
+  style?: StyleProp<ViewStyle>;
 }
 
 function AICard({ callee, onChange, showFront, flip, style }: AICardProps) {
   return (
-    <Pressable onPress={flip} style={[aiCardStyle.container, style]}>
+    <Pressable onPress={flip} style={[aiCardStyle.container, style, { borderColor: callee.outline }]}>
+      <LinearGradient
+        colors={callee.bgColors}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        locations={[0, 0.5499, 1]}
+        style={aiCardStyle.gradientBg}
+      />
       <Image style={showFront ? aiCardStyle.characterFront : aiCardStyle.characterBack} source={callee.character} />
 
-      {
-        showFront
-        ? <View style={aiCardStyle.bioBox}>
-            <Text style={aiCardStyle.titleFront}>{callee.name}, {callee.profile}</Text>
-            <Text style={aiCardStyle.bio}>{callee.bio}</Text>
-            <View style={aiCardStyle.keywordList}>
-              { callee.keywords.map(keyword => <Text key={keyword} style={aiCardStyle.hashtag}>#{keyword}</Text>) }
+      {showFront ? (
+        <View style={aiCardStyle.bioBox}>
+          <Text style={aiCardStyle.titleFront}>
+            {callee.name}, {callee.profile}
+          </Text>
+          <Text style={aiCardStyle.bio}>{callee.bio}</Text>
+          <View style={aiCardStyle.keywordList}>
+            {callee.keywords.map((keyword) => (
+              <Text key={keyword} style={aiCardStyle.hashtag}>
+                #{keyword}
+              </Text>
+            ))}
+          </View>
+        </View>
+      ) : (
+        <>
+          <Text style={aiCardStyle.titleBack}>
+            {callee.name}, {callee.profile}
+          </Text>
+          <View style={aiCardStyle.form}>
+            <View style={aiCardStyle.sliderBox}>
+              <View style={aiCardStyle.sliderHeader}>
+                <Text style={aiCardStyle.sliderText}>정중함</Text>
+                <Text style={aiCardStyle.sliderText}>친근함</Text>
+              </View>
+              <View>
+                <Slider
+                  onValueChange={(friendly) => onChange({ friendly })}
+                  step={1}
+                  minimumValue={0}
+                  maximumValue={7}
+                  minimumTrackTintColor="#DDDFF1"
+                  maximumTrackTintColor="#DDDFF1"
+                  thumbImage={purpleCircle}
+                  style={aiCardStyle.slider}
+                />
+                <View
+                  style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: -27 }}
+                >
+                  {Array.from({ length: 8 }).map((_, index) => (
+                    <View
+                      key={index}
+                      style={{
+                        width: 12,
+                        height: 12,
+                        borderRadius: 100,
+                        backgroundColor: "#DDDFF1",
+                      }}
+                    />
+                  ))}
+                </View>
+              </View>
+            </View>
+            <View style={aiCardStyle.sliderBox}>
+              <View style={aiCardStyle.sliderHeader}>
+                <Text style={aiCardStyle.sliderText}>차분한</Text>
+                <Text style={aiCardStyle.sliderText}>밝은</Text>
+              </View>
+              <View>
+                <Slider
+                  onValueChange={(energetic) => onChange({ energetic })}
+                  step={1}
+                  minimumValue={0}
+                  maximumValue={7}
+                  minimumTrackTintColor="#DDDFF1"
+                  maximumTrackTintColor="#DDDFF1"
+                  thumbImage={purpleCircle}
+                  style={aiCardStyle.slider}
+                />
+                <View
+                  style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: -27 }}
+                >
+                  {Array.from({ length: 8 }).map((_, index) => (
+                    <View
+                      key={index}
+                      style={{
+                        width: 12,
+                        height: 12,
+                        borderRadius: 100,
+                        backgroundColor: "#DDDFF1",
+                      }}
+                    />
+                  ))}
+                </View>
+              </View>
+            </View>
+            <View style={aiCardStyle.sliderBox}>
+              <View style={aiCardStyle.sliderHeader}>
+                <Text style={aiCardStyle.sliderText}>목소리 낮은</Text>
+                <Text style={aiCardStyle.sliderText}>목소리 높은</Text>
+              </View>
+              <View>
+                <Slider
+                  onValueChange={(tone) => onChange({ tone })}
+                  step={1}
+                  minimumValue={0}
+                  maximumValue={7}
+                  minimumTrackTintColor="#DDDFF1"
+                  maximumTrackTintColor="#DDDFF1"
+                  thumbImage={purpleCircle}
+                  style={aiCardStyle.slider}
+                />
+                <View
+                  style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: -27 }}
+                >
+                  {Array.from({ length: 8 }).map((_, index) => (
+                    <View
+                      key={index}
+                      style={{
+                        width: 12,
+                        height: 12,
+                        borderRadius: 100,
+                        backgroundColor: "#DDDFF1",
+                      }}
+                    />
+                  ))}
+                </View>
+              </View>
             </View>
           </View>
-        : <>
-            <Text style={aiCardStyle.titleBack}>{callee.name}, {callee.profile}</Text>
-            <View style={aiCardStyle.form}>
-              <View style={aiCardStyle.sliderBox}>
-                <View style={aiCardStyle.sliderHeader}>
-                  <Text style={aiCardStyle.sliderText}>정중함</Text>
-                  <Text style={aiCardStyle.sliderText}>친근함</Text>
-                </View>
-                <Slider onValueChange={friendly => onChange({ friendly })} style={aiCardStyle.slider} />
-              </View>
-              <View style={aiCardStyle.sliderBox}>
-                <View style={aiCardStyle.sliderHeader}>
-                  <Text style={aiCardStyle.sliderText}>차분한</Text>
-                  <Text style={aiCardStyle.sliderText}>밝은</Text>
-                </View>
-                <Slider onValueChange={energetic => onChange({ energetic })} style={aiCardStyle.slider} />
-              </View>
-              <View style={aiCardStyle.sliderBox}>
-                <View style={aiCardStyle.sliderHeader}>
-                  <Text style={aiCardStyle.sliderText}>목소리 낮은</Text>
-                  <Text style={aiCardStyle.sliderText}>목소리 높은</Text>
-                </View>
-                <Slider onValueChange={tone => onChange({ tone })} style={aiCardStyle.slider} />
-              </View>
-            </View>
-            <View style={aiCardStyle.switchBox}>
-              <Text style={aiCardStyle.switchText}>존댓말</Text>
-              <Switch isOn={callee.honorific} onToggle={() => onChange({ honorific: !callee.honorific })} style={aiCardStyle.switch} handleStyle={aiCardStyle.switchHandle} />
-            </View>
-          </>
-      }
+          <View style={aiCardStyle.switchBox}>
+            <Text style={aiCardStyle.switchText}>존댓말</Text>
+            <Switch
+              isOn={callee.honorific}
+              onToggle={() => onChange({ honorific: !callee.honorific })}
+              style={aiCardStyle.switch}
+              handleStyle={aiCardStyle.switchHandle}
+            />
+          </View>
+        </>
+      )}
     </Pressable>
-  )
+  );
 }
 
 const aiCardStyle = StyleSheet.create({
   container: {
     flex: 1,
-
     alignItems: "center",
-
     borderRadius: 20,
-
-    backgroundColor: "#000000",
+    backgroundColor: "white",
+    borderWidth: 1.5,
+    borderColor: "#FFB2CB",
+  },
+  gradientBg: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: 20,
   },
   characterFront: {
     flexShrink: 0,
     width: 206,
     height: 206,
     aspectRatio: 1,
-
     marginTop: 29,
   },
   characterBack: {
     flexShrink: 0,
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     aspectRatio: 1,
 
     marginTop: 32,
@@ -301,6 +436,7 @@ const aiCardStyle = StyleSheet.create({
     shadowColor: "#F3F6F9",
   },
   bio: {
+    textAlign: "center",
     fontWeight: "600",
     fontSize: 16,
     color: "#575C71",
@@ -323,18 +459,23 @@ const aiCardStyle = StyleSheet.create({
     paddingHorizontal: 6,
     borderRadius: 6,
 
-    backgroundColor: "#F8F9FE"
+    backgroundColor: "#F8F9FE",
   },
   form: {
-    height: 185,
+    width: "80%",
+    height: 220,
+    backgroundColor: "white",
+    borderRadius: 20,
 
     gap: 8,
     alignItems: "stretch",
 
     paddingVertical: 8,
 
+    shadowColor: "#a8aaad",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
     shadowRadius: 12,
-    shadowColor: "#F3F6F9",
 
     marginTop: 26,
   },
@@ -350,19 +491,21 @@ const aiCardStyle = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
+    marginBottom: 7,
   },
   sliderText: {
-    fontSize: 10,
-    fontWeight: "500",
+    fontSize: 12,
+    fontWeight: "600",
   },
   slider: {
     flexShrink: 0,
     flexBasis: "100%",
-
+    zIndex: 1,
     height: 11,
   },
   switchBox: {
-    marginTop: 10,
+    marginTop: 30,
+    marginRight: 30,
 
     alignSelf: "stretch",
 
@@ -373,17 +516,18 @@ const aiCardStyle = StyleSheet.create({
   },
   switchText: {
     fontWeight: "400",
-    fontSize: 10,
+    fontSize: 14,
   },
   switch: {
-    width: 30,
+    width: 45,
+    height: 30,
 
     borderRadius: 60,
   },
   switchHandle: {
-    width: 15,
-    height: 15,
+    width: 25,
+    height: 26,
 
-    borderRadius: 7.5,
-  }
-})
+    borderRadius: 99,
+  },
+});
