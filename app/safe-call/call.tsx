@@ -1,35 +1,35 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { COLORS } from "@/constants/colors";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { AIConfigs } from "@/constants/AIConfigs";
+import { useLocalSearchParams } from "expo-router";
 
 const callbottomImg = require("@/assets/images/callbottom.png");
-const characterImg = require("@/assets/images/callCharacter.png");
-
-const name = "베키";
-const age = "10대";
-const gender = "여성";
-const keyword = "#활발한, #친근한, #귀여운";
 
 export default function call() {
+  const { configs } = useContext(AIConfigs);
+  const { callee } = useLocalSearchParams<{ callee: string }>();
+  const selected = configs.find(({ name }) => name === callee)!;
+
   return (
     <View style={Styles.container}>
       <View style={{ marginTop: 29, marginLeft: -100, gap: 18 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 18 }}>
-          <Text style={{ color: COLORS.PURPLE, fontSize: 26, fontWeight: "700" }}>{name}</Text>
+          <Text style={{ color: COLORS.PURPLE, fontSize: 26, fontWeight: "700" }}>{selected.name}</Text>
           <View style={Styles.time}>
             <Text style={{ color: "#939393", fontSize: 14, fontWeight: "400" }}>00:21:45</Text>
           </View>
         </View>
         <Text style={{ color: "#939393", fontSize: 14, fontWeight: "400" }}>
-          {age} {gender}, {keyword}
+          {selected.keywords.map(keyword => `#${keyword}`).join(' ')}
         </Text>
       </View>
 
       <View style={{ position: "absolute", width: "100%", height: "100%", alignItems: "center", top: 150 }}>
-        <Image source={characterImg} style={{ width: "80%", height: "50%" }} />
+        <Image source={selected.character} style={{ width: "80%", height: "50%" }} />
       </View>
 
       <TouchableOpacity activeOpacity={0.9} style={Styles.callBtn}>
