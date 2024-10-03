@@ -7,7 +7,7 @@ const chatBubble = require("@/assets/images/chat-bubble.png");
 export default function Index() {
   return (
     <View style={styles.page}>
-      <Text style={[styles.title, { marginTop: 23 }]}>친근한 AI와</Text>
+      <Text style={[styles.title, { marginTop: 50 }]}>친근한 AI와</Text>
       <Text style={styles.title}>전화를 해 보세요!</Text>
       <Text style={styles.description}>친구와 대화하듯 전화가 가능합니다.</Text>
       <View style={{ flexGrow: 1 }} />
