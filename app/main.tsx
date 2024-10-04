@@ -14,6 +14,7 @@ import { supabase } from "@/lib/supabase";
 import Mykey from "@/components/Mykey";
 import * as location from "expo-location";
 import { AntDesign } from "@expo/vector-icons";
+import { router } from 'expo-router';
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -198,7 +199,7 @@ export default function Home() {
       {!goToKey &&
         (start && dest ? (
           <View style={styles.panelBox}>
-            <RecommendBox navInfo={navInfo} />
+            <RecommendBox />
           </View>
         ) : (
           <View style={styles.panelBox}>
@@ -217,48 +218,49 @@ export default function Home() {
         </View>
       ) : (
         <>
-      <View style={styles.footer}>
-        <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1} onPress={() => router.navigate("/safe-call")}>
-          <Text style={styles.safecall}>AI 안심전화</Text>
-          <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.8} style={styles.footerBox2} onPress={modalVisible ? closeModal : openModal}>
-          <Image source={menuImg} style={styles.menu} />
-        </TouchableOpacity>
-      </View>
+          <View style={styles.footer}>
+            <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1} onPress={() => router.navigate("/safe-call")}>
+              <Text style={styles.safecall}>AI 안심전화</Text>
+              <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.8} style={styles.footerBox2} onPress={modalVisible ? closeModal : openModal}>
+              <Image source={menuImg} style={styles.menu} />
+            </TouchableOpacity>
+          </View>
 
-      <Modal visible={modalVisible} transparent animationType="none">
-        <TouchableWithoutFeedback onPress={closeModal}>
-          <View style={styles.modalOverlay}>
-            <TouchableWithoutFeedback>
-              <Animated.View style={[styles.modalContent, { opacity: fadeAnim }]}>
-                {/* <View style={styles.modalBox}>
+          <Modal visible={modalVisible} transparent animationType="none">
+            <TouchableWithoutFeedback onPress={closeModal}>
+              <View style={styles.modalOverlay}>
+                <TouchableWithoutFeedback>
+                  <Animated.View style={[styles.modalContent, { opacity: fadeAnim }]}>
+                    {/* <View style={styles.modalBox}>
                   <Text style={styles.modalOption}>상점</Text>
                   <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
                     <Image source={marketImg} style={{ width: 28, height: 25 }} />
                   </TouchableOpacity>
                 </View> */}
-                <View style={styles.modalBox}>
-                  <Text style={styles.modalOption}>코인키</Text>
-                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7} onPress={goToMykey}>
-                    <Image source={coinkeyImg} style={{ width: 17, height: 27 }} />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.modalBox}>
-                  <Text style={styles.modalOption}>마이페이지</Text>
-                  <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7} onPress={openMyPage}>
-                    <Image source={mykeyImg} style={{ width: 20, height: 20 }} />
-                  </TouchableOpacity>
-                </View>
-                <TouchableOpacity activeOpacity={0.8} style={styles.closeBox} onPress={closeModal}>
-                  <Image source={closeImg} style={styles.close} />
-                </TouchableOpacity>
-              </Animated.View>
+                    <View style={styles.modalBox}>
+                      <Text style={styles.modalOption}>코인키</Text>
+                      <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7} onPress={goToMykey}>
+                        <Image source={coinkeyImg} style={{ width: 17, height: 27 }} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.modalBox}>
+                      <Text style={styles.modalOption}>마이페이지</Text>
+                      <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7} onPress={openMyPage}>
+                        <Image source={mykeyImg} style={{ width: 20, height: 20 }} />
+                      </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.closeBox} onPress={closeModal}>
+                      <Image source={closeImg} style={styles.close} />
+                    </TouchableOpacity>
+                  </Animated.View>
+                </TouchableWithoutFeedback>
+              </View>
             </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-      </>)}
+          </Modal>
+        </>
+      )}
     </View>
   );
 }
