@@ -12,7 +12,7 @@ export default function editalarm() {
   const router = useRouter();
   const [weekV, setWeekV] = useState(Array(7).fill(false));
   const [ck, setCk] = useState(false);
-  const [sw, setSw] = useState([false, false, false, false, false]);
+  const [sw, setSw] = useState([true, true, true, true, true]);
   const [isDatePickerVisible, setDatePickerVisibility] = useState("");
   const [startTime, setStartTime] = useState("오전 09:00");
   const [endTime, setEndTime] = useState("오전 09:00");

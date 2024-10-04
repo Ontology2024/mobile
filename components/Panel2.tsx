@@ -19,19 +19,15 @@ const theftImg = require("@/assets/images/theft.png");
 
 const convenienceN = 2;
 const convenienceLoc = [
-  { name: "CU 영통학사점", address: "경기도 수원시 영통구 영통로 214", distance: "20" },
-  { name: "GS25 영통학사점", address: "경기도 수원시 영통구 영통로 214", distance: "20" },
+  { name: "CU 영통학사점", address: "경기도 용인시 기흥구 서그내로 21", distance: "430" },
+  { name: "GS25 서천현대점", address: "경기도 용인시 기흥구 서그내로16번길 11", distance: "550" },
 ];
 const policeN = 1;
-const policeLoc = [{ name: "영통구방위지구대", address: "경기도 수원시 영통구 영통로 214", distance: "20" }];
-const hospitalN = 3;
-const hospitalLoc = [
-  { name: "영통구보건소", address: "경기도 수원시 영통구 영통로 214", distance: "20" },
-  { name: "영통구보건소", address: "경기도 수원시 영통구 영통로 214", distance: "20" },
-  { name: "영통구보건소", address: "경기도 수원시 영통구 영통로 214", distance: "20" },
-];
-const firestationN = 0;
-const firestationLoc = [];
+const policeLoc = [{ name: "서천파출소", address: "경기도 용인시 기흥구 서천동 805 서천파출소", distance: "300" }];
+const hospitalN = 1;
+const hospitalLoc = [{ name: "영통구보건소", address: "경기도 수원시 영통구 영통로 396", distance: "1400" }];
+const firestationN = 1;
+const firestationLoc = [{ name: "수원소방서영통119안전센터", address: "경기도 수원시 영통구 매영로 325", distance: "1500" }];
 
 const safeSentence = ["위험해요", "안전해요"];
 const circleColor = { safe: ["#4876FF", "#DFE2FF"], danger: ["#FF566A", "#FFDFDF"] };
@@ -157,6 +153,7 @@ export default function Panel2({ curr, safeNum }) {
               flexDirection: "row",
               justifyContent: "space-around",
               alignItems: "center",
+              marginBottom: 16,
             }}
           >
             {/* 안전할떄 */}
@@ -257,7 +254,7 @@ export default function Panel2({ curr, safeNum }) {
             </View>
           </View>
 
-          <View style={{ marginTop: 150 }} />
+          <View style={{ marginTop: 250 }} />
         </ScrollView>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: "100%", marginTop: 24 }}>
