@@ -3,11 +3,12 @@ import React, { useContext, useState } from "react";
 import { MapSearchParams } from "@/constants/MapSearchParams";
 import { COLORS } from "@/constants/colors";
 import { ScrollView } from "react-native-gesture-handler";
+import { navInfo } from "@/constants/NavMock";
 
 const dangerBarImg = require("@/assets/images/dangerBar.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
 
-export default function RecommendBox({ navInfo }) {
+export default function RecommendBox() {
   const { start, dest, setSearchParams } = useContext(MapSearchParams);
   const [selectedBox, setSelectedBox] = useState(0);
 
@@ -17,7 +18,7 @@ export default function RecommendBox({ navInfo }) {
 
   return (
     <View style={styles.container}>
-      <Image source={dangerBarImg} style={{ width: 48, height: 118, marginBottom: 10 }} />
+      <Image source={dangerBarImg} style={{ width: 48, height: 128, marginBottom: 10 }} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           {navInfo.map((data, idx) => (

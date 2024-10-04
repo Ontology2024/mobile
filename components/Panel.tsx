@@ -12,11 +12,10 @@ const destinationImg = require("@/assets/images/destination.png");
 const safeSentence = ["위험해요", "안전해요"];
 
 const circleColor = { safe: ["#4876FF", "#DFE2FF"], danger: ["#FF566A", "#FFDFDF"] };
-const safeN = 1;
 
-export default function Panel({ start, dest, curr, clickinfo }) {
+export default function Panel({ start, dest, curr, clickinfo, safeNum }) {
   return clickinfo ? (
-    <Panel2 curr={curr} />
+    <Panel2 curr={curr} safeNum={safeNum} />
   ) : (
     <View>
       <Text style={styles.pannelTitle}>안전한 길 찾기</Text>
@@ -56,20 +55,20 @@ export default function Panel({ start, dest, curr, clickinfo }) {
 
       <View style={styles.footer}>
         <View style={styles.smallCircle1} />
-        <View style={[styles.smallCircle2, { backgroundColor: safeN <= 3 ? circleColor["safe"][0] : circleColor["danger"][0] }]} />
+        <View style={[styles.smallCircle2, { backgroundColor: safeNum <= 3 ? circleColor["safe"][0] : circleColor["danger"][0] }]} />
         <View
           style={[
             styles.circle,
             {
-              backgroundColor: safeN <= 3 ? circleColor["safe"][0] : circleColor["danger"][0],
-              borderColor: safeN <= 3 ? circleColor["safe"][1] : circleColor["danger"][1],
+              backgroundColor: safeNum <= 3 ? circleColor["safe"][0] : circleColor["danger"][0],
+              borderColor: safeNum <= 3 ? circleColor["safe"][1] : circleColor["danger"][1],
             },
           ]}
         >
-          <Text style={{ color: "white", fontSize: 22, fontWeight: "600" }}>{safeN}</Text>
+          <Text style={{ color: "white", fontSize: 22, fontWeight: "600" }}>{safeNum}</Text>
         </View>
         <Text style={{ color: "black", fontSize: 20, fontWeight: "600", marginLeft: 10 }}>
-          {safeN <= 3 ? safeSentence[1] : safeSentence[0]}
+          {safeNum <= 3 ? safeSentence[1] : safeSentence[0]}
         </Text>
         <View style={{ flexDirection: "row", gap: 6, alignItems: "center", marginLeft: 6 }}>
           <Feather name="alert-circle" size={16} color="#8B94A8" />

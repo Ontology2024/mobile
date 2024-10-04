@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { COLORS } from "@/constants/colors";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import Octicons from "@expo/vector-icons/Octicons";
@@ -18,6 +18,7 @@ export default function editmypage() {
   const [birth, changeBirth] = useState(_birth);
   const [number, changeNumber] = useState(_number);
   const [social, changeSocial] = useState(_social);
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -89,7 +90,7 @@ export default function editmypage() {
         </View>
       </View>
 
-      <TouchableOpacity activeOpacity={0.8} style={styles.footerContainer}>
+      <TouchableOpacity activeOpacity={0.8} style={styles.footerContainer} onPress={() => router.navigate("/login")}>
         <Text style={styles.footerText}>다른 계정 로그인으로 정보 변경</Text>
       </TouchableOpacity>
     </View>

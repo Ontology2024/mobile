@@ -6,7 +6,6 @@ import Panel from "@/components/Panel";
 import NavHeader from "@/components/nav/NavHeader";
 import RecommendBox from "@/components/nav/RecommendBox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
 import { MapSearchParams } from "@/constants/MapSearchParams";
 import { useNavigation } from "@react-navigation/native";
 import { navInfo } from "@/constants/NavMock";
@@ -14,6 +13,7 @@ import Tmap from "@/components/Tmap";
 import { supabase } from "@/lib/supabase";
 import Mykey from "@/components/Mykey";
 import * as location from "expo-location";
+import { AntDesign } from "@expo/vector-icons";
 
 const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
@@ -118,11 +118,32 @@ export default function Home() {
   }, []);
 
   const [curr, setCurr] = useState("");
+  const [safeNum, setSafeNum] = useState(0);
   useEffect(() => {
     const getCurrPostion = async () => {
       const { granted } = await location.requestForegroundPermissionsAsync();
       if (granted) {
         const loc = await location.getCurrentPositionAsync({});
+
+        // 안전 확인 API(안전도 확인)
+        // const response = await fetch("http://127.0.0.1:5000/is_safe", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     latitude: loc.coords.latitude,
+        //     longitude: loc.coords.longitude,
+        //   }),
+        // }).catch((error) => console.log("error:", error));
+
+        // if (response && response.ok) {
+        //   const data = await response.json();
+        //   console.log(data);
+        //   setSafeNum(data.safety_level);
+        // }
+        setSafeNum(4);
+
         const info = await location.reverseGeocodeAsync(loc.coords);
         const { district } = info[0];
         setCurr(district);
@@ -155,6 +176,13 @@ export default function Home() {
                 </TouchableOpacity>
               ))}
             </View>
+            <TouchableOpacity
+              onPress={() => setClickinfo(!clickinfo)}
+              activeOpacity={0.9}
+              style={{ backgroundColor: "white", alignItems: "center", justifyContent: "center", width: 45, height: 45, borderRadius: 100 }}
+            >
+              <AntDesign name="infocirlceo" size={24} color={COLORS.PURPLE} />
+            </TouchableOpacity>
           </View>
         ))}
 
@@ -162,7 +190,7 @@ export default function Home() {
       {goToKey ? (
         <Mykey setGoToKey={setGoToKey} coin={key} setKey={setKey} />
       ) : (
-        <TouchableOpacity activeOpacity={1} style={{ flex: 1, width: "100%", position: "relative", top: -120, zIndex: -1 }}>
+        <TouchableOpacity activeOpacity={1} style={{ flex: 1, width: "100%", position: "relative", top: -125, zIndex: -1 }}>
           <Tmap />
         </TouchableOpacity>
       )}
@@ -175,7 +203,7 @@ export default function Home() {
         ) : (
           <View style={styles.panelBox}>
             <BottomSheet isOpen animationDuration={200} sliderMaxHeight={650}>
-              <Panel start={start} dest={dest} curr={curr} clickinfo={clickinfo} />
+              <Panel start={start} dest={dest} curr={curr} clickinfo={clickinfo} safeNum={safeNum} />
             </BottomSheet>
           </View>
         ))}
@@ -204,12 +232,12 @@ export default function Home() {
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <Animated.View style={[styles.modalContent, { opacity: fadeAnim }]}>
-                <View style={styles.modalBox}>
+                {/* <View style={styles.modalBox}>
                   <Text style={styles.modalOption}>상점</Text>
                   <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
                     <Image source={marketImg} style={{ width: 28, height: 25 }} />
                   </TouchableOpacity>
-                </View>
+                </View> */}
                 <View style={styles.modalBox}>
                   <Text style={styles.modalOption}>코인키</Text>
                   <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7} onPress={goToMykey}>
