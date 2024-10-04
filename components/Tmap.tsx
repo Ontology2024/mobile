@@ -1,15 +1,9 @@
-import React, { useEffect, useState, useRef, useContext, Image } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import WebView from "react-native-webview";
 import { APP_KEY } from "@/env"; // env.ts 파일에서 APP_KEY를 가져옴
 import * as location from "expo-location";
 import { MapSearchParams } from "@/constants/MapSearchParams";
-import { safeFacility } from "@/constants/safeFacility";
-
-const policeImg = require("@/assets/images/policeWidget.png");
-const convenienceImg = require("@/assets/images/ConvenienceWidget.png");
-const hospitalImg = require("@/assets/images/hospitalWidget.png");
-const firestationImg = require("@/assets/images/firestationWidget.png");
 
 import data from "@/assets/data/danger_zone.json";
 
@@ -109,19 +103,6 @@ export default function Tmap() {
     (async () => {
       try {
         const [[startLat, startLon], [destLat, destLon]] = await Promise.all([getPOI(start), getPOI(dest)]);
-        // 경로 찾기 API
-        const pass = await fetch("http://127.0.0.1:5000/find_path", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            start: [startLat, startLon],
-            end: [destLat, destLon],
-          }),
-        }).catch(() => console.log("error"));
-        const passJson = await pass.text();
-        console.log(passJson);
 
         const response = await fetch("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1", {
           method: "POST",
