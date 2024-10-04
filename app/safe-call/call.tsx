@@ -170,7 +170,10 @@ export default function call() {
       ws.send(JSON.stringify({
         type: "session.update",
         session: {
-          instructions: ``,
+          instructions: `
+            당신은 AI 상담사입니다. 당신의 임무는 당신과 지금 통화하고 있는 상대방이 목적지까지 편안하게 갈 수 있게끔 대화를 이끌어주고 평정심을 찾아주는 데에 있습니다.
+            친절하고 부드럽게, 일상적인 편안한 이야기를 이어나가며 상대방이 목적지에 도착하기 전까지 즐겁게 걸을 수 있도록 도와주세요. 가볍고 사소한 것들을 물으며 주도적으로 대화를 진행해주세요.
+          `,
           voice: "alloy",
           input_audio_format: "pcm16",
           output_audio_format: "pcm16",
