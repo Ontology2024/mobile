@@ -41,7 +41,7 @@ export default function Config() {
                 </Option>
                 <HorizontalLine />
                 <Option option={3}>
-                  <Text>4회</Text>
+                  <Text>3회</Text>
                 </Option>
                 <HorizontalLine />
                 <Option option={4}>

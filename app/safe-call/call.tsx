@@ -117,7 +117,6 @@ export default function call() {
       }
 
       if (typeof status.metering === 'number') {
-        console.log(status.metering)
         if (status.metering < -25) {
           if (idleStartTime.current === null) idleStartTime.current = Date.now();
           if (Date.now() - idleStartTime.current > 2000) {
