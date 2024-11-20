@@ -1,37 +1,54 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { useEffect, useState } from "react";
+import { Stack } from "expo-router";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { MapSearchParams } from "@/constants/MapSearchParams";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  //   useEffect(() => {
+  //   async function loadFonts() {
+  //     await Font.loadAsync({
+  //       Pretendard: require("@/assets/fonts/Pretendard-Medium.ttf"),
+  //     });
+  //     setFontsLoaded(true);
+  //   }
+
+  //   loadFonts();
+  // }, []);
+  const [loaded, error] = useFonts({
+    Pretendard: require("@/assets/fonts/Pretendard-Medium.ttf"),
+    // "BalooTammudu2-Bold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-Bold.ttf"),
+    // "BalooTammudu2-ExtraBold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-ExtraBold.ttf"),
   });
+  const [{ start, dest }, setSearchParams] = useState({ start: "", dest: "" });
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded || error) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, error]);
 
-  if (!loaded) {
+  if (!loaded && !error) {
     return null;
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <MapSearchParams.Provider value={{ start, dest, setSearchParams }}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="safe-call" options={{ headerShown: false }} />
+          <Stack.Screen name="mypage" options={{ headerShown: false }} />
+          <Stack.Screen name="editmypage" options={{ headerShown: false }} />
+          <Stack.Screen name="scrapplace" options={{ headerShown: false }} />
+          <Stack.Screen name="addplace" options={{ headerShown: false }} />
+          <Stack.Screen name="editalarm" options={{ headerShown: false }} />
+          <Stack.Screen name="searchStart" options={{ headerShown: false }} />
+          <Stack.Screen name="searchDest" options={{ headerShown: false }} />
+        </Stack>
+      </GestureHandlerRootView>
+    </MapSearchParams.Provider>
   );
 }

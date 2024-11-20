@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "safe-key",
-    "slug": "safe-key",
+    "slug": "safekey",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -13,24 +13,75 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.safekey"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/jiwoo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION"
+      ],
+      "package": "com.safekey"
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "output": "static"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-build-properties",
+      [
+        "@mj-studio/react-native-naver-map",
+        {
+          "client_id": "ss0qvu3z7k",
+          "android": {
+            "ACCESS_FINE_LOCATION": true,
+            "ACCESS_COARSE_LOCATION": true,
+            "ACCESS_BACKGROUND_LOCATION": true
+          },
+          "ios": {
+            "NSLocationAlwaysAndWhenInUseUsageDescription": "현재 위치를 표시하기 위해 위치정보 접근을 허용합니다.",
+            "NSLocationWhenInUseUsageDescription": "현재 위치를 표시하기 위해 위치정보 접근을 허용합니다.",
+            "NSLocationTemporaryUsageDescriptionDictionary": {
+              "purposeKey": "{{ your purpose key }}",
+              "usageDescription": "현재 위치를 표시하기 위해 위치정보 접근을 허용합니다."
+            }
+          }
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraMavenRepos": [
+              "https://repository.map.naver.com/archive/maven"
+            ]
+          }
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow safekey to use your location."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "800e517e-f3f4-43e3-8f6a-9053a5d831b5"
+      }
+    },
+    "owner": "jeongsein"
   }
 }
