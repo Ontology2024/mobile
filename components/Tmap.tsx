@@ -60,11 +60,13 @@ export default function Tmap() {
       if (granted) {
         subscription = await location.watchPositionAsync(
           {
-            accuracy: location.Accuracy.High, // 높은 정확도
+            accuracy: location.Accuracy.Low, // 높은 정확도
           },
           ({ coords: { latitude, longitude } }) => {
             if (webviewRef.current) {
-              webviewRef.current.injectJavaScript(`updateMarkerPos(${latitude}, ${longitude});`);
+              webviewRef.current.injectJavaScript(
+                `updateMarkerPos(37.2429616, 127.0800525);`
+              );
             }
           }
         );
@@ -85,7 +87,9 @@ export default function Tmap() {
         subscription = await location.watchHeadingAsync((newHeading) => {
           const heading = newHeading.trueHeading || newHeading.magHeading;
           if (webviewRef.current) {
-            webviewRef.current.injectJavaScript(`updateMarkerHeading(${heading});`);
+            webviewRef.current.injectJavaScript(
+              `updateMarkerHeading(${heading});`
+            );
           }
         });
       }
@@ -102,25 +106,31 @@ export default function Tmap() {
 
     (async () => {
       try {
-        const [[startLat, startLon], [destLat, destLon]] = await Promise.all([getPOI(start), getPOI(dest)]);
+        const [[startLat, startLon], [destLat, destLon]] = await Promise.all([
+          getPOI(start),
+          getPOI(dest),
+        ]);
 
-        const response = await fetch("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            appKey: APP_KEY,
-          },
-          body: JSON.stringify({
-            startX: startLon,
-            startY: startLat,
-            endX: destLon,
-            endY: destLat,
-            startName: "출발지",
-            endName: "목적지",
-          }),
-          signal: controller.signal,
-        });
+        const response = await fetch(
+          "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              appKey: APP_KEY,
+            },
+            body: JSON.stringify({
+              startX: startLon,
+              startY: startLat,
+              endX: destLon,
+              endY: destLat,
+              startName: "출발지",
+              endName: "목적지",
+            }),
+            signal: controller.signal,
+          }
+        );
         const { features } = await response.json();
 
         if (!isCancelled && webviewRef.current) {
@@ -153,11 +163,20 @@ export default function Tmap() {
             );
 
           webviewRef.current.injectJavaScript(`
-            drawLine(${JSON.stringify([points[points.length - 2].slice().reverse(), points[points.length - 1].slice().reverse()])});
-            drawDestMarker(${points[points.length - 1][0]}, ${points[points.length - 1][1]});
+            drawLine(${JSON.stringify([
+              points[points.length - 2].slice().reverse(),
+              points[points.length - 1].slice().reverse(),
+            ])});
+            drawDestMarker(${points[points.length - 1][0]}, ${
+            points[points.length - 1][1]
+          });
           `);
 
-          points.slice(0, -1).forEach(([lat, lon]) => webviewRef.current!.injectJavaScript(`drawPoint(${lat}, ${lon});`));
+          points
+            .slice(0, -1)
+            .forEach(([lat, lon]) =>
+              webviewRef.current!.injectJavaScript(`drawPoint(${lat}, ${lon});`)
+            );
         }
       } catch (error) {
         console.error("Error drawing route:", error);
@@ -184,14 +203,17 @@ export default function Tmap() {
         onLoad={async () => {
           if (webviewRef.current === null) return;
 
-          const { granted } = await location.requestForegroundPermissionsAsync();
+          const { granted } =
+            await location.requestForegroundPermissionsAsync();
 
           if (granted) {
             const {
               coords: { latitude, longitude, heading },
             } = await location.getCurrentPositionAsync();
 
-            webviewRef.current.injectJavaScript(`init(${latitude}, ${longitude}, ${heading ?? 0});`);
+            webviewRef.current.injectJavaScript(
+              `init(${latitude}, ${longitude}, ${heading ?? 0});`
+            );
           }
         }}
         onMessage={() => {

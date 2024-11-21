@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { useEffect, useState, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MapSearchParams } from "@/constants/MapSearchParams";
@@ -59,7 +67,9 @@ export default function searchStart() {
     try {
       if (search) {
         router.navigate("/main");
-        const existingItemIndex = currentSearchList.findIndex((item) => item.name === search);
+        const existingItemIndex = currentSearchList.findIndex(
+          (item) => item.name === search
+        );
         let updatedList = [...currentSearchList];
 
         if (existingItemIndex !== -1) {
@@ -128,10 +138,16 @@ export default function searchStart() {
               style={styles.currentSearchListBox}
               key={value.name}
             >
-              <Image source={value.scrap ? starImg : destinationImg} style={value.scrap ? styles.starImg : styles.destImg} />
+              <Image
+                source={value.scrap ? starImg : destinationImg}
+                style={value.scrap ? styles.starImg : styles.destImg}
+              />
               <View style={styles.currentSearchListBox2}>
                 <Text style={styles.currentSearchListText}>{value.name}</Text>
-                <TouchableOpacity activeOpacity={0.6} onPress={() => removeItem(value.name)}>
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={() => removeItem(value.name)}
+                >
                   <Image source={closeImg} style={styles.closeBtn} />
                 </TouchableOpacity>
               </View>

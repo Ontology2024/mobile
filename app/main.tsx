@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Animated, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Modal,
+  Animated,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { COLORS } from "@/constants/colors";
 import BottomSheet from "react-native-simple-bottom-sheet";
 import Panel from "@/components/Panel";
@@ -14,9 +23,9 @@ import { supabase } from "@/lib/supabase";
 import Mykey from "@/components/Mykey";
 import * as location from "expo-location";
 import { AntDesign } from "@expo/vector-icons";
-import { router } from 'expo-router';
+import { router } from "expo-router";
+import Button from "@/components/Button";
 
-const marketImg = require("@/assets/images/market.png");
 const coinkeyImg = require("@/assets/images/coinkey.png");
 const purplekeyImg = require("@/assets/images/purplekey.png");
 const mykeyImg = require("@/assets/images/mykey.png");
@@ -106,7 +115,10 @@ export default function Home() {
   useEffect(() => {
     const load = async () => {
       const email = await AsyncStorage.getItem("email");
-      let { data: coin, error } = await supabase.from("users").select("coinkey").eq("email", email);
+      let { data: coin, error } = await supabase
+        .from("users")
+        .select("coinkey")
+        .eq("email", email);
       if (error) {
         console.log(error);
         return;
@@ -155,6 +167,9 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
+      <Button onPress={() => navigation.navigate("map")}>
+        <Text>개발중 맵</Text>
+      </Button>
       {!goToKey &&
         (start && dest ? (
           <NavHeader />
@@ -168,11 +183,17 @@ export default function Home() {
               {Object.keys(selectedItems).map((key) => (
                 <TouchableOpacity
                   key={key}
-                  style={[styles.checkbox, { opacity: selectedItems[key] ? 1 : 0.5 }]}
+                  style={[
+                    styles.checkbox,
+                    { opacity: selectedItems[key] ? 1 : 0.5 },
+                  ]}
                   onPress={() => handleSelect(key)}
                   activeOpacity={0.8}
                 >
-                  <Image source={require("@/assets/images/check.png")} style={styles.checkImg} />
+                  <Image
+                    source={require("@/assets/images/check.png")}
+                    style={styles.checkImg}
+                  />
                   <Text style={styles.checkText}>{key}</Text>
                 </TouchableOpacity>
               ))}
@@ -180,7 +201,14 @@ export default function Home() {
             <TouchableOpacity
               onPress={() => setClickinfo(!clickinfo)}
               activeOpacity={0.9}
-              style={{ backgroundColor: "white", alignItems: "center", justifyContent: "center", width: 45, height: 45, borderRadius: 100 }}
+              style={{
+                backgroundColor: "white",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 45,
+                height: 45,
+                borderRadius: 100,
+              }}
             >
               <AntDesign name="infocirlceo" size={24} color={COLORS.PURPLE} />
             </TouchableOpacity>
@@ -191,7 +219,16 @@ export default function Home() {
       {goToKey ? (
         <Mykey setGoToKey={setGoToKey} coin={key} setKey={setKey} />
       ) : (
-        <TouchableOpacity activeOpacity={1} style={{ flex: 1, width: "100%", position: "relative", top: -125, zIndex: -1 }}>
+        <TouchableOpacity
+          activeOpacity={1}
+          style={{
+            flex: 1,
+            width: "100%",
+            position: "relative",
+            top: -125,
+            zIndex: -1,
+          }}
+        >
           <Tmap />
         </TouchableOpacity>
       )}
@@ -204,7 +241,13 @@ export default function Home() {
         ) : (
           <View style={styles.panelBox}>
             <BottomSheet isOpen animationDuration={200} sliderMaxHeight={650}>
-              <Panel start={start} dest={dest} curr={curr} clickinfo={clickinfo} safeNum={safeNum} />
+              <Panel
+                start={start}
+                dest={dest}
+                curr={curr}
+                clickinfo={clickinfo}
+                safeNum={safeNum}
+              />
             </BottomSheet>
           </View>
         ))}
@@ -212,18 +255,31 @@ export default function Home() {
       {start && dest ? (
         <View style={styles.footer}>
           <TouchableOpacity activeOpacity={0.9} style={styles.footerBox3}>
-            <Text style={[styles.safecall, { color: "white" }]}>경로 안내 시작</Text>
+            <Text style={[styles.safecall, { color: "white" }]}>
+              경로 안내 시작
+            </Text>
             <Image source={navarrowImg} style={styles.navarr} />
           </TouchableOpacity>
         </View>
       ) : (
         <>
           <View style={styles.footer}>
-            <TouchableOpacity activeOpacity={0.6} style={styles.footerBox1} onPress={() => router.navigate("/safe-call")}>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              style={styles.footerBox1}
+              onPress={() => router.navigate("/safe-call")}
+            >
               <Text style={styles.safecall}>AI 안심전화</Text>
-              <Image source={require("@/assets/images/headphones.png")} style={styles.headphone} />
+              <Image
+                source={require("@/assets/images/headphones.png")}
+                style={styles.headphone}
+              />
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} style={styles.footerBox2} onPress={modalVisible ? closeModal : openModal}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.footerBox2}
+              onPress={modalVisible ? closeModal : openModal}
+            >
               <Image source={menuImg} style={styles.menu} />
             </TouchableOpacity>
           </View>
@@ -232,7 +288,9 @@ export default function Home() {
             <TouchableWithoutFeedback onPress={closeModal}>
               <View style={styles.modalOverlay}>
                 <TouchableWithoutFeedback>
-                  <Animated.View style={[styles.modalContent, { opacity: fadeAnim }]}>
+                  <Animated.View
+                    style={[styles.modalContent, { opacity: fadeAnim }]}
+                  >
                     {/* <View style={styles.modalBox}>
                   <Text style={styles.modalOption}>상점</Text>
                   <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7}>
@@ -241,17 +299,35 @@ export default function Home() {
                 </View> */}
                     <View style={styles.modalBox}>
                       <Text style={styles.modalOption}>코인키</Text>
-                      <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7} onPress={goToMykey}>
-                        <Image source={coinkeyImg} style={{ width: 17, height: 27 }} />
+                      <TouchableOpacity
+                        style={styles.modalOptionBox}
+                        activeOpacity={0.7}
+                        onPress={goToMykey}
+                      >
+                        <Image
+                          source={coinkeyImg}
+                          style={{ width: 17, height: 27 }}
+                        />
                       </TouchableOpacity>
                     </View>
                     <View style={styles.modalBox}>
                       <Text style={styles.modalOption}>마이페이지</Text>
-                      <TouchableOpacity style={styles.modalOptionBox} activeOpacity={0.7} onPress={openMyPage}>
-                        <Image source={mykeyImg} style={{ width: 20, height: 20 }} />
+                      <TouchableOpacity
+                        style={styles.modalOptionBox}
+                        activeOpacity={0.7}
+                        onPress={openMyPage}
+                      >
+                        <Image
+                          source={mykeyImg}
+                          style={{ width: 20, height: 20 }}
+                        />
                       </TouchableOpacity>
                     </View>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.closeBox} onPress={closeModal}>
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      style={styles.closeBox}
+                      onPress={closeModal}
+                    >
                       <Image source={closeImg} style={styles.close} />
                     </TouchableOpacity>
                   </Animated.View>

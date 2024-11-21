@@ -10,7 +10,9 @@ export default function Index() {
     <View style={Styles.container}>
       <View style={{ width: "90%" }}>
         <Text style={{ fontSize: 28, fontWeight: "600" }}>Safekey님,</Text>
-        <Text style={{ fontSize: 28, fontWeight: "600" }}>회원가입을 축하드립니다!</Text>
+        <Text style={{ fontSize: 28, fontWeight: "600" }}>
+          회원가입을 축하드립니다!
+        </Text>
       </View>
       <View style={{ width: "90%", marginTop: 19 }}>
         <Text style={{ fontSize: 20, fontWeight: "600" }}>세이프키와 함께</Text>
@@ -27,7 +29,10 @@ export default function Index() {
           fadeOut={true}
           colors={[COLORS.PURPLE, "#8E66FF", "#9DA6FF", "#FF69B4", "#6028FF"]}
         />
-        <Image source={successImg} style={{ width: 350, height: 420, marginTop: 30, marginBottom: 35 }} />
+        <Image
+          source={successImg}
+          style={{ width: 350, height: 420, marginTop: 30, marginBottom: 35 }}
+        />
       </View>
 
       <Link href="/login" asChild>

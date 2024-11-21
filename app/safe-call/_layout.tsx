@@ -1,31 +1,32 @@
-import { Slot } from "expo-router";
-import { View, Text, StyleSheet, Pressable, SafeAreaView } from "react-native";
-import { router } from "expo-router";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { AI, AIConfigs, DEFAULT_AI_CONFIG } from "@/constants/AIConfigs";
+import { Stack } from "expo-router";
 import { useReducer } from "react";
+import { StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function Layout() {
   const [configs, setConfigs] = useReducer(
     (configs: AI[], update: Partial<AI> & { name: string }): AI[] =>
-      configs.map(({ name, ...rest }) => ({ name, ...rest, ...(name === update.name && update) })),
+      configs.map(({ name, ...rest }) => ({
+        name,
+        ...rest,
+        ...(name === update.name && update),
+      })),
     DEFAULT_AI_CONFIG
   );
 
   return (
     <AIConfigs.Provider value={{ configs, setConfigs }}>
-      <SafeAreaView style={{ flexGrow: 1, backgroundColor: "#FFFFFF" }}>
-        <View style={styles.header}>
-          <Pressable onPress={() => router.back()} style={[styles.headerSideBlock, { justifyContent: "center", alignItems: "center" }]}>
-            <AntDesign name="left" size={20} color="black"/>
-          </Pressable>
-          <Text style={styles.title}>AI 안심전화</Text>
-          <View style={styles.headerSideBlock} />
-        </View>
-        <Slot />
-      </SafeAreaView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="call" options={{ headerShown: false }} />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="config" options={{ headerShown: false }} />
+          <Stack.Screen name="select" options={{ headerShown: false }} />
+        </Stack>
+      </GestureHandlerRootView>
     </AIConfigs.Provider>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -44,12 +45,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
 
     fontSize: 18,
-    fontWeight: 600,
     textAlign: "center",
   },
   headerSideBlock: {
     flexGrow: 0,
     flexShrink: 0,
     flexBasis: 56,
-  }
-})
+  },
+});

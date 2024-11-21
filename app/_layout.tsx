@@ -8,9 +8,20 @@ import { MapSearchParams } from "@/constants/MapSearchParams";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  //   useEffect(() => {
+  //   async function loadFonts() {
+  //     await Font.loadAsync({
+  //       Pretendard: require("@/assets/fonts/Pretendard-Medium.ttf"),
+  //     });
+  //     setFontsLoaded(true);
+  //   }
+
+  //   loadFonts();
+  // }, []);
   const [loaded, error] = useFonts({
-    "BalooTammudu2-Bold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-Bold.ttf"),
-    "BalooTammudu2-ExtraBold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-ExtraBold.ttf"),
+    Pretendard: require("@/assets/fonts/Pretendard-Medium.ttf"),
+    // "BalooTammudu2-Bold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-Bold.ttf"),
+    // "BalooTammudu2-ExtraBold": require("@/assets/fonts/BalooTammudu2/BalooTammudu2-ExtraBold.ttf"),
   });
   const [{ start, dest }, setSearchParams] = useState({ start: "", dest: "" });
 
@@ -28,7 +39,7 @@ export default function RootLayout() {
     <MapSearchParams.Provider value={{ start, dest, setSearchParams }}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="main" options={{ headerShown: false, animation: "none" }} />
+          <Stack.Screen name="safe-call" options={{ headerShown: false }} />
           <Stack.Screen name="mypage" options={{ headerShown: false }} />
           <Stack.Screen name="editmypage" options={{ headerShown: false }} />
           <Stack.Screen name="scrapplace" options={{ headerShown: false }} />

@@ -1,14 +1,29 @@
-import { View, Text, TextInput, StyleProp, TextStyle, Pressable, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleProp,
+  TextStyle,
+  Pressable,
+  Image,
+  StyleSheet,
+} from "react-native";
 
 interface LengthLimitedInputProps {
-  maxLength: number
-  value: string
-  onChangeText: (text: string) => void
-  placeholder?: string
-  style?: StyleProp<TextStyle>
+  maxLength: number;
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder?: string;
+  style?: StyleProp<TextStyle>;
 }
 
-function LengthLimitedInput({ maxLength, value, onChangeText, placeholder, style }: LengthLimitedInputProps) {
+function LengthLimitedInput({
+  maxLength,
+  value,
+  onChangeText,
+  placeholder,
+  style,
+}: LengthLimitedInputProps) {
   return (
     <View style={[styles.container, style]}>
       <TextInput
@@ -20,15 +35,19 @@ function LengthLimitedInput({ maxLength, value, onChangeText, placeholder, style
         placeholderTextColor="#C5CCD7"
         cursorColor="#6028FF"
       />
-      <Text style={styles.count}>{value.length}/{maxLength}</Text>
-      {
-        value.length >= 1 &&
-          <Pressable onPress={() => onChangeText("")}>
-            <Image style={styles.clear} source={require("@/assets/images/x-circle-contained.png")} />
-          </Pressable>
-      }
+      <Text style={styles.count}>
+        {value.length}/{maxLength}
+      </Text>
+      {value.length >= 1 && (
+        <Pressable onPress={() => onChangeText("")}>
+          <Image
+            style={styles.clear}
+            source={require("@/assets/images/x-circle-contained.png")}
+          />
+        </Pressable>
+      )}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -50,8 +69,8 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
 
     fontSize: 16,
-    fontWeight: 500,
-    
+    fontWeight: "500",
+
     paddingVertical: 8,
   },
   count: {
@@ -59,7 +78,7 @@ const styles = StyleSheet.create({
 
     color: "#A4A4A4",
     fontSize: 10,
-    fontWeight: 400,
+    fontWeight: "400",
     textAlign: "center",
   },
   clear: {
@@ -68,6 +87,6 @@ const styles = StyleSheet.create({
 
     aspectRatio: 1,
   },
-})
+});
 
-export default LengthLimitedInput
+export default LengthLimitedInput;

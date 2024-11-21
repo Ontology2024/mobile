@@ -1,10 +1,16 @@
-import { View, Text, StyleSheet, Image, TextInput, Pressable, Keyboard, Alert, Linking } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  Pressable,
+  Keyboard,
+} from "react-native";
 import { Link, useNavigation } from "expo-router";
 import { COLORS } from "@/constants/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const logoImg = require("@/assets/images/logo.png");
 const kakaoLogoImg = require("@/assets/images/kakao.png");
@@ -17,38 +23,38 @@ export default function Login() {
   const [password, changePassword] = useState("");
   const [showPw, changeShowPw] = useState(false);
 
-  const emailLogin = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-      });
+  // const emailLogin = async () => {
+  //   try {
+  //     const { error } = await supabase.auth.signInWithPassword({
+  //       email: email,
+  //       password: password,
+  //     });
 
-      if (error) {
-        console.log("로그인 실패: ", error.message);
-        Alert.alert("로그인 실패", "잘못된 로그인 정보입니다.");
-        return;
-      }
+  //     if (error) {
+  //       console.log("로그인 실패: ", error.message);
+  //       Alert.alert("로그인 실패", "잘못된 로그인 정보입니다.");
+  //       return;
+  //     }
 
-      console.log("로그인 성공");
-      AsyncStorage.setItem("email", email);
-      navigation.navigate("main");
-    } catch (err) {
-      console.log("로그인 실패: ", err.message);
-    }
-  };
+  //     console.log("로그인 성공");
+  //     AsyncStorage.setItem("email", email);
+  //     navigation.navigate("/map");
+  //   } catch (err) {
+  //     console.log("로그인 실패: ", err.message);
+  //   }
+  // };
 
-  const kakaoLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "kakao",
-    });
-    if (error) console.log("카카오 로그인 실패: ", error.message);
-    else {
-      console.log("카카오 로그인 성공: ", data);
-      Linking.openURL(data.url);
-      navigation.navigate("main");
-    }
-  };
+  // const kakaoLogin = async () => {
+  //   const { data, error } = await supabase.auth.signInWithOAuth({
+  //     provider: "kakao",
+  //   });
+  //   if (error) console.log("카카오 로그인 실패: ", error.message);
+  //   else {
+  //     console.log("카카오 로그인 성공: ", data);
+  //     Linking.openURL(data.url);
+  //     navigation.navigate("main");
+  //   }
+  // };
   return (
     <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
       <View style={styles.loginLogoBox}>
@@ -81,25 +87,30 @@ export default function Login() {
               placeholderTextColor={"#a2a6ae"}
               value={password}
             />
-            <TouchableOpacity onPress={() => changeShowPw(!showPw)} activeOpacity={0.8}>
-              <Image source={showPw ? eyeOpenImg : eyeCloseImg} style={styles.eyeImg} />
+            <TouchableOpacity
+              onPress={() => changeShowPw(!showPw)}
+              activeOpacity={0.8}
+            >
+              <Image
+                source={showPw ? eyeOpenImg : eyeCloseImg}
+                style={styles.eyeImg}
+              />
             </TouchableOpacity>
           </View>
         </View>
       </View>
       <View style={{ gap: 8, marginTop: 25 }}>
-        <TouchableOpacity
-          style={email && password ? styles.loginBox : styles.unLoginBox}
-          activeOpacity={0.8}
-          disabled={!(email && password)}
-          onPress={emailLogin}
-        >
-          <Text style={styles.loginText}>로그인</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.kakaoBox} activeOpacity={0.8} onPress={kakaoLogin}>
-          <Image source={kakaoLogoImg} style={styles.kakaoLogo} />
-          <Text style={styles.kakaoText}>카카오로 로그인</Text>
-        </TouchableOpacity>
+        <Link href={"/map"} asChild>
+          <TouchableOpacity style={styles.loginBox} activeOpacity={0.8}>
+            <Text style={styles.loginText}>로그인</Text>
+          </TouchableOpacity>
+        </Link>
+        <Link href={"/map"} asChild>
+          <TouchableOpacity style={styles.kakaoBox} activeOpacity={0.8}>
+            <Image source={kakaoLogoImg} style={styles.kakaoLogo} />
+            <Text style={styles.kakaoText}>카카오로 로그인</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
       <View style={styles.bottomBox}>
         <Link href="/signup" asChild>

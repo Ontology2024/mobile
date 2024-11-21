@@ -48,7 +48,9 @@ export default function editalarm() {
     let hours = date.getHours();
     const minutes = date.getMinutes();
     const isAM = hours < 12;
-    const formattedTime = `${isAM ? "오전" : "오후"} ${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}`;
+    const formattedTime = `${isAM ? "오전" : "오후"} ${
+      hours < 10 ? `0${hours}` : hours
+    }:${minutes < 10 ? `0${minutes}` : minutes}`;
 
     if (isDatePickerVisible === "start") {
       setStartTime(formattedTime);
@@ -61,63 +63,168 @@ export default function editalarm() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.headerLeft} activeOpacity={0.6} onPress={() => router.back()}>
+        <TouchableOpacity
+          style={styles.headerLeft}
+          activeOpacity={0.6}
+          onPress={() => router.back()}
+        >
           <EvilIcons name="chevron-left" size={45} color="black" />
           <Text style={styles.headerText}>알림 설정</Text>
         </TouchableOpacity>
       </View>
-      <View style={{ width: "85%", gap: 13, marginHorizontal: 20, marginTop: 16, marginBottom: 20 }}>
+      <View
+        style={{
+          width: "85%",
+          gap: 13,
+          marginHorizontal: 20,
+          marginTop: 16,
+          marginBottom: 20,
+        }}
+      >
         <Text style={styles.title}>푸시 알림</Text>
         <View style={styles.subcontainer}>
           <Text style={styles.content}>모든 알림 일시 중단</Text>
-          <Switch value={sw[0]} onChange={() => toggle(0)} color={COLORS.PURPLE} />
+          <Switch
+            value={sw[0]}
+            onChange={() => toggle(0)}
+            color={COLORS.PURPLE}
+          />
         </View>
         <View style={styles.subcontainer}>
           <Text style={styles.content}>위험 지역에 있을 때 알림</Text>
-          <Switch value={sw[1]} onChange={() => toggle(1)} color={COLORS.PURPLE} />
+          <Switch
+            value={sw[1]}
+            onChange={() => toggle(1)}
+            color={COLORS.PURPLE}
+          />
         </View>
         <View style={styles.subcontainer}>
           <Text style={styles.content}>코인키가 주변에 많을 때 알림</Text>
-          <Switch value={sw[2]} onChange={() => toggle(2)} color={COLORS.PURPLE} />
+          <Switch
+            value={sw[2]}
+            onChange={() => toggle(2)}
+            color={COLORS.PURPLE}
+          />
         </View>
         <View style={styles.subcontainer}>
           <Text style={styles.content}>길찾기 완료했을 때 알림</Text>
-          <Switch value={sw[3]} onChange={() => toggle(3)} color={COLORS.PURPLE} />
+          <Switch
+            value={sw[3]}
+            onChange={() => toggle(3)}
+            color={COLORS.PURPLE}
+          />
         </View>
       </View>
 
       <View style={{ width: 350, height: 1, backgroundColor: "#E7E7E7" }} />
 
-      <View style={{ width: "85%", gap: 13, marginHorizontal: 20, marginTop: 16, marginBottom: 20 }}>
+      <View
+        style={{
+          width: "85%",
+          gap: 13,
+          marginHorizontal: 20,
+          marginTop: 16,
+          marginBottom: 20,
+        }}
+      >
         <Text style={styles.title}>알림 제한</Text>
         <View style={styles.subcontainer}>
           <Text style={styles.content}>알림 제한 시간대 설정</Text>
-          <Switch value={sw[4]} onChange={() => toggle(4)} color={COLORS.PURPLE} />
+          <Switch
+            value={sw[4]}
+            onChange={() => toggle(4)}
+            color={COLORS.PURPLE}
+          />
         </View>
       </View>
 
-      <View style={{ width: "85%", gap: 13, marginHorizontal: 20, marginTop: 16, marginBottom: 20 }}>
+      <View
+        style={{
+          width: "85%",
+          gap: 13,
+          marginHorizontal: 20,
+          marginTop: 16,
+          marginBottom: 20,
+        }}
+      >
         <Text style={styles.title}>요일 선택</Text>
         <View style={styles.buttonblock}>
           {week.map((val, idx) => (
-            <TouchableOpacity activeOpacity={1} style={weekV[idx] ? styles.btn2 : styles.btn} key={idx} onPress={() => selectWeekV(idx)}>
-              <Text style={{ fontSize: 14, fontWeight: "500", color: weekV[idx] ? COLORS.PURPLE : "black" }}>{val}</Text>
+            <TouchableOpacity
+              activeOpacity={1}
+              style={weekV[idx] ? styles.btn2 : styles.btn}
+              key={idx}
+              onPress={() => selectWeekV(idx)}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "500",
+                  color: weekV[idx] ? COLORS.PURPLE : "black",
+                }}
+              >
+                {val}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
 
       <View style={{ width: "85%", alignItems: "center", gap: 8 }}>
-        <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Text style={{ fontSize: 14, fontWeight: "500", color: "#767985" }}>시작 시간</Text>
-          <TouchableOpacity disabled={!ck} activeOpacity={0.9} style={styles.time} onPress={() => showDatePicker("start")}>
-            <Text style={{ fontSize: 14, fontWeight: "400", color: ck ? "#2F323D" : "#8D94A3" }}>{startTime}</Text>
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 14, fontWeight: "500", color: "#767985" }}>
+            시작 시간
+          </Text>
+          <TouchableOpacity
+            disabled={!ck}
+            activeOpacity={0.9}
+            style={styles.time}
+            onPress={() => showDatePicker("start")}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "400",
+                color: ck ? "#2F323D" : "#8D94A3",
+              }}
+            >
+              {startTime}
+            </Text>
           </TouchableOpacity>
         </View>
-        <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Text style={{ fontSize: 14, fontWeight: "500", color: "#767985" }}>종료 시간</Text>
-          <TouchableOpacity disabled={!ck} activeOpacity={0.9} style={styles.time} onPress={() => showDatePicker("end")}>
-            <Text style={{ fontSize: 14, fontWeight: "400", color: ck ? "#2F323D" : "#8D94A3" }}>{endTime}</Text>
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 14, fontWeight: "500", color: "#767985" }}>
+            종료 시간
+          </Text>
+          <TouchableOpacity
+            disabled={!ck}
+            activeOpacity={0.9}
+            style={styles.time}
+            onPress={() => showDatePicker("end")}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "400",
+                color: ck ? "#2F323D" : "#8D94A3",
+              }}
+            >
+              {endTime}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

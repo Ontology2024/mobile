@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { Link } from "expo-router";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -54,7 +62,10 @@ export default function Addplace() {
           placeholder="장소를 검색하여 추가해보세요"
         />
         <TouchableOpacity activeOpacity={0.8} onPress={getCurrPostion}>
-          <Image source={currentlocationImg} style={{ width: 20, height: 20 }} />
+          <Image
+            source={currentlocationImg}
+            style={{ width: 20, height: 20 }}
+          />
         </TouchableOpacity>
       </View>
 
@@ -73,21 +84,48 @@ export default function Addplace() {
             </View>
             <View style={styles.currentSearchListBox2}>
               <View style={{ gap: 2 }}>
-                <Text style={{ fontSize: 16, fontWeight: "400", color: "#2F323D" }}>세이프키하우스 본점</Text>
-                <Text style={{ fontSize: 12, fontWeight: "400", color: "#8D94A3" }}>경기도 용인시 기흥구 덕영대로 481</Text>
+                <Text
+                  style={{ fontSize: 16, fontWeight: "400", color: "#2F323D" }}
+                >
+                  세이프키하우스 본점
+                </Text>
+                <Text
+                  style={{ fontSize: 12, fontWeight: "400", color: "#8D94A3" }}
+                >
+                  경기도 용인시 기흥구 덕영대로 481
+                </Text>
               </View>
-              <TouchableOpacity activeOpacity={0.8} style={styles.addBtn} onPress={addPlace}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.addBtn}
+                onPress={addPlace}
+              >
                 <AntDesign name="plus" size={16} color={COLORS.PURPLE} />
-                <Text style={{ fontSize: 14, fontWeight: "500", color: COLORS.PURPLE }}>추가</Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: COLORS.PURPLE,
+                  }}
+                >
+                  추가
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
       </View>
-      <Snackbar visible={snackVisible} duration={1000} elevation={0} style={styles.snackbar}>
+      <Snackbar
+        visible={snackVisible}
+        duration={1000}
+        elevation={0}
+        style={styles.snackbar}
+      >
         <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
           <Ionicons name="checkbox" size={20} color={COLORS.PURPLE} />
-          <Text style={{ fontSize: 14, fontWeight: "500" }}>장소가 추가되었어요!</Text>
+          <Text style={{ fontSize: 14, fontWeight: "500" }}>
+            장소가 추가되었어요!
+          </Text>
         </View>
       </Snackbar>
     </View>

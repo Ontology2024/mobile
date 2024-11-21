@@ -46,9 +46,16 @@ export default function mypage() {
         </Link>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }} contentContainerStyle={{ alignItems: "center" }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ width: "100%" }}
+        contentContainerStyle={{ alignItems: "center" }}
+      >
         <View style={{ alignItems: "center" }}>
-          <TouchableOpacity activeOpacity={0.8} style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={{ flexDirection: "row" }}
+          >
             <View style={styles.characterBox}>
               <Image source={PinkCharacter} style={styles.character} />
             </View>
@@ -59,27 +66,48 @@ export default function mypage() {
           <Text style={styles.nick}>{nickname}</Text>
         </View>
 
-        <View style={{ width: "80%", marginVertical: 24, alignItems: "center" }}>
+        <View
+          style={{ width: "80%", marginVertical: 24, alignItems: "center" }}
+        >
           <View style={{ flexDirection: "row", gap: 8, marginBottom: 15 }}>
             <View style={styles.coinkeyBox}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Image source={coinkeyImg} style={{ width: 12, height: 20 }} />
-                <Text style={{ fontSize: 16, color: "white", marginLeft: 10 }}>코인키</Text>
+                <Text style={{ fontSize: 16, color: "white", marginLeft: 10 }}>
+                  코인키
+                </Text>
               </View>
               <Text style={{ fontSize: 16, color: "white" }}>
                 <Text style={{ fontWeight: "600" }}>{coinN}</Text> 개
               </Text>
             </View>
-            <TouchableOpacity activeOpacity={0.8} style={styles.purchaseHistoryBox}>
-              <Text style={{ color: COLORS.PURPLE, fontSize: 16, fontWeight: "600" }}>구매 내역</Text>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.purchaseHistoryBox}
+            >
+              <Text
+                style={{
+                  color: COLORS.PURPLE,
+                  fontSize: 16,
+                  fontWeight: "600",
+                }}
+              >
+                구매 내역
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.purchaseGuideBox}>
             <View style={styles.purchaseGuideTriangle} />
-            <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
+            <View
+              style={{ flexDirection: "row", gap: 6, alignItems: "center" }}
+            >
               <Image source={bellImg} style={{ width: 12, height: 14 }} />
               <Text style={{ fontSize: 12 }}>
-                지금 코인키로 <Text style={{ color: COLORS.PURPLE, fontWeight: "600" }}>{canBuyN}</Text> 개의 품목을 구매할 수 있어요!
+                지금 코인키로{" "}
+                <Text style={{ color: COLORS.PURPLE, fontWeight: "600" }}>
+                  {canBuyN}
+                </Text>{" "}
+                개의 품목을 구매할 수 있어요!
               </Text>
             </View>
           </View>
@@ -116,7 +144,11 @@ export default function mypage() {
             <Link href="editalarm" asChild>
               <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Ionicons name="notifications-outline" size={20} color="black" />
+                  <Ionicons
+                    name="notifications-outline"
+                    size={20}
+                    color="black"
+                  />
                   <Text style={styles.optionText}>알림 설정</Text>
                 </View>
                 <EvilIcons name="chevron-right" size={36} color="black" />
@@ -125,7 +157,10 @@ export default function mypage() {
             <View style={styles.underLine} />
             <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image source={collectMsgImg} style={{ width: 18, height: 18 }} />
+                <Image
+                  source={collectMsgImg}
+                  style={{ width: 18, height: 18 }}
+                />
                 <Text style={styles.optionText}>알림 모아보기</Text>
               </View>
               <EvilIcons name="chevron-right" size={36} color="black" />
@@ -153,7 +188,11 @@ export default function mypage() {
           <View style={styles.optionContainer}>
             <TouchableOpacity activeOpacity={0.8} style={styles.optionBox}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <MaterialCommunityIcons name="text-box-check-outline" size={20} color="black" />
+                <MaterialCommunityIcons
+                  name="text-box-check-outline"
+                  size={20}
+                  color="black"
+                />
                 <Text style={styles.optionText}>개인정보 처리방침</Text>
               </View>
               <EvilIcons name="chevron-right" size={36} color="black" />
@@ -168,10 +207,25 @@ export default function mypage() {
             </TouchableOpacity>
             <View style={styles.underLine} />
             <View style={{ gap: 4 }}>
-              <Text style={{ color: "#767985", fontSize: 12, fontWeight: "500" }}>잘못된 정보나 개선사항이 있으신가요?</Text>
-              <TouchableOpacity activeOpacity={0.8} style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+              <Text
+                style={{ color: "#767985", fontSize: 12, fontWeight: "500" }}
+              >
+                잘못된 정보나 개선사항이 있으신가요?
+              </Text>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+              >
                 <Image source={contactImg} style={{ width: 15, height: 15 }} />
-                <Text style={{ color: COLORS.PURPLE, fontSize: 16, fontWeight: "500" }}>문의 및 건의하기</Text>
+                <Text
+                  style={{
+                    color: COLORS.PURPLE,
+                    fontSize: 16,
+                    fontWeight: "500",
+                  }}
+                >
+                  문의 및 건의하기
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

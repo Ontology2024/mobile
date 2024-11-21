@@ -1,4 +1,13 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Pressable, Keyboard } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  Pressable,
+  Keyboard,
+} from "react-native";
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -25,7 +34,9 @@ export default function signup() {
     }
   };
   const oneAgree = (n) => {
-    setTerms((prevTerms) => prevTerms.map((term, idx) => (idx === n ? !term : term)));
+    setTerms((prevTerms) =>
+      prevTerms.map((term, idx) => (idx === n ? !term : term))
+    );
   };
 
   const {
@@ -43,7 +54,12 @@ export default function signup() {
   const activeSubmit = (email, password, passwordConfirm) => {
     if (!(terms[0] && terms[1] && terms[2])) return false;
     if (email && password && passwordConfirm) {
-      if (/^(?=.*[A-Za-z])(?=.*\d).+$/.test(password) && password.length >= 8 && password.length <= 20) return true;
+      if (
+        /^(?=.*[A-Za-z])(?=.*\d).+$/.test(password) &&
+        password.length >= 8 &&
+        password.length <= 20
+      )
+        return true;
       else return false;
     } else return false;
   };
@@ -51,10 +67,11 @@ export default function signup() {
   const onSubmit = async (data) => {
     try {
       // 이메일과 비밀번호로 회원가입 요청
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-      });
+      const { data: signUpData, error: signUpError } =
+        await supabase.auth.signUp({
+          email: data.email,
+          password: data.password,
+        });
 
       if (signUpError) {
         console.log("회원가입 오류:", signUpError.message);
@@ -123,7 +140,9 @@ export default function signup() {
               />
             )}
           />
-          <Text style={[styles.errorText]}>{errors.email && errors.email.message}</Text>
+          <Text style={[styles.errorText]}>
+            {errors.email && errors.email.message}
+          </Text>
         </View>
 
         <View style={styles.inputContainer}>
@@ -158,25 +177,51 @@ export default function signup() {
                 />
               )}
             />
-            <TouchableOpacity onPress={() => setShowPw(!showPw)} activeOpacity={0.8}>
-              <Image source={showPw ? eyeOpenImg : eyeCloseImg} style={styles.eyeImg} />
+            <TouchableOpacity
+              onPress={() => setShowPw(!showPw)}
+              activeOpacity={0.8}
+            >
+              <Image
+                source={showPw ? eyeOpenImg : eyeCloseImg}
+                style={styles.eyeImg}
+              />
             </TouchableOpacity>
           </View>
           <View style={styles.checkPwBox}>
-            <View style={[styles.checkPw, { opacity: /[A-Za-z]/.test(password) ? 1 : 0.5 }]}>
+            <View
+              style={[
+                styles.checkPw,
+                { opacity: /[A-Za-z]/.test(password) ? 1 : 0.5 },
+              ]}
+            >
               <Feather name="check" size={16} color={COLORS.PURPLE} />
               <Text style={styles.checkText}>영문포함</Text>
             </View>
-            <View style={[styles.checkPw, { opacity: /\d/.test(password) ? 1 : 0.5 }]}>
+            <View
+              style={[
+                styles.checkPw,
+                { opacity: /\d/.test(password) ? 1 : 0.5 },
+              ]}
+            >
               <Feather name="check" size={16} color={COLORS.PURPLE} />
               <Text style={styles.checkText}>숫자포함</Text>
             </View>
-            <View style={[styles.checkPw, { opacity: password.length >= 8 && password.length <= 20 ? 1 : 0.5 }]}>
+            <View
+              style={[
+                styles.checkPw,
+                {
+                  opacity:
+                    password.length >= 8 && password.length <= 20 ? 1 : 0.5,
+                },
+              ]}
+            >
               <Feather name="check" size={16} color={COLORS.PURPLE} />
               <Text style={styles.checkText}>8~20자 이내</Text>
             </View>
           </View>
-          <Text style={styles.errorText}>{errors.password && errors.password.message}</Text>
+          <Text style={styles.errorText}>
+            {errors.password && errors.password.message}
+          </Text>
         </View>
 
         <View style={styles.inputContainer}>
@@ -187,7 +232,8 @@ export default function signup() {
               name="passwordConfirm"
               rules={{
                 required: "비밀번호 확인을 입력해주세요.",
-                validate: (value) => value === password || "비밀번호가 일치하지 않습니다.",
+                validate: (value) =>
+                  value === password || "비밀번호가 일치하지 않습니다.",
               }}
               render={({ field: { onChange, value } }) => (
                 <TextInput
@@ -200,18 +246,30 @@ export default function signup() {
                 />
               )}
             />
-            <TouchableOpacity onPress={() => setShowPw2(!showPw2)} activeOpacity={0.8}>
-              <Image source={showPw2 ? eyeOpenImg : eyeCloseImg} style={styles.eyeImg} />
+            <TouchableOpacity
+              onPress={() => setShowPw2(!showPw2)}
+              activeOpacity={0.8}
+            >
+              <Image
+                source={showPw2 ? eyeOpenImg : eyeCloseImg}
+                style={styles.eyeImg}
+              />
             </TouchableOpacity>
           </View>
-          <Text style={styles.errorText}>{errors.passwordConfirm && errors.passwordConfirm.message}</Text>
+          <Text style={styles.errorText}>
+            {errors.passwordConfirm && errors.passwordConfirm.message}
+          </Text>
         </View>
       </View>
 
       <View>
         <View style={styles.termsTitle}>
           <TouchableOpacity activeOpacity={0.8} onPress={allAgree}>
-            <Ionicons name="checkbox" size={25} color={allTerms ? COLORS.PURPLE : "#C5CCD7"} />
+            <Ionicons
+              name="checkbox"
+              size={25}
+              color={allTerms ? COLORS.PURPLE : "#C5CCD7"}
+            />
           </TouchableOpacity>
           <Text style={styles.termsText}>모두 동의 (선택 정보 포함)</Text>
         </View>
@@ -219,7 +277,11 @@ export default function signup() {
         <View>
           <View style={styles.termsDetail}>
             <TouchableOpacity activeOpacity={0.8} onPress={() => oneAgree(0)}>
-              <Feather name="check" size={20} color={terms[0] ? COLORS.PURPLE : "#C5CCD7"} />
+              <Feather
+                name="check"
+                size={20}
+                color={terms[0] ? COLORS.PURPLE : "#C5CCD7"}
+              />
             </TouchableOpacity>
             <Text style={styles.termsText}>[필수] 만 14세 이상</Text>
             <View style={styles.plus}>
@@ -228,7 +290,11 @@ export default function signup() {
           </View>
           <View style={styles.termsDetail}>
             <TouchableOpacity activeOpacity={0.8} onPress={() => oneAgree(1)}>
-              <Feather name="check" size={20} color={terms[1] ? COLORS.PURPLE : "#C5CCD7"} />
+              <Feather
+                name="check"
+                size={20}
+                color={terms[1] ? COLORS.PURPLE : "#C5CCD7"}
+              />
             </TouchableOpacity>
             <Text style={styles.termsText}>[필수] 이용약관 동의</Text>
             <View style={styles.plus}>
@@ -237,7 +303,11 @@ export default function signup() {
           </View>
           <View style={styles.termsDetail}>
             <TouchableOpacity activeOpacity={0.8} onPress={() => oneAgree(2)}>
-              <Feather name="check" size={20} color={terms[2] ? COLORS.PURPLE : "#C5CCD7"} />
+              <Feather
+                name="check"
+                size={20}
+                color={terms[2] ? COLORS.PURPLE : "#C5CCD7"}
+              />
             </TouchableOpacity>
             <Text style={styles.termsText}>[필수] 개인정보 처리방침 동의</Text>
             <View style={styles.plus}>
@@ -246,9 +316,15 @@ export default function signup() {
           </View>
           <View style={styles.termsDetail}>
             <TouchableOpacity activeOpacity={0.8} onPress={() => oneAgree(3)}>
-              <Feather name="check" size={20} color={terms[3] ? COLORS.PURPLE : "#C5CCD7"} />
+              <Feather
+                name="check"
+                size={20}
+                color={terms[3] ? COLORS.PURPLE : "#C5CCD7"}
+              />
             </TouchableOpacity>
-            <Text style={styles.termsText}>[선택] 광고성 정보 수신 및 마케팅 활용 동의</Text>
+            <Text style={styles.termsText}>
+              [선택] 광고성 정보 수신 및 마케팅 활용 동의
+            </Text>
             <View style={styles.plus}>
               <AntDesign name="plus" size={20} color="black" />
             </View>
@@ -259,7 +335,11 @@ export default function signup() {
       <Link href="/successSignup" asChild>
         <TouchableOpacity
           onPress={handleSubmit(onSubmit)}
-          style={activeSubmit(email, password, passwordConfirm) ? styles.submitBtn : styles.unSubmitBtn}
+          style={
+            activeSubmit(email, password, passwordConfirm)
+              ? styles.submitBtn
+              : styles.unSubmitBtn
+          }
           activeOpacity={0.8}
           disabled={!activeSubmit(email, password, passwordConfirm)}
         >

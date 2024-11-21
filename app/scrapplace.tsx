@@ -12,9 +12,21 @@ import { useState } from "react";
 const sampleImg = require("@/assets/images/sampleImg.png");
 
 const sampleData = [
-  { place: "나의집", distance: "1km", address: "경기도 수원시 영통구 덕영대로 42" },
-  { place: "회사", distance: "4.3km", address: "서울특별시 서초구 서초대로 84" },
-  { place: "친구집", distance: "2.7km", address: "서울특별시 서초구 서초대로 84" },
+  {
+    place: "나의집",
+    distance: "1km",
+    address: "경기도 수원시 영통구 덕영대로 42",
+  },
+  {
+    place: "회사",
+    distance: "4.3km",
+    address: "서울특별시 서초구 서초대로 84",
+  },
+  {
+    place: "친구집",
+    distance: "2.7km",
+    address: "서울특별시 서초구 서초대로 84",
+  },
 ];
 
 export default function Scrapplace() {
@@ -45,18 +57,30 @@ export default function Scrapplace() {
     <View style={styles.container}>
       <View style={styles.header}>
         {edit ? (
-          <TouchableOpacity style={styles.headerLeft} activeOpacity={0.6} onPress={() => setEdit(false)}>
+          <TouchableOpacity
+            style={styles.headerLeft}
+            activeOpacity={0.6}
+            onPress={() => setEdit(false)}
+          >
             <EvilIcons name="chevron-left" size={45} color="black" />
             <Text style={styles.headerText}>자주 가는 장소 편집</Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.headerLeft} activeOpacity={0.6} onPress={() => router.back()}>
+          <TouchableOpacity
+            style={styles.headerLeft}
+            activeOpacity={0.6}
+            onPress={() => router.back()}
+          >
             <EvilIcons name="chevron-left" size={45} color="black" />
             <Text style={styles.headerText}>자주 가는 장소 설정</Text>
           </TouchableOpacity>
         )}
         {!edit && (
-          <TouchableOpacity activeOpacity={0.5} style={styles.navEditBox} onPress={onEdit}>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            style={styles.navEditBox}
+            onPress={onEdit}
+          >
             <Feather name="edit" size={18} color="black" />
             <Text style={{ fontSize: 14, fontWeight: "500" }}>편집</Text>
           </TouchableOpacity>
@@ -70,13 +94,23 @@ export default function Scrapplace() {
               <View style={{ backgroundColor: "#F4F6F9", padding: 6 }}>
                 <AntDesign name="plus" size={16} color="black" />
               </View>
-              <Text style={{ fontSize: 16, fontWeight: "500" }}>장소 추가하기</Text>
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                장소 추가하기
+              </Text>
             </TouchableOpacity>
           </Link>
         )}
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 230, gap: 12 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 230, gap: 12 }}
+        >
           {sampleData.map((data, idx) => (
-            <TouchableOpacity activeOpacity={0.9} style={styles.scrapBox} key={idx} onPress={() => checked(idx)}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.scrapBox}
+              key={idx}
+              onPress={() => checked(idx)}
+            >
               {edit && (
                 <Ionicons
                   name={check[idx] ? "checkbox" : "checkbox-outline"}
@@ -86,11 +120,19 @@ export default function Scrapplace() {
                 />
               )}
               <View style={{ gap: 8 }}>
-                <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+                <View
+                  style={{ flexDirection: "row", gap: 8, alignItems: "center" }}
+                >
                   <MaterialIcons name="stars" size={20} color={COLORS.PURPLE} />
-                  <Text style={{ fontSize: 16, fontWeight: "500" }}>{data.place}</Text>
+                  <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                    {data.place}
+                  </Text>
                 </View>
-                <Text style={{ fontSize: 12, fontWeight: "500", color: "#767985" }} numberOfLines={1} ellipsizeMode="tail">
+                <Text
+                  style={{ fontSize: 12, fontWeight: "500", color: "#767985" }}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
                   {controlOver(`${data.distance} · ${data.address}`)}
                 </Text>
               </View>
@@ -104,9 +146,15 @@ export default function Scrapplace() {
 
       {edit && (
         <View style={styles.editfooter}>
-          <TouchableOpacity activeOpacity={0.8} onPress={onDelete} style={styles.deletebtn}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={onDelete}
+            style={styles.deletebtn}
+          >
             <Feather name="trash-2" size={20} color="black" />
-            <Text style={{ fontSize: 16, fontWeight: "500", color: "#2F323D" }}>삭제</Text>
+            <Text style={{ fontSize: 16, fontWeight: "500", color: "#2F323D" }}>
+              삭제
+            </Text>
           </TouchableOpacity>
         </View>
       )}

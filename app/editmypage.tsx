@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import { Link, useRouter } from "expo-router";
 import { COLORS } from "@/constants/colors";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
@@ -74,23 +81,46 @@ export default function editmypage() {
         </View>
         <View style={styles.inputContainer}>
           <Text style={styles.inputTitle}>연동된 소셜 계정</Text>
-          <View style={[styles.inputBox, { justifyContent: "space-between", paddingVertical: 9.5 }]}>
-            <TextInput placeholder={social} placeholderTextColor="#8D94A3" editable={false} selectTextOnFocus={false} />
+          <View
+            style={[
+              styles.inputBox,
+              { justifyContent: "space-between", paddingVertical: 9.5 },
+            ]}
+          >
+            <TextInput
+              placeholder={social}
+              placeholderTextColor="#8D94A3"
+              editable={false}
+              selectTextOnFocus={false}
+            />
             <Image source={naverImg} style={styles.socialImg} />
           </View>
         </View>
-        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 24 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 24,
+          }}
+        >
           <TouchableOpacity activeOpacity={0.6}>
             <Text style={styles.smallText}>로그아웃</Text>
           </TouchableOpacity>
-          <View style={{ height: "100%", width: 1, backgroundColor: "#C5CCD7" }} />
+          <View
+            style={{ height: "100%", width: 1, backgroundColor: "#C5CCD7" }}
+          />
           <TouchableOpacity activeOpacity={0.6}>
             <Text style={styles.smallText}>회원탈퇴</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      <TouchableOpacity activeOpacity={0.8} style={styles.footerContainer} onPress={() => router.navigate("/login")}>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.footerContainer}
+        onPress={() => router.navigate("/login")}
+      >
         <Text style={styles.footerText}>다른 계정 로그인으로 정보 변경</Text>
       </TouchableOpacity>
     </View>

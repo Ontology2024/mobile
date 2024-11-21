@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import { Link } from "expo-router";
 import { COLORS } from "@/constants/colors";
 
@@ -26,13 +34,24 @@ export default function Index() {
       }}
     >
       <View style={Style.indicatorContainer}>
-        <View style={[Style.indicator, currentPage === 0 && Style.activeIndicator]} />
-        <View style={[Style.indicator, currentPage === 1 && Style.activeIndicator]} />
+        <View
+          style={[Style.indicator, currentPage === 0 && Style.activeIndicator]}
+        />
+        <View
+          style={[Style.indicator, currentPage === 1 && Style.activeIndicator]}
+        />
       </View>
-      <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false} onScroll={handleScroll} scrollEventThrottle={16}>
+      <ScrollView
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
         <View style={Style.info}>
           <Text style={Style.text}>
-            메인 화면에서{"\n"}볼 수 있는 <Text style={Style.highlightText}>안전 구역</Text>
+            메인 화면에서{"\n"}볼 수 있는{" "}
+            <Text style={Style.highlightText}>안전 구역</Text>
           </Text>
           <View style={{ alignItems: "center" }}>
             <Image source={onboarding1Img} style={Style.image} />
@@ -40,7 +59,8 @@ export default function Index() {
         </View>
         <View style={Style.info}>
           <Text style={Style.text}>
-            메인 화면에서{"\n"}볼 수 있는 <Text style={Style.highlightText}>안전 구역</Text>
+            메인 화면에서{"\n"}볼 수 있는{" "}
+            <Text style={Style.highlightText}>안전 구역</Text>
           </Text>
           <View style={{ alignItems: "center" }}>
             <Image source={onboarding2Img} style={Style.image} />
@@ -76,7 +96,7 @@ const Style = StyleSheet.create({
   footer: {
     backgroundColor: COLORS.PURPLE,
     width: SCREEN_WIDTH,
-    height: 100,
+    padding: 20,
     alignItems: "center",
     shadowColor: COLORS.PURPLE,
     shadowOffset: { width: 0, height: -5 },
@@ -84,7 +104,6 @@ const Style = StyleSheet.create({
     shadowRadius: 6,
   },
   startText: {
-    marginTop: 30,
     fontSize: 18,
     fontWeight: "600",
     color: "white",
